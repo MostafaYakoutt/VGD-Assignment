@@ -18,6 +18,12 @@ namespace LeftBehind.Interaction
 
         public Interactable Current => current;
 
+        /// <summary>
+        /// While set (for example an object being inspected), E always goes
+        /// to this Interactable instead of whatever the ray hits.
+        /// </summary>
+        public Interactable Focus { get; set; }
+
         private void Awake()
         {
             if (viewCamera == null) viewCamera = Camera.main;
@@ -43,6 +49,7 @@ namespace LeftBehind.Interaction
 
         private Interactable FindTarget()
         {
+            if (Focus != null) return Focus;
             if (viewCamera == null) return null;
 
             var ray = new Ray(viewCamera.transform.position, viewCamera.transform.forward);
