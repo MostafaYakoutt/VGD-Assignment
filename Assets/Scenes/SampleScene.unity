@@ -12797,6 +12797,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2014ea66f6a64fe4d89ca0164a424187, type: 3}
       insertIndex: -1
       addedObject: {fileID: 406260523}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2014ea66f6a64fe4d89ca0164a424187, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 406260526}
   m_SourcePrefab: {fileID: 100100000, guid: 2014ea66f6a64fe4d89ca0164a424187, type: 3}
 --- !u!4 &406260521 stripped
 Transform:
@@ -12829,6 +12832,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.017357713, y: 0.0042013093, z: 0.041878358}
   m_Center: {x: 0.008678856, y: -0.0000000011641533, z: 0.020939179}
+--- !u!114 &406260526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406260522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e321842859bd6740b03e85cb02f30d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Loop.LoopDoor
+  promptText: Open the door
+  nextScene: Loop2_YearsEarlier
+  nextLoop: 2
+  arrivalCaption: AUTUMN. YEARS EARLIER.
+  closedText: It won't open
 --- !u!1 &408268401
 GameObject:
   m_ObjectHideFlags: 0
@@ -13017,7 +13037,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 410087039}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: -0.4082179, y: 0.2345698, z: -0.10938169, w: -0.8754261}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -20208,6 +20228,59 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.0279406, y: 0.011186071, z: 0.013529153}
   m_Center: {x: 0.000000007450581, y: -0.000007171881, z: 0.006670414}
+--- !u!1 &673943385
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 673943387}
+  - component: {fileID: 673943386}
+  m_Layer: 0
+  m_Name: LoopEnvironment
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &673943386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673943385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe95ac8ff62436d40a47a4727eb3668f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Loop.LoopEnvironment
+  loop: 1
+  period: 'Loop 1: present day, grey winter afternoon'
+  sun: {fileID: 410087040}
+  sunEuler: {x: 50, y: 330, z: 0}
+  sunColor: {r: 0.82, g: 0.88, b: 1, a: 1}
+  sunIntensity: 1
+  ambient: {r: 0.12, g: 0.13, b: 0.16, a: 1}
+  fogColor: {r: 0.1, g: 0.12, b: 0.15, a: 1}
+  fogDensity: 0.06
+--- !u!4 &673943387
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673943385}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &675941809
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -63991,8 +64064,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2053267088}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0017926821, y: 0.9978623, z: -0.031153332, w: 0.057420816}
-  m_LocalPosition: {x: 6.9, y: 2.45, z: 9.2}
+  m_LocalRotation: {x: 0.056327898, y: 0.84793925, z: -0.092028886, w: 0.51899606}
+  m_LocalPosition: {x: -3.5, y: 4.55, z: 1.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -65701,3 +65774,4 @@ SceneRoots:
   - {fileID: 1548181721}
   - {fileID: 956970773}
   - {fileID: 232110296}
+  - {fileID: 673943387}
