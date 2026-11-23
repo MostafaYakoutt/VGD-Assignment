@@ -1,11 +1,12 @@
 """Loop 2 ("Years earlier") blueprints for Left Behind.
 
-Same 20 x 20 m shell and front door as the Loop 1 house, but the inside is
-rearranged the way his memory has rearranged it: rooms in the wrong order,
-a corridor that runs in a circle, a living room shrunk around its furniture,
-a duplicate living room, a door that opens onto bricks, a stairwell in the
-middle of the house, a hallway that narrows towards the Loop Door, and a
-master bedroom that can only be reached through the bathroom.
+Loop 2 is the real house, the same plan as Loop 1, as the protagonist
+remembers it two years after the night. Only a few things are wrong, and
+each one has a story reason: the table set for six, the same family photo
+repeated along the corridor and landing, the study that opens onto fresh
+bricks, a landing that narrows towards the Loop Door, and the
+rooms that are sealed in Loop 1 (because he has forgotten them by then)
+still open here.
 
 Coordinates are Unity world metres (x = east, z = north, drawn as y).
 Writes Left_Behind_Loop2_Ground_Blueprint.png and
@@ -172,7 +173,7 @@ class Plan:
         lt(2.0, y, notes["route"])
         y -= 0.75
         lg.add_patch(Circle((1.1, y), 0.3, facecolor=ODD, edgecolor="none"))
-        lt(2.0, y, "Dementia distortion (see list)")
+        lt(2.0, y, "Changed by his memory (see list)")
         y -= 0.75
         lg.add_patch(Rectangle((0.6, y - 0.22), 1.0, 0.44, facecolor="none", edgecolor=HATCH, hatch="////", lw=0))
         lt(2.0, y, "Sealed, not playable")
@@ -184,7 +185,7 @@ class Plan:
         lg.add_patch(Circle((1.1, y), 0.3, facecolor=marker_color, edgecolor="none"))
         lt(2.0, y, notes["marker"])
 
-        lt(0.5, y - 0.95, "DEMENTIA DISTORTIONS", 12, weight="bold")
+        lt(0.5, y - 0.95, "WHAT HIS MEMORY CHANGED", 12, weight="bold")
         lg.text(0.5, y - 1.4, distortions, fontsize=8.1, color=TXT, fontfamily=FONT, ha="left", va="top",
                 linespacing=1.28)
 
@@ -195,18 +196,24 @@ class Plan:
         print("saved", out)
 
 
+
+def brick(p, x0, x1, z0, z1):
+    p.box(x0, x1, z0, z1, fc=BRICK, ec=BRICK, z=7)
+
+
+def photo_h(p, x, z):
+    p.box(x - 0.25, x + 0.25, z - 0.06, z + 0.06, fc=LINE, ec=LINE, z=7)
+
+
 # ============================================================================ GROUND FLOOR
+# The real house (Loop 1's plan), remembered two years after the night.
 g = Plan("LOOP 2  |  GROUND FLOOR  |  YEARS EARLIER",
-         "autumn evening, lamplight  |  floor 0.00 m, ceiling 2.45 m  |  same shell, front door and spawn as Loop 1")
+         "autumn evening, lamplight  |  floor 0.00 m, ceiling 2.6 m  |  the Loop 1 plan, as he remembers it")
 
-# Sealed areas
-g.box(-9.60, -5.05, -4.45, 0.45, hatch="////", ec=HATCH, lw=0, z=1)
-g.text(-7.3, -2.0, "SEALED\nbehind the bricks", 7.5, color=DIM, bg=True)
-
-g.shell(north=[(-6.5, 1.2), (-1.5, 1.2), (5.5, 1.2)],
-        south=[(-6.0, 1.2), (1.0, 1.2)],
-        west=[(2.5, 1.2), (-7.0, 1.2)],
-        east=[(1.5, 0.8), (-4.1, 1.6, "door")])
+g.shell(north=[(-7.9, 1.2), (-2.3, 1.2), (3.85, 1.2)],
+        south=[(-5.2, 1.2), (6.0, 1.2)],
+        west=[(-6.2, 1.2), (-1.85, 1.2)],
+        east=[(4.4, 0.8), (-4.1, 1.6, "door")])
 
 # Front door (never opens) and the spawn point
 g.solid(9.30, 9.38, -4.9, -3.3)
@@ -214,212 +221,202 @@ g.ax.add_patch(Circle((8.5, -4.1), 0.32, facecolor="#5BD08A", edgecolor="none", 
 g.text(8.5, -5.0, "spawn\n(facing west)", 6.3, color="#5BD08A")
 g.text(11.2, -4.1, "FRONT\nDOOR", 7, color=TXT)
 
-# Interior walls
-g.hwall(4.5, -9.60, 9.28, [(-3.0, 1.2), (3.5, 0.9), (7.0, 0.9)])       # north rooms | ring and utility
-g.hwall(-4.5, -9.60, 5.0, [(-1.0, 2.0)])                                # ring | other living room
-g.hwall(0.5, -9.60, -5.0)                                               # small living | sealed
-g.vwall(-5.0, -4.5, 4.5, [(2.5, 0.9), (-2.0, 0.9)])                     # ring | west rooms
-g.vwall(5.0, -9.64, 4.5, [(-3.2, 1.6), (1.5, 0.9)])                     # ring | east rooms
-g.hwall(-6.2, 5.0, 9.28, [(7.5, 0.9)])                                  # vestibule | coats
-g.hwall(-2.0, 5.0, 9.28)                                                # vestibule | utility
-g.vwall(2.0, 4.5, 9.63, [(7.0, 0.9)])                                   # dining | kitchen
-# Core: stairwell with a cupboard either side
-g.hwall(3.0, -3.5, 3.5)
-g.hwall(-3.0, -3.5, 3.5, [(0.0, 1.4)])
-g.vwall(-3.5, -3.0, 3.0, [(0.0, 0.9)])
-g.vwall(3.5, -3.0, 3.0, [(0.0, 0.9)])
-g.vwall(-0.75, -3.0, 3.0)
-g.vwall(0.75, -3.0, 3.0)
+# Interior walls: the same lines as Loop 1
+g.vwall(-0.14, 0.0, 9.63, [(3.05, 1.95)])                    # dining | kitchen (double door)
+g.hwall(0.0, -9.60, -0.14, [(-3.2, 3.5)])                    # dining | living (wide opening)
+g.hwall(0.0, -0.14, 9.28, [(3.0, 0.9)])                      # kitchen | pantry and coat cupboard
+g.vwall(-0.14, -7.30, 0.0)                                   # living | pantry and utility
+g.hwall(-7.30, -9.60, 6.40, [(-3.45, 3.0), (3.6, 0.9)])      # living and utility | south corridor
+g.hwall(-3.60, -0.14, 6.40)                                  # pantry | utility
+g.vwall(6.40, -7.30, 0.0)                                    # utility | vestibule and coats
+g.hwall(-2.30, 6.40, 9.28, [(8.6, 0.9)])                    # vestibule | coat cupboard
+g.vwall(6.40, 4.70, 9.63)                                    # kitchen | stairs
+g.hwall(3.30, 6.90, 9.28)                                    # kitchen alcove | back hall
+
+
+# Stairs: Loop 1's switchback in the back corner, rising north then south
+g.stairs(6.55, 7.85, 5.0, 9.45, 14)
+g.stairs(7.95, 9.20, 5.0, 9.45, 14, up_from_south=False, label="UP")
+g.text(7.85, 4.0, "BACK HALL", 6.5, weight="bold", bg=True)
 
 # Doors
-g.door(-3.45, 4.5, 1.2, 0, 90, 90)          # dining
-g.door(3.05, 4.5, 0.9, 0, 90, 90)           # kitchen
-g.door(6.55, 4.5, 0.9, 270, 360, 270)       # kitchen -> utility
-g.door(1.95, 6.55, 0.9, 0, 90, 0)           # dining -> kitchen
-g.door(-5.0, 2.05, 0.9, 90, 180, 180)       # small living
-g.door(5.0, 1.05, 0.9, 0, 90, 0)            # utility
-g.door(7.05, -6.2, 0.9, 270, 360, 270)      # coats
-g.door(-3.5, -0.45, 0.9, 90, 180, 180)      # west cupboard
-g.door(3.5, -0.45, 0.9, 0, 90, 0)           # east cupboard
-# The door to nowhere: a real door leaf in the ring wall, bricks right behind it
-g.door(-5.0, -2.45, 0.9, 90, 180, 90, color=ODD)
-g.solid(-5.30, -5.15, -2.6, -1.4)
-g.box(-5.30, -5.15, -2.6, -1.4, fc=BRICK, ec=BRICK, z=7)
-
-# Stairs: one straight flight in the middle of the house, rising north
-g.stairs(-0.6, 0.6, -2.2, 2.0, 15)
+g.door(-0.14, 2.08, 0.97, 0, 90, 0)      # dining -> kitchen (double door, both leaves)
+g.door(-0.14, 4.02, 0.97, 270, 360, 0)
+g.door(2.55, 0.0, 0.9, 0, 90, 90)        # kitchen -> pantry
+g.door(4.05, -7.30, 0.9, 90, 180, 90)    # corridor -> utility
+g.door(8.15, -2.30, 0.9, 0, 90, 90)      # vestibule -> coats
 
 # Furniture and story props
-g.furn(-6.4, -2.6, 6.4, 7.7, "TABLE SET FOR\nTHE WHOLE FAMILY", 5.8)
-for cx, cz in ((-5.8, 6.0), (-4.5, 6.0), (-3.2, 6.0), (-5.8, 8.1), (-4.5, 8.1), (-3.2, 8.1)):
+g.furn(-7.0, -3.6, 4.4, 6.0, "TABLE SET\nFOR SIX", 6.0)
+for cx, cz in ((-6.4, 3.95), (-5.3, 3.95), (-4.2, 3.95), (-6.4, 6.45), (-5.3, 6.45), (-4.2, 6.45)):
     g.furn(cx - 0.22, cx + 0.22, cz - 0.2, cz + 0.2)
-g.furn(-9.55, -9.05, 5.2, 8.6, "SIDEBOARD", 5.5, rot=90)
-g.furn(-0.6, 1.9, 9.1, 9.58, "PHOTOS", 5.5)
-g.furn(2.1, 9.23, 9.0, 9.58, "COUNTERS (reminder notes)", 5.5)
-g.furn(8.6, 9.23, 5.0, 8.9, "", 5)
-g.furn(4.0, 5.2, 6.4, 7.6, "TABLE", 5.5)
-g.furn(5.1, 6.1, -1.9, -1.2, "WASHER", 5)
-g.furn(8.5, 9.23, 2.6, 3.9, "FUSE\nBOX", 5.5)
-g.furn(5.1, 5.7, 2.2, 4.3, "SHELF", 5, rot=90)
-g.furn(-9.55, -8.0, 1.0, 1.8, "SOFA", 5.5)
-g.furn(-7.8, -6.9, 1.0, 1.9, "ARM\nCHAIR", 4.8)
-g.furn(-9.55, -8.9, 2.4, 3.9, "FIRE", 5, rot=90)
-g.furn(-6.7, -5.2, 3.6, 4.4, "SOFA", 5.5)
-g.furn(-6.4, -5.6, 2.2, 2.9, "TV", 5)
-g.furn(-3.4, -0.85, 1.2, 2.9, "LABELLED\nBOXES", 5.3)
-g.furn(0.85, 3.4, -2.9, -2.4, "", 5)
-g.text(2.15, -1.5, "one note:\n'WHERE\nARE THEY?'", 5.8, color=DIM)
-g.furn(-3.2, -2.3, -8.0, -7.1, "ARM\nCHAIR", 4.8)
-g.furn(-3.4, -2.1, -9.58, -9.15, "TV", 5.5)
-g.furn(5.1, 9.23, -9.58, -9.0, "COATS + BOOTS", 5.3)
+g.furn(-9.55, -9.05, 3.0, 7.5, "SIDEBOARD (spare fuse)", 5.3, rot=90)
+g.furn(-6.8, -3.2, 9.15, 9.58, "COMMODE", 5.5)
+g.furn(1.4, 6.3, 9.0, 9.58, "COUNTERS (reminder notes)", 5.5)
+g.furn(0.0, 1.3, 0.1, 1.0, "FRIDGE", 5.3)
+g.furn(8.7, 9.23, 0.3, 2.9, "OVEN", 5.0, rot=90)
+g.furn(2.2, 3.6, 5.0, 6.2, "TABLE", 5.5)
+g.furn(0.0, 0.5, -3.4, -0.2, "SHELVES", 5.0, rot=90)
+g.furn(5.85, 6.3, -3.4, -0.2, "JARS", 5.0, rot=90)
+g.text(3.1, -1.8, "labelled jars,\nthe overflow of\nhis notes", 5.8, color=DIM)
+g.furn(5.85, 6.3, -6.2, -4.9, "FUSE\nBOX", 4.8, rot=90)
+g.furn(0.0, 1.2, -7.2, -6.3, "WASHER", 5.0)
+g.furn(-9.55, -8.9, -4.6, -2.4, "FIRE", 5.0, rot=90)
+g.furn(-6.2, -5.0, -6.0, -2.6, "COUCH", 5.3, rot=90)
+g.furn(-9.1, -6.7, -7.2, -6.5, "COUCH", 5.3)
+g.furn(-3.4, -2.4, -3.0, -2.1, "ARM\nCHAIR", 4.8)
+g.furn(-1.3, -0.2, -2.9, -2.2, "TV", 5.0)
+g.furn(6.5, 8.1, -0.55, -0.05, "COATS", 5.0)
+g.furn(-9.55, -8.86, -9.1, -7.8, "TABLE", 4.6, rot=90)
 
-# Ring corridor photos: the same frame on every inner wall
-for x, z in ((0.0, 3.2), (-3.7, 1.8), (3.7, -1.8), (2.2, -3.2)):
-    g.box(x - 0.25, x + 0.25, z - 0.06, z + 0.06, fc=LINE, ec=LINE, z=7)
+# The same family photograph, five times along the corridor
+for x in (-8.0, -1.5, 0.8, 2.6, 5.2):
+    photo_h(g, x, -7.42)
+g.text(-1.0, -9.0, "SOUTH CORRIDOR  19 x 2.3 m", 7.5, weight="bold", bg=True)
 
 # Room labels
-g.room(-4.0, 9.0, "DINING ROOM", "11.6 x 5.1 m", "", 0)
-g.room(5.6, 8.0, "KITCHEN", "7.3 x 5.1 m")
-g.room(7.15, -4.1, "VESTIBULE", "4.3 x 4.2 m")
-g.room(7.15, -0.5, "UTILITY", "4.3 x 6.4 m", "power is out")
-g.room(7.15, -7.9, "COATS", "4.3 x 3.4 m")
-g.room(-7.75, 2.95, "LIVING ROOM", "4.6 x 4.0 m", "", 0)
-g.room(-3.2, -6.0, "THE OTHER LIVING ROOM", "14.6 x 5.1 m", "one armchair, the TV, a lamp")
-g.text(0.0, 4.0, "RING HALL  1.5 m wide, about 40 m around", 7.5, weight="bold", bg=True)
+g.room(-5.3, 8.1, "DINING ROOM", "9.5 x 9.6 m", "", 0)
+g.room(3.3, 7.7, "KITCHEN", "6.5 x 9.6 m", "fridge note: RUTH TOOK THE KIDS", -0.85)
+g.room(-5.0, -0.95, "LIVING ROOM", "9.5 x 7.3 m", "", 0)
+g.room(3.1, -0.95, "PANTRY", "6.5 x 3.6 m", "", 0)
+g.room(3.1, -5.1, "UTILITY", "6.5 x 3.7 m", "power upstairs is out", -0.8)
+g.room(7.85, -6.4, "VESTIBULE", "2.9 x 5.0 m", "", 0)
+g.text(7.85, -1.25, "COATS", 7.0, weight="bold")
 
-# Dementia distortions
-g.oddity(-4.25, 3.75, 1)    # ring corridor
-g.oddity(-7.3, 0.95, 2)     # living room shrunk
-g.oddity(-4.45, -2.0, 3)    # door to nowhere
-g.oddity(0.0, -3.7, 4)      # stairs in the middle
-g.oddity(-4.6, -8.6, 5)     # duplicate living room
-g.oddity(-6.4, 9.1, 6)      # wrong order: dining first
+# What his memory changed
+g.oddity(-2.9, 4.4, 1)      # table for six
+g.oddity(-1.5, -7.95, 2)    # the same photo
+g.oddity(1.6, -4.4, 3)      # rooms sealed in Loop 1 are open here
 
-g.route([(8.5, -4.1), (5.6, -4.1), (5.6, -3.75), (4.3, -3.75), (0.0, -3.75), (0.0, -2.2)])
-g.text(2.5, -4.15, "to the stairs", 6.3, color=ROUTE)
+g.route([(8.5, -4.1), (7.6, -4.1), (7.6, -8.4), (-3.45, -8.4), (-3.45, 1.2), (-0.14, 3.05),
+         (5.4, 3.05), (5.4, 4.0), (7.2, 4.0), (7.2, 5.0)])
 
 g.legend(
-    {"route": "Front door to the stairs (about 9 m)", "marker": "Spawn, the same spot as Loop 1"},
-    "1  The hall runs in a circle around the\n"
-    "   stairs. The same photo hangs on every\n"
-    "   side, so it feels like walking in loops.\n"
-    "2  The living room has shrunk to 4.6 x 4 m\n"
-    "   but still holds all its furniture.\n"
-    "3  A real door in the hall opens onto a\n"
-    "   brick wall.\n"
-    "4  The stairs moved from the back corner\n"
-    "   to the middle of the house.\n"
-    "5  A second living room: wide and nearly\n"
-    "   empty, one armchair facing the TV.\n"
-    "6  Rooms are in the wrong order: the\n"
-    "   dining room is now first, the kitchen\n"
-    "   is beside it, the living room is last.\n\n"
-    "LOOP 2 STORY (from the GCD)\n"
-    "Table set for the whole family, photos\n"
-    "back on the walls, reminder notes on the\n"
-    "kitchen cupboards. The power is out: the\n"
-    "fuse box is in the utility room.", marker_color="#5BD08A")
+    {"route": "Front door to the stairs (about 40 m,\nthe same route as Loop 1)", "marker": "Spawn, the same spot as Loop 1"},
+    "Loop 2 is the real house, the Loop 1 plan,\n"
+    "as Walter remembers it two years after the\n"
+    "night. Only three things are wrong, and\n"
+    "each one has a reason:\n\n"
+    "1  The table is set for six. There were\n"
+    "   only ever four of them.\n"
+    "2  The same family photograph hangs five\n"
+    "   times along the corridor: it is the\n"
+    "   one thing he looks at every day.\n"
+    "3  Room B, sealed in Loop 1, is open: a\n"
+    "   pantry and the utility room with the\n"
+    "   fuse box. He still remembers them.\n"
+    "   By the present day he has forgotten\n"
+    "   them, so they are walled off.\n\n"
+    "Story: fuse in the dining sideboard,\n"
+    "fuse box in the utility room.", marker_color="#5BD08A")
 g.save("Left_Behind_Loop2_Ground_Blueprint.png")
 
 # ============================================================================ UPPER FLOOR
 u = Plan("LOOP 2  |  UPPER FLOOR  |  YEARS EARLIER",
-         "floor +2.60 m, ceiling 2.40 m  |  the stairs arrive in the middle  |  no attic in this loop")
+         "floor +2.60 m, ceiling 2.40 m  |  the Loop 1 plan  |  power is out until the fuse is fixed")
 
-# Sealed south-east block
-u.box(-3.45, 9.28, -9.64, -3.05, hatch="////", ec=HATCH, lw=0, z=1)
-u.text(2.9, -6.4, "SEALED\n(not playable)", 8, color=DIM, bg=True)
+# Not playable: the west half of the south strip, and the study behind its bricks
+u.box(-9.60, -0.19, -9.64, -4.75, hatch="////", ec=HATCH, lw=0, z=1)
+u.text(-4.9, -7.2, "SEALED\n(not playable)", 8, color=DIM, bg=True)
+u.box(-0.09, 6.37, 2.75, 9.63, hatch="////", ec=HATCH, lw=0, z=1)
+u.text(3.1, 6.6, "STUDY\nbehind the bricks\n(Loop 3 only)", 8, color=DIM, bg=True)
 
-u.shell(north=[(-7.0, 1.2), (-2.5, 1.2), (2.0, 0.8), (6.4, 1.2)],
-        south=[(-6.5, 1.2)],
-        west=[(6.0, 1.2), (-5.5, 1.2), (-0.35, 0.8)],
-        east=[(6.4, 1.2), (0.0, 1.2)])
+u.shell(north=[(-7.9, 1.2), (-2.3, 1.2), (3.85, 1.2)],
+        south=[(3.0, 1.2)],
+        west=[(7.0, 1.2), (-1.85, 1.2)],
+        east=[(4.4, 0.8), (-3.0, 0.8)])
 
-# Narrowing corridor: straight south wall, slanted north wall (1.6 m wide at the landing, 0.9 m at the door)
-u.hwall(-0.8, -9.60, -3.5, [(-6.5, 0.9)])
-u.ax.add_patch(Polygon([(-9.60, 0.05), (-3.5, 0.75), (-3.5, 0.85), (-9.60, 0.15)], closed=True,
+# Loop Door in the west wall, at the narrow end of the landing
+u.ax.plot([-9.60, -9.60], [0.15, 1.05], color=LOOP, lw=5, zorder=8, solid_capstyle="butt")
+u.ax.add_patch(Circle((-8.85, 0.6), 0.36, facecolor=LOOP, edgecolor="none", zorder=11))
+u.text(-8.85, 0.6, "L", 10, color="#1B2B40", weight="bold", z=12)
+u.text(-11.35, 0.6, "LOOP\nDOOR", 7.5, color=LOOP)
+
+# Landing: straight south wall; north wall straight to x -3, then slants down to 1.0 m wide
+u.hwall(0.05, -9.60, 9.28, [(-3.45, 0.9), (3.45, 0.9), (6.95, 1.0)])
+u.hwall(2.15, -3.0, 6.42, [(-1.8, 0.9), (2.95, 0.9)])
+u.ax.add_patch(Polygon([(-9.60, 1.10), (-3.0, 2.10), (-3.0, 2.20), (-9.60, 1.20)], closed=True,
                        facecolor=WALL, edgecolor=WALL, zorder=6))
-u.ax.plot([-9.6, -3.5], [0.10 - 0.25, 0.80 - 0.25], color=ODD, lw=0, zorder=6)
-# Loop Door in the west wall, at the narrow end
-u.ax.plot([-9.60, -9.60], [-0.75, 0.05], color=LOOP, lw=5, zorder=8, solid_capstyle="butt")
-u.ax.add_patch(Circle((-8.85, -0.35), 0.36, facecolor=LOOP, edgecolor="none", zorder=11))
-u.text(-8.85, -0.35, "L", 10, color="#1B2B40", weight="bold", z=12)
-u.text(-11.35, -0.35, "LOOP\nDOOR", 7.5, color=LOOP)
+u.vwall(-0.14, 2.15, 9.63)               # master | study
+u.vwall(6.42, 2.15, 9.63)                # study | stairwell
+u.vwall(-0.14, -4.70, 0.05)              # children | bathroom
+u.hwall(-4.70, -9.60, 6.42)              # children and bathroom | south strip
+u.vwall(6.42, -9.64, 0.05, [(-8.0, 0.9)])  # attic hall | sewing room
 
-# Landing walls
-u.hwall(3.0, -3.5, 3.5, [(-1.5, 0.9), (2.0, 0.9)])
-u.hwall(-3.0, -3.5, 3.5)
-u.vwall(-3.5, -3.0, -0.8)
-u.vwall(-3.5, 0.85, 3.0)
-u.vwall(3.5, -3.0, 3.0, [(0.0, 0.9)])
-# Children's room: north of the slanted wall and the landing
-u.vwall(0.5, 3.0, 9.63)
-u.vwall(3.5, 3.0, 9.63, [(7.5, 0.9)])     # bathroom | master bedroom (the only way in)
-u.hwall(3.0, 3.5, 9.28)
-u.vwall(-3.5, -9.64, -3.0)
-u.hwall(-3.05, -3.5, 9.28)
+# The study door opens onto bricks
+u.door(2.50, 2.15, 0.9, 0, 90, 90, color=ODD)
+brick(u, 2.45, 3.45, 2.25, 2.50)
+u.text(4.5, 1.6, "LOCKED, then bricks", 6.3, color=ODD, weight="bold")
 
 # Doors
-u.door(-1.95, 3.0, 0.9, 0, 90, 90)          # children's room
-u.door(1.55, 3.0, 0.9, 0, 90, 90)           # bathroom
-u.door(3.5, 7.05, 0.9, 0, 90, 0)            # bathroom -> master
-u.door(-6.95, -0.8, 0.9, 270, 360, 270)     # sewing room
-u.door(3.5, -0.45, 0.9, 0, 90, 90, color=ODD)   # study, locked
-u.text(5.0, -1.15, "LOCKED", 6.5, color=ODD, weight="bold")
+u.door(-2.25, 2.15, 0.9, 0, 90, 90)      # master
+u.door(-3.90, 0.05, 0.9, 270, 360, 270)  # children's room
+u.door(3.00, 0.05, 0.9, 270, 360, 270)   # bathroom
+u.door(6.45, 0.05, 1.0, 270, 360, 270)   # attic stairs hall
+u.door(6.42, -8.45, 0.9, 180, 270, 270)  # sewing room
 
-# Stair hole and railings
-u.stairs(-0.6, 0.6, -2.2, 2.0, 15, label="UP")
-u.ax.plot([-0.75, -0.75], [-2.2, 1.6], color=WALL, lw=2.5, zorder=7)
-u.ax.plot([0.75, 0.75], [-2.2, 1.6], color=WALL, lw=2.5, zorder=7)
-u.ax.plot([-0.75, 0.75], [-2.2, -2.2], color=WALL, lw=2.5, zorder=7)
-u.text(-1.55, -1.3, "railing", 6, color=DIM)
+# Stairwell from the ground floor (arrive heading south) and the attic stairs
+u.stairs(6.55, 7.85, 5.7, 9.45, 14)
+u.stairs(7.95, 9.20, 5.7, 9.45, 14, up_from_south=False, label="")
+u.ax.plot([6.5, 6.5], [5.65, 9.6], color=WALL, lw=2.5, zorder=7)
+u.text(8.6, 4.7, "arrive from\nground floor", 6.3, color=DIM)
+u.box(7.3, 8.5, -4.0, -2.8, ec=DIM, lw=1.0, ls=(0, (4, 3)), z=4)
+u.furn(8.6, 9.23, -4.5, -1.5, "SHELF", 5.0, rot=90)
+u.furn(8.4, 9.0, -6.3, -4.9, "BOXES", 4.6, rot=90)
+u.text(7.9, -3.4, "attic\nhatch", 6.0, color=DIM)
 
 # Furniture
-u.furn(-8.6, -7.6, 7.4, 9.4, "BED", 5.5)
-u.furn(-6.4, -5.4, 7.4, 9.4, "BED", 5.5)
-u.furn(-9.55, -8.9, 4.0, 5.6, "TOYS", 5, rot=90)
-u.furn(-2.9, -1.6, 9.0, 9.58, "DESK", 5.5)
-u.ax.add_patch(Circle((-6.8, 2.2), 0.9, facecolor="none", edgecolor=DIM, lw=0.8, ls=(0, (4, 3)), zorder=4))
-u.furn(0.55, 2.1, 7.6, 9.58, "BATH", 5.5, rot=90)
-u.furn(2.7, 3.45, 3.1, 3.9, "WC", 5)
-u.furn(2.8, 3.45, 5.0, 6.4, "SINK", 5, rot=90)
-u.furn(5.4, 7.4, 7.4, 9.58, "DOUBLE\nBED", 5.5)
-u.furn(8.6, 9.23, 3.2, 5.4, "WARDROBE", 5, rot=90)
-u.furn(4.2, 6.6, 1.9, 2.95, "DESK", 5.5)
-u.furn(8.65, 9.23, -2.8, 2.4, "FILES", 5, rot=90)
-u.furn(-9.55, -8.4, -4.4, -3.4, "SEWING\nTABLE", 4.8)
-u.furn(-9.55, -8.95, -8.8, -6.0, "FABRIC", 5, rot=90)
-u.furn(-5.0, -4.0, -9.58, -8.9, "DRESS\nFORM", 4.6)
+u.furn(-6.0, -4.0, 7.43, 9.58, "MASTER\nBED", 5.5)
+u.furn(-9.55, -9.0, 3.0, 5.2, "WARDROBE", 5.0, rot=90)
+u.furn(-0.8, -0.19, 4.6, 6.4, "DRESSER", 5.0, rot=90)
+u.furn(-8.2, -7.2, -4.6, -2.6, "BED", 5.5)
+u.furn(-6.2, -5.2, -4.6, -2.6, "BED", 5.5)
+u.furn(-9.55, -9.05, -1.3, -0.4, "TOYS", 4.8, rot=90)
+u.furn(-2.6, -1.4, -4.6, -4.0, "DESK", 5.5)
+u.text(-6.7, -2.0, "teddy bear on the bed,\nmusic box, drawing", 5.8, color=DIM)
+u.furn(2.0, 3.7, -4.4, -3.6, "BATHTUB", 5.5)
+u.furn(-0.09, 0.51, -3.3, -1.4, "SINK", 5.0, rot=90)
+u.furn(5.72, 6.37, -2.1, -1.5, "WC", 5.0)
+u.furn(0.0, 1.4, -9.58, -8.8, "SEWING\nTABLE", 4.6)
+u.furn(-0.09, 0.5, -7.8, -5.2, "FABRIC", 5.0, rot=90)
+u.furn(4.6, 5.6, -5.6, -4.8, "SEWING\nBOX", 4.4)
+u.furn(3.9, 5.2, -9.58, -9.0, "DRESS FORM", 4.6)
+
+# The same photograph along the landing
+for x in (-7.0, -1.0, 1.5, 4.8):
+    photo_h(u, x, 0.2)
 
 # Room labels
-u.room(-4.6, 5.3, "CHILDREN'S ROOM", "about 70 m2", "kept as if they still sleep here", -0.85)
-u.room(2.0, 5.0, "BATH\nROOM", "3.0 x 6.6", "", 0)
-u.room(6.4, 5.4, "MASTER\nBEDROOM", "5.8 x 6.6 m", "one side of the bed slept in", -0.95)
-u.room(6.4, -0.6, "STUDY", "5.8 x 6.0 m", "locked: the key comes later", -0.85)
-u.room(-6.5, -5.8, "SEWING ROOM", "6.1 x 8.8 m", "his wife's room", -0.8)
-u.text(1.9, 1.3, "LANDING", 7.5, weight="bold", bg=True)
-u.text(-6.5, 0.45, "CORRIDOR narrows 1.6 -> 0.9 m", 6.3, weight="bold", bg=True)
+u.room(-5.0, 5.0, "MASTER BEDROOM", "9.4 x 7.4 m", "one side of the bed slept in", -0.85)
+u.room(-4.9, -1.2, "CHILDREN'S ROOM", "9.4 x 4.6 m", "", 0)
+u.room(2.6, -1.0, "BATHROOM", "6.5 x 4.6 m", "", 0)
+u.room(3.0, -7.0, "SEWING ROOM", "6.5 x 4.9 m", "Ruth's room, untouched", -0.8)
+u.text(7.85, -8.6, "BACK\nLANDING", 7.0, weight="bold")
+u.text(-6.4, 1.05, "LANDING narrows 2.0 -> 1.0 m", 6.3, weight="bold", bg=True)
 
-u.oddity(-1.6, 6.3, 7)     # children's room bigger than master
-u.oddity(3.0, 8.4, 8)      # master only through the bathroom
-u.oddity(-4.6, -0.05, 9)   # narrowing corridor
+u.oddity(1.9, 2.65, 4)     # study door onto bricks
+u.oddity(-6.6, 1.6, 5)     # narrowing landing
+u.oddity(-1.0, 0.75, 6)    # same photo along the landing
+u.oddity(5.0, -7.6, 7)     # sewing room exists
 
-u.route([(0.0, 2.0), (0.0, 2.55), (-2.2, 2.55), (-2.2, 0.0), (-8.2, -0.35)])
+u.route([(7.2, 5.7), (7.2, 1.1), (-8.3, 0.6)])
 
 u.legend(
-    {"route": "Top of the stairs to the Loop Door\n(about 11 m)", "marker": "Loop Door (one-way, to Loop 3)"},
-    "7  The children's room is the biggest room\n"
-    "   upstairs and spreads down to the\n"
-    "   corridor: he keeps it exactly as it was,\n"
-    "   beds made, toys out.\n"
-    "8  The master bedroom can only be reached\n"
-    "   through the bathroom.\n"
-    "9  The corridor to the Loop Door narrows\n"
-    "   from 1.6 m to 0.9 m, so the walls close\n"
-    "   in as the player walks to it.\n\n"
-    "LOOP 2 STORY (from the GCD)\n"
-    "The study now has a door, but it is\n"
-    "locked; in Loop 1 it was a plain wall.\n"
-    "His wife's sewing room is untouched.\n"
-    "The stairs arrive in the middle of the\n"
-    "landing, beside the locked study.")
+    {"route": "Top of the stairs to the Loop Door\n(about 18 m)", "marker": "Loop Door (one-way, to Loop 3)"},
+    "4  The study door is locked. The key is in\n"
+    "   Ruth's sewing box. Behind the door is\n"
+    "   a wall of fresh brick: the midpoint.\n"
+    "5  The landing narrows from 2.0 m to\n"
+    "   1.0 m towards the Loop Door, so the\n"
+    "   walls close in as he walks to it.\n"
+    "6  The family photograph again, on the\n"
+    "   landing.\n"
+    "7  Ruth's sewing room exists here. In\n"
+    "   Loop 1 this strip is sealed: he has\n"
+    "   forgotten it.\n\n"
+    "Everything else is the real upper floor:\n"
+    "master bedroom, children's room kept\n"
+    "ready, bathroom, and the back landing\n"
+    "(the attic stairs hall in Loop 1), whose\n"
+    "attic hatch is closed: no attic here.")
 u.save("Left_Behind_Loop2_Upper_Blueprint.png")
