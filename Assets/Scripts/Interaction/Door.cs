@@ -17,8 +17,6 @@ namespace LeftBehind.Interaction
     public class Door : Interactable
     {
         [SerializeField] private float openAngle = 95f;
-        [Tooltip("Swing speed in degrees per second.")]
-        [SerializeField] private float swingSpeed = 160f;
         [Tooltip("If the preferred side has less room than this, open the other way.")]
         [SerializeField] private float minClearAngle = 70f;
         [SerializeField] private Door[] linkedDoors;
@@ -39,6 +37,9 @@ namespace LeftBehind.Interaction
         private BoxCollider[] leafBoxes;
         private readonly HashSet<Collider> ignored = new HashSet<Collider>();
         private readonly Collider[] hits = new Collider[16];
+
+        /// <summary>Seconds for a full swing: slow and heavy, as in the design.</summary>
+        public const float SwingSeconds = 1.2f;
 
         public bool IsOpen { get; private set; }
 
@@ -140,7 +141,7 @@ namespace LeftBehind.Interaction
         private void Update()
         {
             if (Mathf.Approximately(currentAngle, targetAngle)) return;
-            float next = Mathf.MoveTowards(currentAngle, targetAngle, swingSpeed * Time.deltaTime);
+            float next = Mathf.MoveTowards(currentAngle, targetAngle, openAngle / SwingSeconds * Time.deltaTime);
             transform.localRotation = closedRotation * Quaternion.Euler(0f, next, 0f);
             if (TouchesPlayer())
             {

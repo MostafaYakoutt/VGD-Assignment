@@ -18,6 +18,13 @@ namespace LeftBehind.Interaction
 
         public Interactable Current => current;
 
+        /// <summary>How far the player can reach, in metres from the camera.</summary>
+        public float Range
+        {
+            get => range;
+            set => range = value;
+        }
+
         /// <summary>
         /// While set (for example an object being inspected), E always goes
         /// to this Interactable instead of whatever the ray hits.

@@ -25,7 +25,13 @@ namespace LeftBehind.CameraSystem
         [Tooltip("Mouse sensitivity multiplier while looking closer.")]
         [SerializeField] private float lookCloserSensitivity = 0.5f;
 
+        [Tooltip("Extra vignette while looking closer, so the edges darken.")]
+        [SerializeField] private float lookCloserVignette = 0.25f;
+
         private bool rightMouseWasPressed;
+        private UnityEngine.Rendering.Universal.Vignette vignette;
+        private float baseVignette;
+        private float vignetteBlend;
         private float baseRotationSpeed;
         private Coroutine cinematic;
 
@@ -38,6 +44,9 @@ namespace LeftBehind.CameraSystem
         {
             Instance = this;
             if (player != null) baseRotationSpeed = player.RotationSpeed;
+            // A runtime copy of the volume profile, so the asset itself is never changed.
+            var volume = FindAnyObjectByType<UnityEngine.Rendering.Volume>();
+            if (volume != null && volume.profile.TryGet(out vignette)) baseVignette = vignette.intensity.value;
             if (firstPersonCam != null) firstPersonCam.Priority = 10;
             SetLookCloser(false);
             SetLoopShot(false);
@@ -56,6 +65,11 @@ namespace LeftBehind.CameraSystem
             {
                 rightMouseWasPressed = pressed;
                 SetLookCloser(pressed);
+            }
+            if (vignette != null)
+            {
+                vignetteBlend = Mathf.MoveTowards(vignetteBlend, IsLookingCloser ? 1f : 0f, Time.deltaTime / 0.35f);
+                vignette.intensity.Override(baseVignette + lookCloserVignette * Mathf.SmoothStep(0f, 1f, vignetteBlend));
             }
         }
 
