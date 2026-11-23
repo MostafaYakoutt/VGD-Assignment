@@ -22,14 +22,22 @@ namespace LeftBehind.EditorTools
         public const string ScenePath = "Assets/Scenes/Loop3_TheAftermath.unity";
         private const string SourcePath = "Assets/Scenes/SampleScene.unity";
         public const string PropsRoot = "Loop3Props";
+        /// <summary>Which side of the SM_frame meshes faces the viewer (found by looking).</summary>
+        public const int PhotoFront = 1;
 
         private static Transform props;
 
         [MenuItem("Left Behind/Build Loop 3")]
         public static void Build()
         {
-            AssetDatabase.DeleteAsset(ScenePath);
-            if (!AssetDatabase.CopyAsset(SourcePath, ScenePath)) throw new System.Exception("Could not copy " + SourcePath);
+            // Overwrite the scene file in place so it keeps its GUID (the build list refers to it).
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            if (File.Exists(ScenePath))
+            {
+                File.Copy(SourcePath, ScenePath, true);
+                AssetDatabase.ImportAsset(ScenePath, ImportAssetOptions.ForceUpdate);
+            }
+            else if (!AssetDatabase.CopyAsset(SourcePath, ScenePath)) throw new System.Exception("Could not copy " + SourcePath);
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
 
             // Loop 1 only: the flashlight Walter has already picked up (he carries it in).
@@ -49,6 +57,18 @@ namespace LeftBehind.EditorTools
             }
 
             Storm();
+            foreach (var door in Object.FindObjectsByType<Door>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (door.name == "Door_Study") door.gameObject.SetActive(true);
+                var dso = new SerializedObject(door);
+                if (door.name == "Door_Attic_Locked") dso.FindProperty("locked").boolValue = true;
+                float ajar = door.name == "Door_ChildrensRoom" ? 55f : door.name == "Door_MasterBedroom" ? 40f
+                    : door.name == "Door_Bathroom" ? 30f : door.transform.parent != null && door.transform.parent.name == "Doorway_Dining_Kitchen" && door.name == "Hinge_A" ? 35f : 0f;
+                dso.FindProperty("startAngle").floatValue = ajar;
+                dso.ApplyModifiedPropertiesWithoutUndo();
+            }
+            var frame = Object.FindAnyObjectByType<Inspectable>();
+            if (frame != null) PhotoOnFrame(frame.gameObject, "FramePhoto_Clear", PhotoFront);
             props = new GameObject(PropsRoot).transform;
             Props();
             StoryContentBuilder.SetUpLoop3();
@@ -129,24 +149,7 @@ namespace LeftBehind.EditorTools
             drawing.GetComponent<Renderer>().shadowCastingMode = ShadowCastingMode.Off;
 
             // Sam's bear at the top of the stairs.
-            var bear = new GameObject("TeddyBear");
-            bear.transform.SetParent(props, false);
-            bear.transform.position = new Vector3(7.2f, 2.6f, 4.85f);
-            bear.transform.rotation = Quaternion.Euler(0f, 60f, 0f);
-            bear.transform.localScale = Vector3.one * 1.4f;
-            var plush = Tinted("Plush", new Color(0.55f, 0.37f, 0.22f));
-            Sphere("Body", bear.transform, new Vector3(0f, 0.11f, 0f), new Vector3(0.2f, 0.22f, 0.17f), plush);
-            Sphere("Head", bear.transform, new Vector3(0f, 0.28f, 0.01f), new Vector3(0.15f, 0.14f, 0.14f), plush);
-            Sphere("EarL", bear.transform, new Vector3(-0.06f, 0.35f, 0f), Vector3.one * 0.05f, plush);
-            Sphere("EarR", bear.transform, new Vector3(0.06f, 0.35f, 0f), Vector3.one * 0.05f, plush);
-            Sphere("ArmL", bear.transform, new Vector3(-0.11f, 0.14f, 0.03f), new Vector3(0.06f, 0.11f, 0.06f), plush);
-            Sphere("ArmR", bear.transform, new Vector3(0.11f, 0.14f, 0.03f), new Vector3(0.06f, 0.11f, 0.06f), plush);
-            Sphere("LegL", bear.transform, new Vector3(-0.06f, 0.03f, 0.07f), new Vector3(0.07f, 0.06f, 0.1f), plush);
-            Sphere("LegR", bear.transform, new Vector3(0.06f, 0.03f, 0.07f), new Vector3(0.07f, 0.06f, 0.1f), plush);
-            Sphere("Nose", bear.transform, new Vector3(0f, 0.27f, 0.075f), Vector3.one * 0.03f, dark);
-            var bc = bear.AddComponent<BoxCollider>();
-            bc.center = new Vector3(0f, 0.2f, 0f);
-            bc.size = new Vector3(0.45f, 0.5f, 0.45f);
+            Teddy(props, "TeddyBear", new Vector3(7.2f, 2.6f, 4.85f), 60f, 1.4f);
 
             // The note taped to the study door, on the landing side. It swings with the door.
             var studyDoor = GameObject.Find("UpperFloor/Doors/Door_Study");
@@ -201,6 +204,57 @@ namespace LeftBehind.EditorTools
             return c;
         }
 
+        /// <summary>Sam's teddy bear, built from spheres, with a collider so it can be looked at.</summary>
+        public static GameObject Teddy(Transform parent, string name, Vector3 pos, float yaw, float scale)
+        {
+            var plush = Tinted("Plush", new Color(0.55f, 0.37f, 0.22f));
+            var dark = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/Exterior/Ext_DarkMetal.mat");
+            var bear = new GameObject(name);
+            bear.transform.SetParent(parent, false);
+            bear.transform.position = pos;
+            bear.transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+            bear.transform.localScale = Vector3.one * scale;
+            Sphere("Body", bear.transform, new Vector3(0f, 0.11f, 0f), new Vector3(0.2f, 0.22f, 0.17f), plush);
+            Sphere("Head", bear.transform, new Vector3(0f, 0.28f, 0.01f), new Vector3(0.15f, 0.14f, 0.14f), plush);
+            Sphere("EarL", bear.transform, new Vector3(-0.06f, 0.35f, 0f), Vector3.one * 0.05f, plush);
+            Sphere("EarR", bear.transform, new Vector3(0.06f, 0.35f, 0f), Vector3.one * 0.05f, plush);
+            Sphere("ArmL", bear.transform, new Vector3(-0.11f, 0.14f, 0.03f), new Vector3(0.06f, 0.11f, 0.06f), plush);
+            Sphere("ArmR", bear.transform, new Vector3(0.11f, 0.14f, 0.03f), new Vector3(0.06f, 0.11f, 0.06f), plush);
+            Sphere("LegL", bear.transform, new Vector3(-0.06f, 0.03f, 0.07f), new Vector3(0.07f, 0.06f, 0.1f), plush);
+            Sphere("LegR", bear.transform, new Vector3(0.06f, 0.03f, 0.07f), new Vector3(0.07f, 0.06f, 0.1f), plush);
+            Sphere("Nose", bear.transform, new Vector3(0f, 0.27f, 0.075f), Vector3.one * 0.03f, dark);
+            var bc = bear.AddComponent<BoxCollider>();
+            bc.center = new Vector3(0f, 0.2f, 0f);
+            bc.size = new Vector3(0.45f, 0.5f, 0.45f);
+            return bear;
+        }
+
+        /// <summary>
+        /// Puts the family photograph in a picture frame: a thin textured quad on the frame's front,
+        /// as a child so it moves with the frame (and with it when inspected). front is +1 or -1 along
+        /// the frame mesh's local Z.
+        /// </summary>
+        public static GameObject PhotoOnFrame(GameObject frame, string texture, int front, float widthFrac = 0.7f,
+            float heightFrac = 0.72f, float raise = 0f)
+        {
+            var mf = frame.GetComponentInChildren<MeshFilter>();
+            var old = mf.transform.Find("PhotoPrint");
+            if (old != null) Object.DestroyImmediate(old.gameObject);
+            var b = mf.sharedMesh.bounds;
+            var q = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            q.name = "PhotoPrint";
+            Object.DestroyImmediate(q.GetComponent<Collider>());
+            q.transform.SetParent(mf.transform, false);
+            float z = front > 0 ? b.max.z + 0.0015f : b.min.z - 0.0015f;
+            q.transform.localPosition = new Vector3(b.center.x, b.center.y + raise * b.size.y, z);
+            q.transform.localRotation = Quaternion.Euler(0f, front > 0 ? 180f : 0f, 0f);
+            q.transform.localScale = new Vector3(b.size.x * widthFrac, b.size.y * heightFrac, 1f);
+            var r = q.GetComponent<Renderer>();
+            r.sharedMaterial = PaperMaterial(texture);
+            r.shadowCastingMode = ShadowCastingMode.Off;
+            return q;
+        }
+
         private static void Sphere(string name, Transform parent, Vector3 local, Vector3 size, Material mat)
         {
             var s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -221,7 +275,7 @@ namespace LeftBehind.EditorTools
         }
 
         /// <summary>A paper material from Assets/Story/Textures/{name}.png, faintly self-lit so it reads in the dark.</summary>
-        private static Material PaperMaterial(string name)
+        public static Material PaperMaterial(string name)
         {
             string path = $"Assets/Story/Materials/{name}.mat";
             var m = AssetDatabase.LoadAssetAtPath<Material>(path);
@@ -231,8 +285,25 @@ namespace LeftBehind.EditorTools
             imp.filterMode = FilterMode.Point;
             imp.maxTextureSize = 512;
             imp.mipmapEnabled = false;
+            bool cutout = name.EndsWith("Oval");
+            if (cutout) imp.alphaIsTransparency = true;
             imp.SaveAndReimport();
             Directory.CreateDirectory("Assets/Story/Materials");
+            if (name.StartsWith("FramePhoto"))
+            {
+                // Photographs are unlit so the faces (or their absence) read even in a dark corridor.
+                m = new Material(Shader.Find("Universal Render Pipeline/Unlit"));
+                m.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(tex));
+                m.SetColor("_BaseColor", new Color(0.85f, 0.85f, 0.85f));
+                if (cutout)
+                {
+                    m.SetFloat("_AlphaClip", 1f);
+                    m.SetFloat("_Cutoff", 0.5f);
+                    m.EnableKeyword("_ALPHATEST_ON");
+                }
+                AssetDatabase.CreateAsset(m, path);
+                return m;
+            }
             m = new Material(Shader.Find("Universal Render Pipeline/Lit"));
             m.SetTexture("_BaseMap", AssetDatabase.LoadAssetAtPath<Texture2D>(tex));
             m.SetColor("_BaseColor", Color.white);
@@ -241,11 +312,17 @@ namespace LeftBehind.EditorTools
             m.SetTexture("_EmissionMap", AssetDatabase.LoadAssetAtPath<Texture2D>(tex));
             m.SetColor("_EmissionColor", new Color(0.18f, 0.18f, 0.18f));
             m.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+            if (cutout)
+            {
+                m.SetFloat("_AlphaClip", 1f);
+                m.SetFloat("_Cutoff", 0.5f);
+                m.EnableKeyword("_ALPHATEST_ON");
+            }
             AssetDatabase.CreateAsset(m, path);
             return m;
         }
 
-        private static Material Tinted(string name, Color color)
+        public static Material Tinted(string name, Color color)
         {
             string path = $"Assets/Story/Materials/{name}.mat";
             var m = AssetDatabase.LoadAssetAtPath<Material>(path);

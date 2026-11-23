@@ -25,6 +25,8 @@ namespace LeftBehind.Interaction
         [SerializeField] private string openText = "Open door";
         [SerializeField] private string closeText = "Close door";
         [SerializeField] private bool locked;
+        [Tooltip("Degrees the door starts open (0 = shut). It opens to whichever side has room.")]
+        [SerializeField] private float startAngle = 0f;
         [SerializeField] private string lockedText = "Locked";
         [SerializeField] private AudioSource swingSound;
 
@@ -82,6 +84,12 @@ namespace LeftBehind.Interaction
 
             ClearPositive = MeasureClearAngle(1f);
             ClearNegative = MeasureClearAngle(-1f);
+            if (startAngle > 0f && !locked)
+            {
+                bool positive = ClearPositive >= ClearNegative;
+                currentAngle = targetAngle = (positive ? 1f : -1f) * Mathf.Min(startAngle, positive ? ClearPositive : ClearNegative);
+                IsOpen = true;
+            }
             transform.localRotation = closedRotation * Quaternion.Euler(0f, currentAngle, 0f);
         }
 

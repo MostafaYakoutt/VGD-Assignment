@@ -47,6 +47,7 @@ namespace LeftBehind.EditorTools
                     "", useTarget: frontDoor);
 
             var photo = Object.FindFirstObjectByType<Inspectable>();
+            Loop3Builder.PhotoOnFrame(photo.gameObject, "FramePhoto_Blurred", Loop3Builder.PhotoFront);
             Beat(root, "FamilyPhoto", NarrativeTrigger.Mode.Use, photo.transform.position)
                 .Configure(NarrativeTrigger.Mode.Use, "sawFamilyPhoto", D("L1_FamilyPhoto",
                         (Voice.Inner, "", "Ruth. And the children."),
@@ -67,6 +68,38 @@ namespace LeftBehind.EditorTools
                 "", useTarget: flashlight);
             fl.SetItem("flashlight", "Flashlight",
                 "Ruth bought it for the winter power cuts. She always kept spare batteries in the kitchen drawer.");
+
+            // The study does not exist in Loop 1: where its door was there is only wall.
+            var studyDoor = FindIncl<Door>("Door_Study");
+            if (studyDoor != null) studyDoor.gameObject.SetActive(false);
+            var wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            wall.name = "StudyWall";
+            wall.transform.SetParent(root, false);
+            wall.transform.position = new Vector3(2.5f, 2.6f + 1.05f, 2.15f);
+            wall.transform.localScale = new Vector3(0.92f, 2.1f, 0.1f);
+            wall.GetComponent<Renderer>().sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/Wall_DecrepitWallpaper.mat");
+            var tiling = wall.AddComponent<LeftBehind.Rendering.WorldTiling>();
+            var tso = new SerializedObject(tiling);
+            tso.FindProperty("mode").enumValueIndex = (int)LeftBehind.Rendering.WorldTiling.Mode.Wall;
+            tso.FindProperty("tileSize").floatValue = 2.5f;
+            tso.ApplyModifiedPropertiesWithoutUndo();
+            tiling.Apply();
+
+            // The attic is open in the present: the family's things are packed away up there.
+            var atticDoor = FindIncl<Door>("Door_Attic_Locked");
+            if (atticDoor != null)
+            {
+                var aso = new SerializedObject(atticDoor);
+                aso.FindProperty("locked").boolValue = false;
+                aso.ApplyModifiedPropertiesWithoutUndo();
+            }
+            var bear1 = Loop3Builder.Teddy(root, "TeddyBear", new Vector3(-5.4f, 5.62f, -7.2f), 200f, 1.1f).AddComponent<Examinable>();
+            bear1.Configure("Look at the bear");
+            Beat(root, "Teddy", NarrativeTrigger.Mode.Use, bear1.transform.position)
+                .Configure(NarrativeTrigger.Mode.Use, "sawTeddyLoop1", D("L1_Teddy",
+                        (Voice.Inner, "", "A child's bear, packed away with the toys."),
+                        (Voice.Inner, "", "Whose was it? Why can't I remember?")),
+                    "", useTarget: bear1);
 
             var loopDoor = Object.FindFirstObjectByType<LoopDoor>();
             Undo.RecordObject(loopDoor, "Gate Loop Door");
@@ -123,6 +156,45 @@ namespace LeftBehind.EditorTools
                 "SET THE TABLE\nFOR EVERYONE.\n\nTHEY MIGHT\nCOME BACK TONIGHT.");
             Readable("ReminderNote_Hall", "noteKeys", "Note by the front door",
                 "KEYS ARE IN YOUR COAT.\nYOUR COAT IS ON.");
+            foreach (var name in new[] { "Corridor", "Landing", "Dining" })
+            {
+                var group = GameObject.Find("Loop2House/Furniture/" + name);
+                if (group == null) continue;
+                foreach (Transform t in group.transform)
+                {
+                    if (t.name == "Photo")          // the round wall frames
+                        Loop3Builder.PhotoOnFrame(t.gameObject, "FramePhoto_ClearOval", Loop3Builder.PhotoFront, 0.62f, 0.62f);
+                    else if (t.name.StartsWith("FamilyPhoto"))
+                        Loop3Builder.PhotoOnFrame(t.gameObject, "FramePhoto_Clear", Loop3Builder.PhotoFront);
+                }
+            }
+
+            var bear2 = Loop3Builder.Teddy(root, "TeddyBear", new Vector3(-5.5f, 3.28f, -4.15f), 0f, 1.1f).AddComponent<Examinable>();
+            bear2.Configure("Look at the bear");
+            Beat(root, "Teddy", NarrativeTrigger.Mode.Use, bear2.transform.position)
+                .Configure(NarrativeTrigger.Mode.Use, "sawTeddyLoop2", D("L2_Teddy",
+                        (Voice.Inner, "", "Sam's bear, on his pillow."),
+                        (Voice.Inner, "", "He'll want it when they get back.")),
+                    "", useTarget: bear2);
+
+            var drawing = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            drawing.name = "EmilyDrawing";
+            drawing.transform.SetParent(root, false);
+            drawing.transform.position = new Vector3(-2.0f, 3.264f, -4.3f);
+            drawing.transform.rotation = Quaternion.Euler(90f, -8f, 0f);
+            drawing.transform.localScale = new Vector3(0.36f, 0.25f, 1f);
+            Object.DestroyImmediate(drawing.GetComponent<MeshCollider>());
+            drawing.AddComponent<BoxCollider>().size = new Vector3(1.4f, 1.6f, 0.6f);
+            drawing.GetComponent<Renderer>().sharedMaterial = Loop3Builder.PaperMaterial("EmilyDrawing_Happy");
+            drawing.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            var happy = drawing.AddComponent<Examinable>();
+            happy.Configure("Look at the drawing");
+            Beat(root, "Drawing", NarrativeTrigger.Mode.Use, drawing.transform.position)
+                .Configure(NarrativeTrigger.Mode.Use, "sawDrawingLoop2", D("L2_Drawing",
+                        (Voice.Remembered, "EMILY", "Look, Daddy! It's all of us, in front of the house."),
+                        (Voice.Inner, "", "She always drew us holding hands.")),
+                    "", useTarget: happy);
+
             Readable("ReminderNote_FuseBox", "noteFuse", "Note on the fuse box", "SPARE FUSE:\nDINING ROOM SIDEBOARD.");
 
             // ---- The power: the upstairs lamps are dead until the spare fuse goes in.
@@ -346,6 +418,14 @@ namespace LeftBehind.EditorTools
             var b = rs[0].bounds;
             foreach (var r in rs) b.Encapsulate(r.bounds);
             return b;
+        }
+
+        /// <summary>Finds a component by object name, including inactive objects.</summary>
+        private static T FindIncl<T>(string name) where T : Component
+        {
+            foreach (var c in Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (c.name == name) return c;
+            return null;
         }
 
         private static Transform NewRoot()

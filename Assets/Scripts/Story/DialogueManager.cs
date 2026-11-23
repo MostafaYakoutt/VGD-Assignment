@@ -168,14 +168,32 @@ namespace LeftBehind.Story
             picked(result);
         }
 
+        private static readonly System.Collections.Generic.Dictionary<string, Sprite> portraits =
+            new System.Collections.Generic.Dictionary<string, Sprite>();
+
+        /// <summary>Resources/Portraits/{Name}.png, or {Name}_Soft.png before Loop 3, when his memory is still blurred.</summary>
+        private static Sprite PortraitFor(DialogueData.Line line)
+        {
+            if (line.portrait != null) return line.portrait;
+            if (line.voice != DialogueData.Voice.Remembered || string.IsNullOrEmpty(line.speaker)) return null;
+            string name = char.ToUpper(line.speaker[0]) + line.speaker.Substring(1).ToLower();
+            if (LeftBehind.Loop.LoopTransition.CurrentLoop < 3) name += "_Soft";
+            if (portraits.TryGetValue(name, out var cached)) return cached;
+            var tex = Resources.Load<Texture2D>("Portraits/" + name);
+            var sprite = tex != null ? Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f)) : null;
+            portraits[name] = sprite;
+            return sprite;
+        }
+
         private void ShowLine(DialogueData.Line line)
         {
             box.gameObject.SetActive(true);
-            bool hasPortrait = line.portrait != null;
+            var portraitSprite = PortraitFor(line);
+            bool hasPortrait = portraitSprite != null;
             portrait.gameObject.SetActive(hasPortrait);
             if (hasPortrait)
             {
-                portrait.sprite = line.portrait;
+                portrait.sprite = portraitSprite;
                 portrait.color = line.voice == DialogueData.Voice.Remembered ? new Color(1f, 1f, 1f, 0.7f) : Color.white;
             }
             float left = hasPortrait ? 160f : 28f;
