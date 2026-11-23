@@ -404,7 +404,7 @@ namespace LeftBehind.EditorTools
             foreach (var z in new[] { -1.85f, 7.0f }) Window("Window_Large1", false, -10.30f, -9.60f, z, 1.2f, Up);
             foreach (var z in new[] { -3.0f, 4.4f }) Window("Window_Small1", false, 9.28f, 9.98f, z, 0.8f, Up);
 
-            // Loop Door: a plain leaf in the west wall. It leads to Loop 3, which is not built yet.
+            // Loop Door: a plain leaf in the west wall, leading to Loop 3.
             var ld = (GameObject)PrefabUtility.InstantiatePrefab(doorAsset, Group("Doors"));
             ld.name = "LoopDoor";
             ld.transform.rotation = Quaternion.Euler(0f, 90f, 0f) * Quaternion.Euler(270f, 0f, 0f);
@@ -417,6 +417,7 @@ namespace LeftBehind.EditorTools
             var loopDoor = ld.AddComponent<LoopDoor>();
             var so = new SerializedObject(loopDoor);
             so.FindProperty("promptText").stringValue = "Open the door";
+            so.FindProperty("nextScene").stringValue = "Loop3_TheAftermath";
             so.FindProperty("nextLoop").intValue = 3;
             so.FindProperty("arrivalCaption").stringValue = "NIGHT. THE SAME NIGHT.";
             so.ApplyModifiedPropertiesWithoutUndo();

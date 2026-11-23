@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1a53a52f5eb0b498d0cc3aeedab285, type: 3}
+  m_Name: L3_Study
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.DialogueData
+  lines:
+  - voice: 0
+    speaker: 
+    text: The study.
+    portrait: {fileID: 0}
+  - voice: 0
+    speaker: 
+    text: The knife from the kitchen.
+    portrait: {fileID: 0}
+  - voice: 0
+    speaker: 
+    text: Ruth. Emily. Sam.
+    portrait: {fileID: 0}
+  - voice: 0
+    speaker: 
+    text: I could remember. Or I could close the door and forget, again.
+    portrait: {fileID: 0}
+  choices:
+  - text: Remember.
+    flagToSet: choseToRemember
+    next: {fileID: 11400000, guid: b0d03fa7d2a8bc143ad5229d8d7f1694, type: 2}
+  - text: Look away.
+    flagToSet: choseToLookAway
+    next: {fileID: 11400000, guid: b01d210a55c007c458067bd2c9f85d6d, type: 2}
+  flagToSetWhenFinished: 
+  objectiveWhenFinished: 

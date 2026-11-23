@@ -55,6 +55,16 @@ namespace LeftBehind.Story
             PocketsChanged = null;
         }
 
+        /// <summary>Clears the story for a new playthrough (after an ending). Listeners stay subscribed.</summary>
+        public static void ResetAll()
+        {
+            flags.Clear();
+            items.Clear();
+            notes.Clear();
+            SetObjective("");
+            PocketsChanged?.Invoke();
+        }
+
         public static bool Has(string flag) => !string.IsNullOrEmpty(flag) && flags.Contains(flag);
 
         public static bool HasAll(IEnumerable<string> required)

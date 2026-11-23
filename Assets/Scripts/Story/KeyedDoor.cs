@@ -12,6 +12,8 @@ namespace LeftBehind.Story
     public class KeyedDoor : MonoBehaviour
     {
         [SerializeField] private string keyItemId = "studyKey";
+        [Tooltip("Used instead of an item when the key id is empty: the door opens once this flag is set.")]
+        [SerializeField] private string requiredFlag = "";
         [SerializeField] private string flagToSet = "";
         [SerializeField] private DialogueData noKey;
         [SerializeField] private DialogueData opened;
@@ -19,6 +21,12 @@ namespace LeftBehind.Story
         [SerializeField] private string lockedText = "Locked";
 
         private Door door;
+
+        private bool HasKey => string.IsNullOrEmpty(keyItemId)
+            ? StoryStateManager.Has(requiredFlag)
+            : StoryStateManager.HasItem(keyItemId);
+
+        public void ConfigureFlag(string flagNeeded) => requiredFlag = flagNeeded;
 
         public void Configure(string keyId, string flag, DialogueData missing, DialogueData onOpen, string unlock, string locked)
         {
@@ -42,13 +50,13 @@ namespace LeftBehind.Story
 
         private void Update()
         {
-            if (door.Locked) door.LockedText = StoryStateManager.HasItem(keyItemId) ? unlockText : lockedText;
+            if (door.Locked) door.LockedText = HasKey ? unlockText : lockedText;
         }
 
         private void OnUsed(PlayerInteractor interactor)
         {
             if (!door.Locked) return;
-            if (!StoryStateManager.HasItem(keyItemId))
+            if (!HasKey)
             {
                 if (!DialogueManager.Busy) DialogueManager.Play(noKey);
                 return;

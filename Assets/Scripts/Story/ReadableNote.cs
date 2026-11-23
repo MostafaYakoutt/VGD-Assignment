@@ -22,7 +22,7 @@ namespace LeftBehind.Story
         private void Reset() => promptText = "Read the note";
 
         public void Configure(string id, string noteTitle, string noteBody, string flag = "", DialogueData after = null,
-            string obj = "")
+            string obj = "", string prompt = "Read the note")
         {
             noteId = id;
             title = noteTitle;
@@ -30,7 +30,7 @@ namespace LeftBehind.Story
             flagToSet = flag;
             afterReading = after;
             objective = obj;
-            promptText = "Read the note";
+            promptText = prompt;
         }
 
         public override void Interact(PlayerInteractor interactor)

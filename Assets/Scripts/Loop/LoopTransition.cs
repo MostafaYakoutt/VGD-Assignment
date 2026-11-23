@@ -51,14 +51,29 @@ namespace LeftBehind.Loop
         public static bool Play(string nextScene, int nextLoop, string arrivalCaption)
         {
             if (Busy || nextLoop <= CurrentLoop) return false;      // never back to a loop already played
+            return Begin(nextScene, nextLoop, arrivalCaption, carryFlashlight: true);
+        }
+
+        /// <summary>
+        /// The "look away" ending: the same rewind, but all the way back to Loop 1 to start again.
+        /// Nothing is carried over.
+        /// </summary>
+        public static bool Restart(string firstScene, string caption)
+        {
+            if (Busy) return false;
+            return Begin(firstScene, 1, caption, carryFlashlight: false);
+        }
+
+        private static bool Begin(string scene, int loop, string caption, bool carryFlashlight)
+        {
             var go = new GameObject("LoopTransition");
             DontDestroyOnLoad(go);
             running = go.AddComponent<LoopTransition>();
-            running.StartCoroutine(running.Run(nextScene, nextLoop, arrivalCaption));
+            running.StartCoroutine(running.Run(scene, loop, caption, carryFlashlight));
             return true;
         }
 
-        private IEnumerator Run(string nextScene, int nextLoop, string arrivalCaption)
+        private IEnumerator Run(string nextScene, int nextLoop, string arrivalCaption, bool carryFlashlight)
         {
             // 1. Freeze the player and cut to the fixed loop shot.
             SetPlayerControl(false);
@@ -88,11 +103,11 @@ namespace LeftBehind.Loop
             rewindLabel.enabled = false;
 
             while (load.progress < 0.9f) yield return null;
-            PlayerFlashlight.StashForSceneChange();
+            if (carryFlashlight) PlayerFlashlight.StashForSceneChange();
             load.allowSceneActivation = true;
             while (!load.isDone) yield return null;
             CurrentLoop = nextLoop;
-            PlayerFlashlight.RestoreAfterSceneChange();
+            if (carryFlashlight) PlayerFlashlight.RestoreAfterSceneChange();
             Destroy(shot);
 
             // 3. The new loop fades in through tracking noise, frozen until it settles.

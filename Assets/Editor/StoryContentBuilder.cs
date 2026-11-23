@@ -199,6 +199,138 @@ namespace LeftBehind.EditorTools
             Done();
         }
 
+        // ------------------------------------------------------------------ Loop 3
+
+        /// <summary>Called by Left Behind > Build Loop 3, after its props are placed.</summary>
+        public static void SetUpLoop3()
+        {
+            var root = NewRoot();
+            Rules(root,
+                ObjectiveRules.R("", "choseToRemember"),
+                ObjectiveRules.R("", "choseToLookAway"),
+                ObjectiveRules.R("Open the study.", "readDelusionNote"),
+                ObjectiveRules.R("Find the children.", "sawDrawing"),
+                ObjectiveRules.R("Find Ruth.", "loop3Arrived"));
+
+            Beat(root, "Arrival", NarrativeTrigger.Mode.SceneStart, Vector3.zero)
+                .Configure(NarrativeTrigger.Mode.SceneStart, "loop3Arrived", D("L3_Arrival",
+                        (Voice.Inner, "", "Every light in the house is on."),
+                        (Voice.Inner, "", "Ruth? Where are you?")),
+                    "", startDelay: 0.8f);
+
+            var frontDoor = FrontDoor("Open the front door");
+            Beat(root, "FrontDoor", NarrativeTrigger.Mode.Use, frontDoor.transform.position)
+                .Configure(NarrativeTrigger.Mode.Use, "triedFrontDoorLoop3", D("L3_FrontDoor",
+                        (Voice.Inner, "", "Locked. I locked it myself."),
+                        (Voice.Inner, "", "Why would I lock us in?")),
+                    "", useTarget: frontDoor);
+
+            // No Loop Door tonight: the door at the end of the landing is just a door that won't open.
+            var loopDoorGo = GameObject.Find("UpperFloor/Doors/LoopDoor");
+            var oldLoop = loopDoorGo.GetComponent<LoopDoor>();
+            if (oldLoop != null) Object.DestroyImmediate(oldLoop);
+            var rattle = loopDoorGo.GetComponent<DoorRattle>();
+            if (rattle == null) rattle = loopDoorGo.AddComponent<DoorRattle>();
+            rattle.Configure(loopDoorGo.transform, "Open the door");
+            Beat(root, "NoLoopDoor", NarrativeTrigger.Mode.Use, loopDoorGo.transform.position)
+                .Configure(NarrativeTrigger.Mode.Use, "triedLoopDoorLoop3", D("L3_NoLoopDoor",
+                        (Voice.Inner, "", "It won't open."),
+                        (Voice.Inner, "", "There's no way out of tonight.")),
+                    "", useTarget: rattle);
+
+            var knifeBlock = Prop<Examinable>("KnifeBlock");
+            knifeBlock.Configure("Look at the knife block");
+            Beat(root, "KnifeBlock", NarrativeTrigger.Mode.Use, knifeBlock.transform.position)
+                .Configure(NarrativeTrigger.Mode.Use, "sawKnifeBlock", D("L3_KnifeBlock",
+                        (Voice.Inner, "", "One of the knives is missing."),
+                        (Voice.Inner, "", "Ruth never leaves them out.")),
+                    "", useTarget: knifeBlock);
+
+            Prop<ReadableNote>("ClinicCard").Configure("clinicCard", "Card on the fridge",
+                "ST. MARY'S MEMORY CLINIC\n\nAppointment for: Walter Hale\nTuesday, 10:30\n\nPlease bring a family member with you.",
+                "sawClinicCard", D("L3_ClinicCard",
+                    (Voice.Inner, "", "Ruth booked this for me."),
+                    (Voice.Inner, "", "She knew. She knew something was wrong with me.")), prompt: "Read the card");
+
+            var drawing = Prop<Examinable>("EmilyDrawing");
+            drawing.Configure("Look at the drawing");
+            Beat(root, "Drawing", NarrativeTrigger.Mode.Use, drawing.transform.position)
+                .Configure(NarrativeTrigger.Mode.Use, "sawDrawing", D("L3_Drawing",
+                        (Voice.Remembered, "EMILY", "That's you, Daddy. I couldn't get your face right."),
+                        (Voice.Inner, "", "She scribbled it out.")),
+                    "", useTarget: drawing);
+
+            var bear = Prop<Examinable>("TeddyBear");
+            bear.Configure("Look at the bear");
+            Beat(root, "Teddy", NarrativeTrigger.Mode.Use, bear.transform.position)
+                .Configure(NarrativeTrigger.Mode.Use, "sawTeddy", D("L3_Teddy",
+                        (Voice.Inner, "", "Sam's bear."),
+                        (Voice.Inner, "", "He never goes anywhere without it.")),
+                    "", useTarget: bear);
+
+            var studyNote = GameObject.Find("UpperFloor/Doors/Door_Study/StudyDoorNote").AddComponent<ReadableNote>();
+            studyNote.Configure("delusionNote", "Note on the study door",
+                "THAT WOMAN IS NOT RUTH.\n\nShe has Ruth's face and Ruth's voice, but she watches me. " +
+                "The children are not mine. They whisper when I leave the room.\n\n" +
+                "They want me to forget.\nI will not forget.\n\n\u2014 W.",
+                "readDelusionNote", D("L3_DelusionNote",
+                    (Voice.Inner, "", "My handwriting."),
+                    (Voice.Inner, "", "No. That isn't... I didn't...")));
+            EditorUtility.SetDirty(studyNote);
+
+            var studyDoorGo = GameObject.Find("UpperFloor/Doors/Door_Study");
+            var studyDoor = studyDoorGo.GetComponent<Door>();
+            var dso = new SerializedObject(studyDoor);
+            dso.FindProperty("locked").boolValue = true;
+            dso.ApplyModifiedPropertiesWithoutUndo();
+            var keyed = studyDoorGo.GetComponent<KeyedDoor>();
+            if (keyed == null) keyed = studyDoorGo.AddComponent<KeyedDoor>();
+            keyed.Configure("", "openedStudyLoop3",
+                D("L3_StudyLocked",
+                    (Voice.Inner, "", "Locked."),
+                    (Voice.Inner, "", "There's something taped to the door.")),
+                null, "Open the study", "Locked");
+            keyed.ConfigureFlag("readDelusionNote");
+            EditorUtility.SetDirty(keyed);
+
+            var climax = D("L3_Study",
+                (Voice.Inner, "", "The study."),
+                (Voice.Inner, "", "The knife from the kitchen."),
+                (Voice.Inner, "", "Ruth. Emily. Sam."),
+                (Voice.Inner, "", "I could remember. Or I could close the door and forget, again."));
+            if (climax.choices == null || climax.choices.Length == 0)
+            {
+                climax.choices = new[]
+                {
+                    new DialogueData.Choice { text = "Remember.", flagToSet = "choseToRemember", next = D("L3_Remember",
+                        (Voice.Inner, "", "Ruth. Emily. Sam."),
+                        (Voice.Inner, "", "I remember now. I remember all of it.")) },
+                    new DialogueData.Choice { text = "Look away.", flagToSet = "choseToLookAway", next = D("L3_LookAway",
+                        (Voice.Inner, "", "No."),
+                        (Voice.Inner, "", "I don't want to know.")) },
+                };
+                EditorUtility.SetDirty(climax);
+            }
+            Beat(root, "Study", NarrativeTrigger.Mode.EnterZone, new Vector3(3.2f, 3.6f, 6.4f))
+                .Configure(NarrativeTrigger.Mode.EnterZone, "enteredStudyLoop3", climax, "",
+                    required: new[] { "readDelusionNote" }, zone: new Vector3(6f, 2.4f, 6.2f));
+
+            var ending = new GameObject("EndingDirector").AddComponent<EndingDirector>();
+            ending.transform.SetParent(root, false);
+            ending.Configure("choseToRemember", "choseToLookAway", "SampleScene");
+
+            Done();
+        }
+
+        private static T Prop<T>(string name) where T : Component
+        {
+            var go = GameObject.Find(Loop3Builder.PropsRoot + "/" + name);
+            var c = go.GetComponent<T>();
+            if (c == null) c = go.AddComponent<T>();
+            EditorUtility.SetDirty(c);
+            return c;
+        }
+
         // ------------------------------------------------------------------ helpers
 
         private static void Rules(Transform root, params ObjectiveRules.Rule[] rules)
