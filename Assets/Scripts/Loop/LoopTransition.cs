@@ -88,9 +88,11 @@ namespace LeftBehind.Loop
             rewindLabel.enabled = false;
 
             while (load.progress < 0.9f) yield return null;
+            PlayerFlashlight.StashForSceneChange();
             load.allowSceneActivation = true;
             while (!load.isDone) yield return null;
             CurrentLoop = nextLoop;
+            PlayerFlashlight.RestoreAfterSceneChange();
             Destroy(shot);
 
             // 3. The new loop fades in through tracking noise, frozen until it settles.

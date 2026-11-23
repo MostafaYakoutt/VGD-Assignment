@@ -7423,6 +7423,65 @@ Transform:
   - {fileID: 1839447259}
   m_Father: {fileID: 232110296}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &234263076
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 234263077}
+  - component: {fileID: 234263078}
+  m_Layer: 0
+  m_Name: Beat_Intro
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &234263077
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234263076}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 264698908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &234263078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 234263076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1e20616c08ba6d4eb8e4b4a3e61d02c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.NarrativeTrigger
+  mode: 0
+  delay: 1.5
+  zoneSize: {x: 4, y: 3, z: 4}
+  target: {fileID: 0}
+  requiredFlags: []
+  blockedByFlags: []
+  flagToSet: introSeen
+  titleCard: LEFT BEHIND
+  titleHold: 2.5
+  item:
+    id: 
+    name: 
+    description: 
+  dialogue: {fileID: 11400000, guid: 988023e5cc2f11e449bcb15f65ca8397, type: 2}
+  objective: 
 --- !u!1 &238668350
 GameObject:
   m_ObjectHideFlags: 0
@@ -7824,6 +7883,43 @@ MonoBehaviour:
   locked: 0
   lockedText: Locked
   swingSound: {fileID: 0}
+--- !u!1 &264698907
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 264698908}
+  m_Layer: 0
+  m_Name: Story
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &264698908
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264698907}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 797917951}
+  - {fileID: 234263077}
+  - {fileID: 621726501}
+  - {fileID: 487639738}
+  - {fileID: 1091332863}
+  - {fileID: 1128099245}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &265452742
 GameObject:
   m_ObjectHideFlags: 0
@@ -12849,6 +12945,11 @@ MonoBehaviour:
   nextLoop: 2
   arrivalCaption: AUTUMN. YEARS EARLIER.
   closedText: It won't open
+  requiredFlags:
+  - sawFamilyPhoto
+  - hasFlashlight
+  notYetDialogue: {fileID: 11400000, guid: ac65ebc10f005594d8f1b991de511c00, type: 2}
+  completeFlag: loop1Complete
 --- !u!1 &408268401
 GameObject:
   m_ObjectHideFlags: 0
@@ -14718,6 +14819,65 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 485508295}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &487639737
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 487639738}
+  - component: {fileID: 487639739}
+  m_Layer: 0
+  m_Name: Beat_FamilyPhoto
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &487639738
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487639737}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.975, y: 0.791, z: -8.518}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 264698908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &487639739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487639737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1e20616c08ba6d4eb8e4b4a3e61d02c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.NarrativeTrigger
+  mode: 2
+  delay: 1
+  zoneSize: {x: 4, y: 3, z: 4}
+  target: {fileID: 847637735}
+  requiredFlags: []
+  blockedByFlags: []
+  flagToSet: sawFamilyPhoto
+  titleCard: 
+  titleHold: 2.5
+  item:
+    id: 
+    name: 
+    description: 
+  dialogue: {fileID: 11400000, guid: 2997dcc1950ca2f4eac314b1229c8a83, type: 2}
+  objective: 
 --- !u!1001 &490234212
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18462,6 +18622,65 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 188743843073225641, guid: f8670ea5c7df9214182468ff459be71d, type: 3}
   m_PrefabInstance: {fileID: 621457059}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &621726500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 621726501}
+  - component: {fileID: 621726502}
+  m_Layer: 0
+  m_Name: Beat_FrontDoor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &621726501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 621726500}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.329785, y: 0.050000235, z: -3.316}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 264698908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &621726502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 621726500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1e20616c08ba6d4eb8e4b4a3e61d02c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.NarrativeTrigger
+  mode: 2
+  delay: 1
+  zoneSize: {x: 4, y: 3, z: 4}
+  target: {fileID: 2099011320}
+  requiredFlags: []
+  blockedByFlags: []
+  flagToSet: triedFrontDoor
+  titleCard: 
+  titleHold: 2.5
+  item:
+    id: 
+    name: 
+    description: 
+  dialogue: {fileID: 11400000, guid: f749592c156d240428b62e089f196f69, type: 2}
+  objective: 
 --- !u!1 &623606194
 GameObject:
   m_ObjectHideFlags: 0
@@ -24062,6 +24281,67 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 796796361}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &797917950
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 797917951}
+  - component: {fileID: 797917952}
+  m_Layer: 0
+  m_Name: ObjectiveRules
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &797917951
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 797917950}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 264698908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &797917952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 797917950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3596667677603e344915cf15ca5bd362, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ObjectiveRules
+  rules:
+  - allOf:
+    - loop1Complete
+    noneOf: []
+    objective: 
+  - allOf:
+    - hasFlashlight
+    noneOf: []
+    objective: Go upstairs.
+  - allOf:
+    - triedFrontDoor
+    noneOf: []
+    objective: Find another way out.
+  - allOf:
+    - introSeen
+    noneOf: []
+    objective: Get out of the house.
 --- !u!1 &804795811 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 42b3a81a6cbe94c4890d35ae8e321635, type: 3}
@@ -35687,6 +35967,65 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1088954526}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1091332862
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1091332863}
+  - component: {fileID: 1091332864}
+  m_Layer: 0
+  m_Name: Beat_EmptyTable
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1091332863
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1091332862}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -4.9, y: 1, z: 5.2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 264698908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1091332864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1091332862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1e20616c08ba6d4eb8e4b4a3e61d02c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.NarrativeTrigger
+  mode: 1
+  delay: 1
+  zoneSize: {x: 9.2, y: 3, z: 8.4}
+  target: {fileID: 0}
+  requiredFlags: []
+  blockedByFlags: []
+  flagToSet: sawEmptyTable
+  titleCard: 
+  titleHold: 2.5
+  item:
+    id: 
+    name: 
+    description: 
+  dialogue: {fileID: 11400000, guid: e653381821437b941aa38ca619d94fba, type: 2}
+  objective: 
 --- !u!1001 &1091513170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36803,6 +37142,65 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.007073433, y: 0.006521837, z: 0.031666894}
   m_Center: {x: 1.1641532e-10, y: -0.0000000015258236, z: 0.015833447}
+--- !u!1 &1128099244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1128099245}
+  - component: {fileID: 1128099246}
+  m_Layer: 0
+  m_Name: Beat_Flashlight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1128099245
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128099244}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -5.308, y: 0.94893414, z: 9.515}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 264698908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1128099246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1128099244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1e20616c08ba6d4eb8e4b4a3e61d02c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.NarrativeTrigger
+  mode: 2
+  delay: 1
+  zoneSize: {x: 4, y: 3, z: 4}
+  target: {fileID: 1991232928}
+  requiredFlags: []
+  blockedByFlags: []
+  flagToSet: hasFlashlight
+  titleCard: 
+  titleHold: 2.5
+  item:
+    id: flashlight
+    name: Flashlight
+    description: Ruth bought it for the winter power cuts. She always kept spare batteries in the kitchen drawer.
+  dialogue: {fileID: 11400000, guid: 292b8512bf266db4a836385a2a560b82, type: 2}
+  objective: 
 --- !u!1001 &1129910611
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -50341,7 +50739,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2014ea66f6a64fe4d89ca0164a424187, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2099011319}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2014ea66f6a64fe4d89ca0164a424187, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2099011320}
   m_SourcePrefab: {fileID: 100100000, guid: 2014ea66f6a64fe4d89ca0164a424187, type: 3}
+--- !u!4 &1686443341 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2014ea66f6a64fe4d89ca0164a424187, type: 3}
+  m_PrefabInstance: {fileID: 1686443340}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1689461052
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64758,6 +65164,22 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.017357713, y: 0.0042013098, z: 0.041878354}
   m_Center: {x: 0.008678856, y: -0.0000000017881893, z: 0.020939177}
+--- !u!114 &2099011320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099011315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96d0f77fecc614241b2e1cb582a48303, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.DoorRattle
+  promptText: Open the front door
+  leaf: {fileID: 1686443341}
+  duration: 0.45
+  amount: 0.012
 --- !u!1 &2103507101
 GameObject:
   m_ObjectHideFlags: 0
@@ -65775,3 +66197,4 @@ SceneRoots:
   - {fileID: 956970773}
   - {fileID: 232110296}
   - {fileID: 673943387}
+  - {fileID: 264698908}

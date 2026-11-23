@@ -57,6 +57,7 @@ namespace LeftBehind.EditorTools
             FurnishGround();
             FurnishUpper();
             BlockLowFurniture();
+            StoryContentBuilder.SetUpLoop2();
 
             EditorSceneManager.MarkSceneDirty(root.gameObject.scene);
         }
@@ -340,11 +341,11 @@ namespace LeftBehind.EditorTools
             Lamp(g, new Vector3(x, Top(g) - 0.15f, z), 1.6f, 6f, on, shadows);
         }
 
-        private static void Note(float x, float y, float z, char facing)
+        private static void Note(float x, float y, float z, char facing, string name = "ReminderNote")
         {
             bool alongX = facing == 'N' || facing == 'S';
             float d = 0.006f;
-            Box("Furniture/Notes", "ReminderNote",
+            Box("Furniture/Notes", name,
                 alongX ? x - 0.04f : x - d, alongX ? x + 0.04f : x + d, y - 0.04f, y + 0.04f,
                 alongX ? z - d : z - 0.04f, alongX ? z + d : z + 0.04f, note, null, 0f, false);
         }
@@ -600,6 +601,7 @@ namespace LeftBehind.EditorTools
 
             // Kitchen: counters along the north wall, every cupboard labelled.
             float cx = 0.0f;
+            int unit = 0;
             // Units are about 0.57 m wide, so eleven of them run from the dining wall to the stairs wall (x 0..6.37).
             string[] run = { "Kitchen_3Drawers", "Kitchen_Sink", "Kitchen_3Drawers", "Kitchen_3Drawers", "Kitchen_Oven_Large", "Kitchen_3Drawers",
                              "Kitchen_3Drawers", "Kitchen_3Drawers", "Kitchen_3Drawers", "Kitchen_3Drawers", "Kitchen_3Drawers", "Kitchen_3Drawers" };
@@ -612,18 +614,18 @@ namespace LeftBehind.EditorTools
                 c.transform.position += new Vector3(cx - cb.min.x, 0f, 0f);
                 cb = MB(c);
                 cx = cb.max.x + 0.005f;
-                Note(cb.center.x, 0.62f, cb.min.z - 0.008f, 'S');
+                Note(cb.center.x, 0.62f, cb.min.z - 0.008f, 'S', $"ReminderNote_Counter{unit++}");
             }
             // The fridge with Walter's note: "RUTH TOOK THE KIDS TO HER MOTHER'S. DON'T CALL. - W."
             P("Kitchen", "Fridge", "Furniture/Kitchen_Fridge.fbx", 0.54f, 0f, 0.7f, N, 0f, 'S', 0.05f);
-            Note(0.6f, 1.3f, 0.75f, 'N');
+            Note(0.6f, 1.3f, 0.75f, 'N', "ReminderNote_Fridge");
             P("Kitchen", "Oven", "Furniture/Kitchen_Oven_Large.fbx", 0.566f, 270f, N, 1.6f, 0f, 'E', 9.28f);
             P("Kitchen", "Counter_Alcove", "Furniture/Kitchen_3Drawers.fbx", 0.56f, 270f, N, 2.55f, 0f, 'E', 9.28f);
             var kt = P("Kitchen", "Table", "Furniture/Table_RoundSmall2.fbx", 0.62f, 0f, 3.0f, 5.4f, 0f);
             P("Kitchen", "Chair_W", "NextGen Furniture Pack/Prefabs/chair_1.prefab", 1f, 90f, 2.15f, 5.4f, 0f);
             P("Kitchen", "Chair_E", "NextGen Furniture Pack/Prefabs/chair_1.prefab", 1f, 270f, 3.85f, 5.4f, 0f);
             P("Kitchen", "Mug", "kitchen props/models/mug.fbx", 1f, 30f, 2.9f, 5.3f, Top(kt), ' ', 0f, false);
-            Note(3.15f, Top(kt) + 0.004f, 5.55f, 'N');
+            Note(3.15f, Top(kt) + 0.004f, 5.55f, 'N', "ReminderNote_Table");
             CeilingLamp("Kitchen", 3.0f, 5.4f, Ceil, 1.2f, 6.5f, true);
             CeilingLamp("BackHall", 7.85f, 4.1f, Ceil, 0.9f, 5f, true);
 
@@ -640,14 +642,14 @@ namespace LeftBehind.EditorTools
             P("Utility", "Washer", "Furniture/Bathroom_WashingMachine.fbx", 0.58f, 0f, 1.0f, N, 0f, 'S', -7.22f);
             P("Utility", "Shelf", "Furniture/Shelf_1.fbx", 0.5f, 90f, N, -5.3f, 0f, 'W', -0.09f);
             Box("Furniture/Utility", "FuseBox", 6.23f, 6.37f, 1.3f, 1.95f, -5.8f, -5.2f, metal);
-            Note(6.22f, 1.75f, -5.5f, 'W');
+            Note(6.22f, 1.75f, -5.5f, 'W', "ReminderNote_FuseBox");
             Boxes("Utility", 5.6f, -4.1f, 2);
             CeilingLamp("Utility", 3.1f, -5.4f, Ceil, 0.9f, 5.5f, true);
 
             // Vestibule and the coat cupboard.
             var hall = P("Vestibule", "HallCabinet", "NextGen Furniture Pack/Prefabs/commode_2.prefab", 1f, 180f, 7.15f, N, 0f, 'N', -2.34f);
             P("Vestibule", "Mirror", "Furniture/Bathroom_Mirror1.fbx", 0.8f, 180f, 7.15f, N, Top(hall) + 0.2f, 'N', -2.34f, false);
-            Note(7.5f, Top(hall) + 0.5f, -2.36f, 'S');
+            Note(7.5f, Top(hall) + 0.5f, -2.36f, 'S', "ReminderNote_Hall");
             P("Vestibule", "Rug", "Furniture/Carpet_1.fbx", 1f, 0f, 7.85f, -4.6f, 0f, ' ', 0f, false);
             CeilingLamp("Vestibule", 7.85f, -4.6f, Ceil, 1.0f, 5.5f, true);
             P("Coats", "Shelf", "Furniture/Drawer_4.fbx", 0.5f, 180f, 7.3f, N, 0f, 'N', -0.05f);

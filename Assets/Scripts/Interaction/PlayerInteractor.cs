@@ -43,7 +43,9 @@ namespace LeftBehind.Interaction
             var keyboard = Keyboard.current;
             if (current != null && keyboard != null && keyboard.eKey.wasPressedThisFrame)
             {
-                current.Interact(this);
+                var used = current;
+                used.Interact(this);
+                used.NotifyUsed(this);
             }
         }
 

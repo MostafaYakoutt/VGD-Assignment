@@ -16,5 +16,10 @@ namespace LeftBehind.Interaction
         public virtual bool CanInteract => isActiveAndEnabled;
 
         public abstract void Interact(PlayerInteractor interactor);
+
+        /// <summary>Raised after the player uses this object with E (story triggers listen to it).</summary>
+        public event System.Action<PlayerInteractor> Used;
+
+        internal void NotifyUsed(PlayerInteractor interactor) => Used?.Invoke(interactor);
     }
 }

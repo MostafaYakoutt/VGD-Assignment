@@ -44,6 +44,43 @@ namespace LeftBehind.Interaction
         public bool HasFlashlight => item != null;
         public bool IsOn { get; private set; }
 
+        // The held flashlight survives the scene change between loops.
+        private static FlashlightPickup carried;
+        private static bool carriedOn;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            carried = null;
+            carriedOn = false;
+        }
+
+        /// <summary>Called before the next loop loads: keep the held flashlight out of the old scene.</summary>
+        public static void StashForSceneChange()
+        {
+            var holder = FindAnyObjectByType<PlayerFlashlight>();
+            if (holder == null || holder.item == null) return;
+            carried = holder.item;
+            carriedOn = holder.IsOn;
+            holder.model.SetParent(null, true);
+            DontDestroyOnLoad(holder.model.gameObject);
+            holder.item = null;
+            holder.model = null;
+        }
+
+        /// <summary>Called once the next loop has loaded: hand the flashlight to the new player.</summary>
+        public static void RestoreAfterSceneChange()
+        {
+            if (carried == null) return;
+            var holder = FindAnyObjectByType<PlayerFlashlight>();
+            if (holder == null) return;
+            // Move it back into the loaded scene so it belongs to the player again.
+            UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(carried.gameObject, holder.gameObject.scene);
+            holder.Equip(carried, showHint: false);
+            holder.SetOn(carriedOn);
+            carried = null;
+        }
+
         private void Awake()
         {
             input = GetComponent<StarterAssetsInputs>();
@@ -51,7 +88,9 @@ namespace LeftBehind.Interaction
             if (hud == null) hud = FindAnyObjectByType<InteractionHUD>();
         }
 
-        public void Equip(FlashlightPickup pickup)
+        public void Equip(FlashlightPickup pickup) => Equip(pickup, showHint: true);
+
+        public void Equip(FlashlightPickup pickup, bool showHint)
         {
             item = pickup;
             model = pickup.transform;
@@ -66,7 +105,7 @@ namespace LeftBehind.Interaction
             model.localScale = Vector3.one;
 
             SetOn(false);
-            if (hud != null) hud.ShowHint("[F] Flashlight", 4f);
+            if (showHint && hud != null) hud.ShowHint("[F] Flashlight", 4f);
         }
 
         private void Update()
