@@ -88,6 +88,22 @@ namespace LeftBehind.Interaction
             if (hud == null) hud = FindAnyObjectByType<InteractionHUD>();
         }
 
+        private System.Collections.IEnumerator Start()
+        {
+            // A loop restarted, or begun from Chapters: hand over a fresh flashlight if the story says
+            // he has one. (A rewind carries the real one across; wait until that has happened.)
+            while (LeftBehind.Loop.LoopTransition.Busy) yield return null;
+            yield return null;
+            if (HasFlashlight || !LeftBehind.Story.StoryStateManager.HasItem("flashlight")) yield break;
+            var prefab = Resources.Load<FlashlightPickup>("HeldFlashlight");
+            if (prefab == null) yield break;
+            var copy = Instantiate(prefab);
+            var outlineChild = copy.transform.Find("Outline");
+            if (outlineChild != null) outlineChild.gameObject.SetActive(false);
+            copy.enabled = false;
+            Equip(copy, showHint: false);
+        }
+
         public void Equip(FlashlightPickup pickup) => Equip(pickup, showHint: true);
 
         public void Equip(FlashlightPickup pickup, bool showHint)

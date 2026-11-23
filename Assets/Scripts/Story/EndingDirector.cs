@@ -2,15 +2,14 @@ using System.Collections;
 using LeftBehind.Loop;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace LeftBehind.Story
 {
     /// <summary>
     /// Plays one of the two endings once the choice in the study is made.
-    /// Remember: the screen fades to black over a few closing lines, then any key begins
-    /// the game again. Look away: the house rewinds back to Loop 1 and it starts again.
+    /// Remember: the screen fades to black over a few closing lines, then any key returns
+    /// to the main menu (where the photograph now shows their faces). Look away: the house rewinds back to Loop 1 and it starts again.
     /// The ending reached is saved for the main menu (PlayerPrefs "LeftBehind.Ending").
     /// </summary>
     public class EndingDirector : MonoBehaviour
@@ -88,15 +87,14 @@ namespace LeftBehind.Story
             yield return new WaitForSecondsRealtime(2f);
             var prompt = ui.MakeText(black.transform, "Prompt", 26, TextAnchor.MiddleCenter, new Vector2(0.5f, 0f),
                 new Vector2(0f, 90f), new Vector2(1000f, 50f), shadow: false);
-            prompt.text = "Press any key to begin again";
+            prompt.text = "Press any key";
             yield return FadeText(prompt, 0f, 0.5f, 1f);
 
             while (Keyboard.current == null || !Keyboard.current.anyKey.wasPressedThisFrame) yield return null;
 
             StoryUI.Unlock(this);
-            StoryStateManager.ResetAll();
             Destroy(black.gameObject);
-            SceneManager.LoadScene(firstScene);
+            StoryChapters.ToMenu();
         }
 
         private static IEnumerator Fade(Image img, float from, float to, float time)

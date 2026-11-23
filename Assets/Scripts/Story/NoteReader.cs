@@ -58,7 +58,10 @@ namespace LeftBehind.Story
             var kb = Keyboard.current;
             if (kb == null) return;
             if (kb.eKey.wasPressedThisFrame || kb.escapeKey.wasPressedThisFrame || kb.enterKey.wasPressedThisFrame)
+            {
+                if (kb.escapeKey.wasPressedThisFrame) StoryUI.ConsumeEscape();
                 Close();
+            }
         }
 
         private void Close()

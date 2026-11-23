@@ -68,6 +68,18 @@ namespace LeftBehind.Story
             Hide();
         }
 
+        /// <summary>Drops whatever is playing or queued (leaving a loop for the menu or a restart).</summary>
+        public static void StopAll()
+        {
+            if (!StoryUI.Exists) return;
+            var dm = StoryUI.Instance.GetComponent<DialogueManager>();
+            dm.StopAllCoroutines();
+            dm.queue.Clear();
+            dm.playing = false;
+            dm.Hide();
+            StoryUI.Unlock(dm);
+        }
+
         private void Hide()
         {
             box.gameObject.SetActive(false);
@@ -94,7 +106,7 @@ namespace LeftBehind.Story
                 ShowLine(line);
                 string text = line.text ?? "";
                 // Typewriter.
-                for (float shown = 0f; shown < text.Length; shown += Time.unscaledDeltaTime * CharsPerSecond)
+                for (float shown = 0f; shown < text.Length; shown += Time.deltaTime * CharsPerSecond)
                 {
                     body.text = Format(line, text.Substring(0, Mathf.Min(text.Length, (int)shown)));
                     if (SkipPressed()) break;
@@ -102,7 +114,7 @@ namespace LeftBehind.Story
                 }
                 body.text = Format(line, text);
                 float hold = Mathf.Max(1.8f, text.Length * 0.055f);
-                for (float t = 0f; t < hold; t += Time.unscaledDeltaTime)
+                for (float t = 0f; t < hold; t += Time.deltaTime)
                 {
                     if (t > 0.2f && SkipPressed()) break;
                     yield return null;

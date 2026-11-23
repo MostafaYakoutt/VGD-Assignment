@@ -62,7 +62,7 @@ namespace LeftBehind.Story
                 return;
             }
             if (!open) return;
-            if (kb.escapeKey.wasPressedThisFrame) { Close(); return; }
+            if (kb.escapeKey.wasPressedThisFrame) { StoryUI.ConsumeEscape(); Close(); return; }
 
             var notes = StoryStateManager.Notes;
             for (int i = 0; i < Mathf.Min(9, notes.Count); i++)

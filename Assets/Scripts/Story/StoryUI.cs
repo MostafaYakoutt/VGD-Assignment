@@ -16,6 +16,12 @@ namespace LeftBehind.Story
     {
         private static StoryUI instance;
         private static readonly HashSet<object> locks = new HashSet<object>();
+        private static int escapeUsedFrame = -1;
+
+        /// <summary>Called by whatever handled Esc this frame (closing a note or Pockets).</summary>
+        public static void ConsumeEscape() => escapeUsedFrame = Time.frameCount;
+
+        public static bool EscapeConsumed => escapeUsedFrame == Time.frameCount;
 
         public static StoryUI Instance
         {
@@ -70,6 +76,50 @@ namespace LeftBehind.Story
             gameObject.AddComponent<DialogueManager>();
             gameObject.AddComponent<NoteReader>();
             gameObject.AddComponent<Pockets>();
+            gameObject.AddComponent<PauseMenu>();
+
+            // Menus are clicked with the mouse or driven with the arrow keys.
+            gameObject.AddComponent<GraphicRaycaster>();
+            if (FindAnyObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
+            {
+                var es = new GameObject("EventSystem", typeof(UnityEngine.EventSystems.EventSystem),
+                    typeof(UnityEngine.InputSystem.UI.InputSystemUIInputModule));
+                es.transform.SetParent(transform, false);
+            }
+        }
+
+        // ------------------------------------------------------------------ menu buttons
+
+        /// <summary>A text button: dim when idle, warm and marked when highlighted or selected.</summary>
+        public Button MakeButton(Transform parent, string label, int size, Vector2 anchor, Vector2 pos, Vector2 sizeDelta,
+            UnityEngine.Events.UnityAction onClick, TextAnchor align = TextAnchor.MiddleLeft)
+        {
+            var go = new GameObject("Button_" + label, typeof(RectTransform), typeof(Image), typeof(Button));
+            go.transform.SetParent(parent, false);
+            var rt = go.GetComponent<RectTransform>();
+            rt.anchorMin = rt.anchorMax = rt.pivot = anchor;
+            rt.anchoredPosition = pos;
+            rt.sizeDelta = sizeDelta;
+            var bg = go.GetComponent<Image>();
+            bg.color = Color.white;
+            var text = MakeText(go.transform, "Label", size, align, new Vector2(0.5f, 0.5f), Vector2.zero, sizeDelta);
+            text.text = label;
+            text.raycastTarget = false;
+            var button = go.GetComponent<Button>();
+            button.targetGraphic = bg;
+            var colors = button.colors;
+            colors.normalColor = new Color(1f, 1f, 1f, 0f);
+            colors.highlightedColor = new Color(1f, 0.85f, 0.62f, 0.08f);
+            colors.selectedColor = new Color(1f, 0.85f, 0.62f, 0.08f);
+            colors.pressedColor = new Color(1f, 0.85f, 0.62f, 0.2f);
+            colors.disabledColor = new Color(1f, 1f, 1f, 0f);
+            colors.fadeDuration = 0.08f;
+            button.colors = colors;
+            var nav = button.navigation;
+            nav.mode = Navigation.Mode.Vertical;
+            button.navigation = nav;
+            if (onClick != null) button.onClick.AddListener(onClick);
+            return button;
         }
 
         // ------------------------------------------------------------------ player lock

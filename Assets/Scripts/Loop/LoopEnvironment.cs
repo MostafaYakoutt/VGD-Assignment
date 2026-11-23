@@ -23,6 +23,9 @@ namespace LeftBehind.Loop
         [SerializeField] private Color fogColor = new Color(0.10f, 0.12f, 0.15f);
         [SerializeField] private float fogDensity = 0.06f;
 
+        /// <summary>PlayerPrefs key: the furthest loop reached, for the Chapters menu.</summary>
+        public const string ReachedKey = "LeftBehind.ReachedLoop";
+
         public string Period => period;
 
         public int Loop => loop;
@@ -30,7 +33,14 @@ namespace LeftBehind.Loop
         private void OnEnable()
         {
             Apply();
-            if (Application.isPlaying) LoopTransition.EnterLoop(loop);
+            if (!Application.isPlaying) return;
+            LoopTransition.EnterLoop(loop);
+            LeftBehind.Story.StoryStateManager.TakeSnapshot();
+            if (loop > PlayerPrefs.GetInt(ReachedKey, 1))
+            {
+                PlayerPrefs.SetInt(ReachedKey, loop);
+                PlayerPrefs.Save();
+            }
         }
         private void OnValidate() => Apply();
 

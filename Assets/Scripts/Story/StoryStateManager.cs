@@ -34,6 +34,11 @@ namespace LeftBehind.Story
         private static readonly List<PocketItem> items = new List<PocketItem>();
         private static readonly List<NoteEntry> notes = new List<NoteEntry>();
 
+        private static readonly HashSet<string> savedFlags = new HashSet<string>();
+        private static readonly List<PocketItem> savedItems = new List<PocketItem>();
+        private static readonly List<NoteEntry> savedNotes = new List<NoteEntry>();
+        private static string savedObjective = "";
+
         public static string Objective { get; private set; } = "";
         public static IReadOnlyList<PocketItem> Items => items;
         public static IReadOnlyList<NoteEntry> Notes => notes;
@@ -53,6 +58,25 @@ namespace LeftBehind.Story
             FlagSet = null;
             ObjectiveChanged = null;
             PocketsChanged = null;
+        }
+
+        /// <summary>Remembers the state at the start of a loop, for Restart loop.</summary>
+        public static void TakeSnapshot()
+        {
+            savedFlags.Clear(); savedFlags.UnionWith(flags);
+            savedItems.Clear(); savedItems.AddRange(items);
+            savedNotes.Clear(); savedNotes.AddRange(notes);
+            savedObjective = Objective;
+        }
+
+        /// <summary>Puts the story back to how it was when the current loop began.</summary>
+        public static void RestoreSnapshot()
+        {
+            flags.Clear(); flags.UnionWith(savedFlags);
+            items.Clear(); items.AddRange(savedItems);
+            notes.Clear(); notes.AddRange(savedNotes);
+            SetObjective(savedObjective);
+            PocketsChanged?.Invoke();
         }
 
         /// <summary>Clears the story for a new playthrough (after an ending). Listeners stay subscribed.</summary>
