@@ -65,6 +65,7 @@ namespace LeftBehind.Story
             StoryUI.Lock(this);
 
             var ui = StoryUI.Instance;
+            LeftBehind.Audio.GameAudio.FadeOutAll(3f);
             var black = ui.MakeFullScreen(ui.Root, "Ending", new Color(0f, 0f, 0f, 0f));
             black.transform.SetAsLastSibling();
             yield return Fade(black, 0f, 1f, 3f);

@@ -75,6 +75,7 @@ namespace LeftBehind.Story
             dim.gameObject.SetActive(true);
             StoryUI.Lock(this);
             Time.timeScale = 0f;
+            AudioListener.pause = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(first.gameObject);
@@ -86,6 +87,7 @@ namespace LeftBehind.Story
             open = false;
             dim.gameObject.SetActive(false);
             Time.timeScale = 1f;
+            AudioListener.pause = false;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             StoryUI.Unlock(this);

@@ -138,6 +138,7 @@ namespace LeftBehind.Interaction
         {
             SetOn(!IsOn);
             if (toggleSound != null) toggleSound.Play();
+            else LeftBehind.Audio.GameAudio.Switch2D();
         }
 
         public void SetOn(bool on)

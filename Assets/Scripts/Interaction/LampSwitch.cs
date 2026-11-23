@@ -37,6 +37,7 @@ namespace LeftBehind.Interaction
         {
             SetOn(!isOn);
             if (clickSound != null) clickSound.Play();
+            else LeftBehind.Audio.GameAudio.Switch(transform.position);
         }
 
         public void SetOn(bool on)

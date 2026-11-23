@@ -1,0 +1,13 @@
+Audio sources (all CC0 / public domain; no attribution required, listed for reference)
+
+Rain.ogg            "Rain (loopable)" by Ylmir, loop 2 of 4.            https://opengameart.org/content/rain-loopable
+Thunder.ogg         "Rain + Long Thunder" by WuxiaScrub (the game plays
+                    the thunderclap from about 21 s).                    https://opengameart.org/content/rain-long-thunder
+Ticks/Tick1-4.wav   "Ticking clock" by bart (attribution appreciated).  https://opengameart.org/content/ticking-clock
+DoorOpen/*.ogg,
+DoorClose/*.ogg     "Door Open, Door Close Set" by qubodup.            https://opengameart.org/content/door-open-door-close-set
+MusicBox.ogg        "4 Music Box Tracks" by Aureolus_Omicron
+                    (musicbox3_sad_tune).                                https://opengameart.org/content/4-music-box-tracks
+Footsteps/*.wav     Unity Starter Assets (already in the project).
+
+Generated for this project (Python/NumPy): TapeRewind.wav, Wind.wav, Click.wav.

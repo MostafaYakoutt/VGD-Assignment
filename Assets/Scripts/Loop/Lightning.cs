@@ -29,6 +29,7 @@ namespace LeftBehind.Loop
                     yield return Flash(Random.Range(0.05f, 0.11f));
                     yield return new WaitForSeconds(Random.Range(0.06f, 0.18f));
                 }
+                LeftBehind.Audio.GameAudio.Thunder(Random.Range(0.3f, 1.6f));
                 yield return new WaitForSeconds(Random.Range(interval.x, interval.y));
             }
         }

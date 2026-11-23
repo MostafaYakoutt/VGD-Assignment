@@ -38,6 +38,7 @@ namespace LeftBehind.Story
                 return;
             }
             StoryStateManager.RemoveItem(fuseItemId);
+            LeftBehind.Audio.GameAudio.Switch(transform.position);
             StoryStateManager.Set(powerFlag);
             DialogueManager.Play(fitted);
         }

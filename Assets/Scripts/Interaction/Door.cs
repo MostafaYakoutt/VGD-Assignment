@@ -87,7 +87,11 @@ namespace LeftBehind.Interaction
 
         public override void Interact(PlayerInteractor interactor)
         {
-            if (locked) return;
+            if (locked)
+            {
+                LeftBehind.Audio.GameAudio.DoorRattled(transform.position);
+                return;
+            }
 
             bool open = !IsOpen;
             Vector3 from = interactor.transform.position;
@@ -102,6 +106,7 @@ namespace LeftBehind.Interaction
         {
             if (open == IsOpen) return;
             IsOpen = open;
+            if (open) LeftBehind.Audio.GameAudio.DoorOpened(transform.position);
 
             if (open)
             {
@@ -135,7 +140,10 @@ namespace LeftBehind.Interaction
                 transform.localRotation = closedRotation * Quaternion.Euler(0f, currentAngle, 0f);
                 return;
             }
+            bool wasOpen = !Mathf.Approximately(currentAngle, 0f);
             currentAngle = next;
+            if (wasOpen && !IsOpen && Mathf.Approximately(currentAngle, 0f))
+                LeftBehind.Audio.GameAudio.DoorClosed(transform.position);
         }
 
         private float MeasureClearAngle(float sign)

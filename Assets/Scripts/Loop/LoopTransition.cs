@@ -85,6 +85,7 @@ namespace LeftBehind.Loop
             var shot = ScreenCapture.CaptureScreenshotAsTexture();
             BuildOverlay(shot);
 
+            LeftBehind.Audio.GameAudio.TapeRewind();
             var load = SceneManager.LoadSceneAsync(nextScene);
             load.allowSceneActivation = false;
 

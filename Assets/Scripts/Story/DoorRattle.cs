@@ -27,7 +27,9 @@ namespace LeftBehind.Story
 
         public override void Interact(PlayerInteractor interactor)
         {
-            if (!shaking) StartCoroutine(Shake());
+            if (shaking) return;
+            LeftBehind.Audio.GameAudio.DoorRattled(transform.position);
+            StartCoroutine(Shake());
         }
 
         private IEnumerator Shake()
