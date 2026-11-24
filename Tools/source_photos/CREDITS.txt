@@ -1,0 +1,10 @@
+W_E_Falk_family_portrait.jpg
+  "W. E. Falk family portrait", photograph by Frank R. Snyder, Oxford, Ohio, c. 1900-1910.
+  Miami University Libraries - Digital Collections, digital.lib.muohio.edu/u?/snyder,2349
+  Flickr The Commons: https://www.flickr.com/photos/muohio_digital_collections/3191722811/
+  Wikimedia Commons: https://commons.wikimedia.org/wiki/File:W._E._Falk_family_portrait_(3191722811).jpg
+  License: no known copyright restrictions (Flickr The Commons).
+
+It stands in for the Hale family photograph. Assets/Editor/FamilyPhotoBuilder.cs makes every
+copy used in the game from it (Left Behind > Story > Rebuild Family Photos): the menu photo,
+the framed prints, the oval print and the dialogue portraits, clear and with the faces blurred.
