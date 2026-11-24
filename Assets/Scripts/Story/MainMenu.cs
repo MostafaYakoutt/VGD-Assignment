@@ -7,7 +7,8 @@ using UnityEngine.UI;
 namespace LeftBehind.Story
 {
     /// <summary>
-    /// The main menu: Begin, Chapters (the loops already reached, in story order) and Quit,
+    /// The main menu: Begin, Chapters (the loops already reached, in story order, named
+    /// only by number so the menu never says that time turns back) and Quit,
     /// beside the family photograph. The faces in the photograph stay blurred until the
     /// player has finished the game by choosing to remember.
     /// </summary>
@@ -34,11 +35,6 @@ namespace LeftBehind.Story
             var title = ui.MakeText(page, "Title", 96, TextAnchor.MiddleLeft, new Vector2(0f, 0.5f),
                 new Vector2(150f, 300f), new Vector2(900f, 130f));
             title.text = "LEFT BEHIND";
-            var sub = ui.MakeText(page, "Subtitle", 26, TextAnchor.MiddleLeft, new Vector2(0f, 0.5f),
-                new Vector2(156f, 225f), new Vector2(900f, 40f));
-            sub.text = "a story told backwards";
-            sub.fontStyle = FontStyle.Italic;
-            sub.color = new Color(1f, 0.85f, 0.62f, 0.7f);
 
             Photo(ui);
 

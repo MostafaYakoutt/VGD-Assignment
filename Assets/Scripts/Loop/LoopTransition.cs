@@ -10,17 +10,15 @@ namespace LeftBehind.Loop
 {
     /// <summary>
     /// Plays the loop transition and moves the player one loop back in time:
-    /// the camera cuts to the fixed loop shot, the frame "rewinds" like a VHS
-    /// tape into black, the next loop's scene loads, and the new house fades
-    /// in through static with a caption naming the time period.
+    /// the camera pulls out to the fixed loop shot, the frame fades to black,
+    /// the next loop's scene loads, and the new house fades in from black.
     /// The previous scene is unloaded, so the trip is one-way.
     /// </summary>
     public class LoopTransition : MonoBehaviour
     {
         private const float ShotHold = 2.1f;      // 1.5 s blend into the loop shot plus a beat
-        private const float RewindTime = 1.8f;
-        private const float RevealTime = 2.0f;
-        private const float CaptionHold = 3.0f;
+        private const float FadeOutTime = 1.4f;
+        private const float FadeInTime = 1.6f;
 
         private static LoopTransition running;
 
@@ -43,65 +41,49 @@ namespace LeftBehind.Loop
             if (!Busy) CurrentLoop = loop;
         }
 
-        private RawImage frame;
-        private Material mat;
-        private Text rewindLabel;
-        private Text caption;
+        private Image black;
 
-        public static bool Play(string nextScene, int nextLoop, string arrivalCaption)
+        // The transition shows no text and no rewind effect: the player is never told when, or that,
+        // time has turned back.
+
+        /// <summary>Moves to the next loop.</summary>
+        public static bool Play(string nextScene, int nextLoop)
         {
             if (Busy || nextLoop <= CurrentLoop) return false;      // never back to a loop already played
-            return Begin(nextScene, nextLoop, arrivalCaption, carryFlashlight: true);
+            return Begin(nextScene, nextLoop, carryFlashlight: true);
         }
 
         /// <summary>
-        /// The "look away" ending: the same rewind, but all the way back to Loop 1 to start again.
+        /// The "look away" ending: the same transition, but all the way back to Loop 1 to start again.
         /// Nothing is carried over.
         /// </summary>
-        public static bool Restart(string firstScene, string caption)
+        public static bool Restart(string firstScene)
         {
             if (Busy) return false;
-            return Begin(firstScene, 1, caption, carryFlashlight: false);
+            return Begin(firstScene, 1, carryFlashlight: false);
         }
 
-        private static bool Begin(string scene, int loop, string caption, bool carryFlashlight)
+        private static bool Begin(string scene, int loop, bool carryFlashlight)
         {
             var go = new GameObject("LoopTransition");
             DontDestroyOnLoad(go);
             running = go.AddComponent<LoopTransition>();
-            running.StartCoroutine(running.Run(scene, loop, caption, carryFlashlight));
+            running.StartCoroutine(running.Run(scene, loop, carryFlashlight));
             return true;
         }
 
-        private IEnumerator Run(string nextScene, int nextLoop, string arrivalCaption, bool carryFlashlight)
+        private IEnumerator Run(string nextScene, int nextLoop, bool carryFlashlight)
         {
-            // 1. Freeze the player and cut to the fixed loop shot.
+            // 1. Freeze the player and pull the camera out to the fixed loop shot.
             SetPlayerControl(false);
             if (CameraDirector.Instance != null) CameraDirector.Instance.SetLoopShot(true);
+            BuildOverlay();
             yield return new WaitForSeconds(ShotHold);
 
-            // 2. Capture the last frame of this loop and rewind it into black.
-            yield return new WaitForEndOfFrame();
-            var shot = ScreenCapture.CaptureScreenshotAsTexture();
-            BuildOverlay(shot);
-
-            LeftBehind.Audio.GameAudio.TapeRewind();
+            // 2. Fade to black while the next loop loads.
             var load = SceneManager.LoadSceneAsync(nextScene);
             load.allowSceneActivation = false;
-
-            float roll = 0f;
-            for (float t = 0f; t < RewindTime; t += Time.unscaledDeltaTime)
-            {
-                float k = t / RewindTime;
-                roll -= Time.unscaledDeltaTime * Mathf.Lerp(0.05f, 2.5f, k * k);
-                mat.SetFloat("_Intensity", Mathf.SmoothStep(0f, 1f, k * 1.6f));
-                mat.SetFloat("_Roll", roll);
-                mat.SetFloat("_Fade", Mathf.InverseLerp(0.7f, 1f, k));
-                rewindLabel.enabled = Mathf.Repeat(t, 0.5f) < 0.3f;
-                yield return null;
-            }
-            mat.SetFloat("_Fade", 1f);
-            rewindLabel.enabled = false;
+            yield return Fade(0f, 1f, FadeOutTime);
 
             while (load.progress < 0.9f) yield return null;
             if (carryFlashlight) PlayerFlashlight.StashForSceneChange();
@@ -109,35 +91,24 @@ namespace LeftBehind.Loop
             while (!load.isDone) yield return null;
             CurrentLoop = nextLoop;
             if (carryFlashlight) PlayerFlashlight.RestoreAfterSceneChange();
-            Destroy(shot);
 
-            // 3. The new loop fades in through tracking noise, frozen until it settles.
+            // 3. The new loop fades in from black, the player frozen until it has.
             SetPlayerControl(false);
-            mat.SetFloat("_UseTex", 0f);
-            frame.texture = null;
-            caption.text = arrivalCaption;
-            for (float t = 0f; t < RevealTime; t += Time.unscaledDeltaTime)
-            {
-                float k = t / RevealTime;
-                mat.SetFloat("_Fade", 1f - Mathf.SmoothStep(0f, 1f, k * 1.8f));
-                mat.SetFloat("_Intensity", 1f - k);
-                caption.color = new Color(1f, 1f, 1f, Mathf.Clamp01(k * 2f) * 0.85f);
-                yield return null;
-            }
-            mat.SetFloat("_Intensity", 0f);
-            mat.SetFloat("_Fade", 0f);
+            yield return Fade(1f, 0f, FadeInTime);
             SetPlayerControl(true);
 
-            yield return new WaitForSeconds(CaptionHold);
-            for (float t = 0f; t < 1f; t += Time.unscaledDeltaTime)
+            running = null;
+            Destroy(gameObject);
+        }
+
+        private IEnumerator Fade(float from, float to, float seconds)
+        {
+            for (float t = 0f; t < seconds; t += Time.unscaledDeltaTime)
             {
-                caption.color = new Color(1f, 1f, 1f, (1f - t) * 0.85f);
+                black.color = new Color(0f, 0f, 0f, Mathf.Lerp(from, to, Mathf.SmoothStep(0f, 1f, t / seconds)));
                 yield return null;
             }
-
-            running = null;
-            Destroy(mat);
-            Destroy(gameObject);
+            black.color = new Color(0f, 0f, 0f, to);
         }
 
         private static void SetPlayerControl(bool on)
@@ -153,58 +124,21 @@ namespace LeftBehind.Loop
             }
         }
 
-        private void BuildOverlay(Texture shot)
+        private void BuildOverlay()
         {
             var canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 1000;
-            var scaler = gameObject.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
 
-            var img = new GameObject("Frame", typeof(RectTransform), typeof(RawImage));
+            var img = new GameObject("Black", typeof(RectTransform), typeof(Image));
             img.transform.SetParent(transform, false);
             var rt = img.GetComponent<RectTransform>();
             rt.anchorMin = Vector2.zero;
             rt.anchorMax = Vector2.one;
             rt.offsetMin = rt.offsetMax = Vector2.zero;
-            frame = img.GetComponent<RawImage>();
-            frame.raycastTarget = false;
-            frame.texture = shot;
-            // Loaded from Resources so the shader is included in builds.
-            var template = Resources.Load<Material>("LoopRewind");
-            mat = template != null ? new Material(template) : new Material(Shader.Find("LeftBehind/RewindOverlay"));
-            mat.SetFloat("_UseTex", 1f);
-            frame.material = mat;
-
-            var font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            rewindLabel = Label("Rewind", "<< REWIND", font, 44, TextAnchor.UpperLeft,
-                new Vector2(0f, 1f), new Vector2(80f, -70f), new Vector2(500f, 80f));
-            caption = Label("Caption", "", font, 34, TextAnchor.MiddleCenter,
-                new Vector2(0.5f, 0f), new Vector2(0f, 170f), new Vector2(1400f, 80f));
-            caption.color = new Color(1f, 1f, 1f, 0f);
-        }
-
-        private Text Label(string name, string text, Font font, int size, TextAnchor align, Vector2 anchor,
-            Vector2 pos, Vector2 sizeDelta)
-        {
-            var go = new GameObject(name, typeof(RectTransform), typeof(Text));
-            go.transform.SetParent(transform, false);
-            var rt = go.GetComponent<RectTransform>();
-            rt.anchorMin = rt.anchorMax = rt.pivot = anchor;
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = sizeDelta;
-            var t = go.GetComponent<Text>();
-            t.font = font;
-            t.fontSize = size;
-            t.alignment = align;
-            t.text = text;
-            t.raycastTarget = false;
-            t.color = Color.white;
-            var shadow = go.AddComponent<Shadow>();
-            shadow.effectColor = new Color(0f, 0f, 0f, 0.8f);
-            shadow.effectDistance = new Vector2(3f, -3f);
-            return t;
+            black = img.GetComponent<Image>();
+            black.raycastTarget = false;
+            black.color = new Color(0f, 0f, 0f, 0f);
         }
     }
 }

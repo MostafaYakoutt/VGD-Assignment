@@ -419,7 +419,6 @@ namespace LeftBehind.EditorTools
             so.FindProperty("promptText").stringValue = "Open the door";
             so.FindProperty("nextScene").stringValue = "Loop3_TheAftermath";
             so.FindProperty("nextLoop").intValue = 3;
-            so.FindProperty("arrivalCaption").stringValue = "NIGHT. THE SAME NIGHT.";
             so.ApplyModifiedPropertiesWithoutUndo();
 
             // Roof slab and a shadow-only block above it so sunlight only enters through the windows.

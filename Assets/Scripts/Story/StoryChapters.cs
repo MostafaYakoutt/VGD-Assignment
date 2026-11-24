@@ -13,7 +13,8 @@ namespace LeftBehind.Story
         public const string MenuScene = "MainMenu";
 
         public static readonly string[] Scenes = { "SampleScene", "Loop2_YearsEarlier", "Loop3_TheAftermath" };
-        public static readonly string[] Names = { "I.   Present day", "II.  Years earlier", "III. The aftermath" };
+        // Numbers only: the player must not learn from the menu when each chapter takes place.
+        public static readonly string[] Names = { "Chapter I", "Chapter II", "Chapter III" };
 
         private static readonly PocketItem Flashlight = new PocketItem
         {

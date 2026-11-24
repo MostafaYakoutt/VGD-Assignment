@@ -23028,7 +23028,7 @@ MonoBehaviour:
   promptText: Read the calendar
   noteId: calendarLoop2
   title: Calendar on the fridge
-  body: "OCTOBER 2006\n\nFri 6 \u2014 THEY COME BACK?\nFri 13 \u2014 STAY OUT OF THE STUDY\nFri 20 \u2014 THEY COME BACK?\nFri 27 \u2014 THEY COME BACK?\n\nEVERY SUNDAY: WIND THE CLOCK.\nRUTH ALWAYS DID."
+  body: "Fri 6 \u2014 THEY COME BACK?\nFri 13 \u2014 STAY OUT OF THE STUDY\nFri 20 \u2014 THEY COME BACK?\nFri 27 \u2014 THEY COME BACK?\n\nEVERY SUNDAY: WIND THE CLOCK.\nRUTH ALWAYS DID."
   flagToSet: readCalendarLoop2
   afterReading: {fileID: 11400000, guid: 6a43e42e101a4f041834eb567a292abd, type: 2}
   objective: 

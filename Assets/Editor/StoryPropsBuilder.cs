@@ -14,7 +14,8 @@ namespace LeftBehind.EditorTools
     /// open scene, with Walter's lines for each (in Assets/Story/Dialogue, kept if they exist):
     ///   wall clock      dining room; 15:40 and ticking, 18:50 and ticking, stopped at 23:52;
     ///   kitchen tap     drips (and starts again after being turned off), drips, running;
-    ///   fridge calendar January 2025, October 2006, October 2004 in Ruth's hand;
+    ///   fridge calendar January 2025, October 2006, October 2004 in Ruth's hand (the month and
+    ///                   year are never written on it, so the player is not told when they are);
     ///   pills           an organiser still full, one bottle from the clinic, none yet;
     ///   wedding ring    Walter's on the dresser, Ruth's on the dresser, none (she is wearing it);
     ///   mannequins      Loop 1 only: in the attic, moving while unseen (see MannequinBuilder).
@@ -213,8 +214,7 @@ namespace LeftBehind.EditorTools
             DialogueData after;
             if (loop == 1)
             {
-                body = "JANUARY 2025\n\n" +
-                       "X X X X X\nX X X X X X X\nX X X X X X X\nX X X X X X X\nX X X X X\n\n" +
+                body = "X X X X X\nX X X X X X X\nX X X X X X X\nX X X X X X X\nX X X X X\n\n" +
                        "WHAT AM I COUNTING DOWN TO?";
                 after = D("L1_Calendar",
                     (Voice.Inner, "", "Every day crossed off."),
@@ -222,8 +222,7 @@ namespace LeftBehind.EditorTools
             }
             else if (loop == 2)
             {
-                body = "OCTOBER 2006\n\n" +
-                       "Fri 6 — THEY COME BACK?\n" +
+                body = "Fri 6 — THEY COME BACK?\n" +
                        "Fri 13 — STAY OUT OF THE STUDY\n" +
                        "Fri 20 — THEY COME BACK?\n" +
                        "Fri 27 — THEY COME BACK?\n\n" +
@@ -235,8 +234,7 @@ namespace LeftBehind.EditorTools
             else
             {
                 title = "Ruth's calendar";
-                body = "OCTOBER 2004\n\n" +
-                       "Fri 1 — Sam, swimming 5pm\n" +
+                body = "Fri 1 — Sam, swimming 5pm\n" +
                        "Fri 8 — Emily's school play, 6pm\n" +
                        "Sat 16 — Mum's birthday. Take the kids.\n" +
                        "Mon 18 — Sam, dentist 4.15\n" +
@@ -346,7 +344,7 @@ namespace LeftBehind.EditorTools
             var pickup = ring.AddComponent<PickupItem>();
             if (loop == 1)
                 pickup.Configure("Take the ring", "weddingRing", "Wedding ring",
-                    "My wedding ring. It won't go over the knuckle any more. Engraved inside: R & W, 1989.",
+                    "My wedding ring. It won't go over the knuckle any more. Engraved inside: R & W.",
                     "hasWeddingRing", D("L1_Ring",
                         (Voice.Inner, "", "My ring. When did I take it off?"),
                         (Voice.Inner, "", "R and W. Ruth and Walter.")), hide: true);

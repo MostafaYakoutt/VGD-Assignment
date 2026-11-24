@@ -86,6 +86,26 @@ namespace LeftBehind.Interaction
             input = GetComponent<StarterAssetsInputs>();
             controller = GetComponent<CharacterController>();
             if (hud == null) hud = FindAnyObjectByType<InteractionHUD>();
+            AnchorToHead();
+        }
+
+        /// <summary>
+        /// The hand anchor sits under the Main Camera in the scenes, but Cinemachine moves that camera
+        /// to whichever shot is live, so in the loop shot's pull-out the flashlight flew off with it.
+        /// Hang it from the player's head (the point the first-person camera locks to, with no damping)
+        /// instead: it looks the same in first person and stays with Walter when the camera pulls away.
+        /// </summary>
+        private void AnchorToHead()
+        {
+            var fpc = GetComponent<FirstPersonController>();
+            if (handAnchor == null || fpc == null || fpc.CinemachineCameraTarget == null) return;
+            var head = fpc.CinemachineCameraTarget.transform;
+            if (handAnchor.parent == head) return;
+            var local = handAnchor.localPosition;
+            var localRot = handAnchor.localRotation;
+            handAnchor.SetParent(head, false);
+            handAnchor.localPosition = local;
+            handAnchor.localRotation = localRot;
         }
 
         private System.Collections.IEnumerator Start()

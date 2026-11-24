@@ -16,8 +16,6 @@ namespace LeftBehind.Loop
         [SerializeField] private string nextScene = "";
         [Tooltip("Loop number the next scene represents.")]
         [SerializeField] private int nextLoop = 2;
-        [Tooltip("Shown on arrival, naming the time period.")]
-        [SerializeField] private string arrivalCaption = "";
         [SerializeField] private string closedText = "It won't open";
         [Tooltip("Story flags that must all be set before the door opens.")]
         [SerializeField] private string[] requiredFlags = new string[0];
@@ -60,7 +58,7 @@ namespace LeftBehind.Loop
                 ShowHint("Not yet.");
                 return;
             }
-            if (LoopTransition.Play(nextScene, nextLoop, arrivalCaption)) StoryStateManager.Set(completeFlag);
+            if (LoopTransition.Play(nextScene, nextLoop)) StoryStateManager.Set(completeFlag);
         }
 
         private void ShowHint(string text)

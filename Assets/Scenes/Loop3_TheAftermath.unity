@@ -7140,7 +7140,7 @@ MonoBehaviour:
   promptText: Read the calendar
   noteId: calendarLoop3
   title: Ruth's calendar
-  body: "OCTOBER 2004\n\nFri 1 \u2014 Sam, swimming 5pm\nFri 8 \u2014 Emily's school play, 6pm\nSat 16 \u2014 Mum's birthday. Take the kids.\nMon 18 \u2014 Sam, dentist 4.15\nTue 19 \u2014 Walter, memory clinic 10.30\n\nDON'T LET HIM CANCEL."
+  body: "Fri 1 \u2014 Sam, swimming 5pm\nFri 8 \u2014 Emily's school play, 6pm\nSat 16 \u2014 Mum's birthday. Take the kids.\nMon 18 \u2014 Sam, dentist 4.15\nTue 19 \u2014 Walter, memory clinic 10.30\n\nDON'T LET HIM CANCEL."
   flagToSet: readCalendarLoop3
   afterReading: {fileID: 11400000, guid: d39fa45ad78b76241901b5f0245db221, type: 2}
   objective: 
@@ -47474,7 +47474,7 @@ MonoBehaviour:
   rememberLines:
   - He remembered their names.
   - Ruth.   Emily.   Sam.
-  lookAwayCaption: AGAIN.
+  lookAwayCaption: 
 --- !u!1001 &1440778058
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -3313,7 +3313,7 @@ MonoBehaviour:
   item:
     id: weddingRing
     name: Wedding ring
-    description: 'My wedding ring. It won''t go over the knuckle any more. Engraved inside: R & W, 1989.'
+    description: 'My wedding ring. It won''t go over the knuckle any more. Engraved inside: R & W.'
   flagToSet: hasWeddingRing
   dialogue: {fileID: 11400000, guid: b1741b9f95c84724baab3c54d5e34bbe, type: 2}
   hideWhenTaken: 1
@@ -40014,10 +40014,7 @@ MonoBehaviour:
   promptText: Read the calendar
   noteId: calendarLoop1
   title: Calendar on the fridge
-  body: 'JANUARY 2025
-
-
-    X X X X X
+  body: 'X X X X X
 
     X X X X X X X
 

@@ -20,7 +20,6 @@ namespace LeftBehind.Story
         [SerializeField] private string lookAwayFlag = "choseToLookAway";
         [SerializeField] private string firstScene = "SampleScene";
         [SerializeField] private string[] rememberLines = { "He remembered their names.", "Ruth.   Emily.   Sam." };
-        [SerializeField] private string lookAwayCaption = "AGAIN.";
 
         private bool started;
 
@@ -54,7 +53,7 @@ namespace LeftBehind.Story
             PlayerPrefs.SetString(EndingKey, "lookAway");
             PlayerPrefs.Save();
             StoryStateManager.ResetAll();
-            LoopTransition.Restart(firstScene, lookAwayCaption);
+            LoopTransition.Restart(firstScene);
         }
 
         private IEnumerator Remember()
