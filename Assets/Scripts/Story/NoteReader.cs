@@ -64,6 +64,15 @@ namespace LeftBehind.Story
             }
         }
 
+        /// <summary>Puts the note away without running its follow-up.</summary>
+        public void Dismiss()
+        {
+            if (!dim.gameObject.activeSelf) return;
+            onClosed = null;
+            dim.gameObject.SetActive(false);
+            StoryUI.Unlock(this);
+        }
+
         private void Close()
         {
             dim.gameObject.SetActive(false);

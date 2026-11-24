@@ -16,7 +16,7 @@ namespace LeftBehind.CameraSystem
     public static class PlayerTuning
     {
         // Loop 1 (aged 72), Loop 2 (54), Loop 3 (52).
-        private static readonly float[] WalkSpeed = { 1.2f, 1.35f, 1.5f };
+        private static readonly float[] WalkSpeed = { 2.2f, 2.5f, 2.8f };
         private static readonly float[] EyeHeight = { 1.55f, 1.60f, 1.65f };
         private static readonly float[] BobAmount = { 0.022f, 0.015f, 0.011f };
 

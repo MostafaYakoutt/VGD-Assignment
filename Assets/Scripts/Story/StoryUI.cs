@@ -137,6 +137,24 @@ namespace LeftBehind.Story
 
         public static bool Locked => locks.Count > 0;
 
+        /// <summary>
+        /// Closes every overlay (pause, Pockets, a note, dialogue) and frees the player. Called whenever
+        /// a scene is about to change, so nothing from the old loop is left covering the next screen.
+        /// </summary>
+        public static void CloseAll()
+        {
+            if (instance != null)
+            {
+                instance.GetComponent<PauseMenu>().Dismiss();
+                instance.GetComponent<Pockets>().Dismiss();
+                instance.GetComponent<NoteReader>().Dismiss();
+                instance.titleCard.color = new Color(1f, 1f, 1f, 0f);
+            }
+            DialogueManager.StopAll();
+            locks.Clear();
+            Apply();
+        }
+
         private static void Apply()
         {
             bool free = locks.Count == 0;

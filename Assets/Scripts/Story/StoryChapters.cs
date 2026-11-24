@@ -58,7 +58,7 @@ namespace LeftBehind.Story
 
         public static void LoadGameScene(string scene)
         {
-            DialogueManager.StopAll();
+            StoryUI.CloseAll();
             Time.timeScale = 1f;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -67,7 +67,7 @@ namespace LeftBehind.Story
 
         public static void ToMenu()
         {
-            DialogueManager.StopAll();
+            StoryUI.CloseAll();
             Time.timeScale = 1f;
             StoryStateManager.ResetAll();
             Cursor.lockState = CursorLockMode.None;

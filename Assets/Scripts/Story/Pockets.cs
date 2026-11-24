@@ -98,6 +98,12 @@ namespace LeftBehind.Story
             StoryUI.Lock(this);
         }
 
+        public void Dismiss()
+        {
+            if (open) Close();
+            reading = false;
+        }
+
         private void Close()
         {
             open = false;

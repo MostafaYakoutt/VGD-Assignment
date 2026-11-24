@@ -81,6 +81,17 @@ namespace LeftBehind.Story
             if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(first.gameObject);
         }
 
+        /// <summary>Shuts the menu without touching the cursor (leaving the loop for the menu or a restart).</summary>
+        public void Dismiss()
+        {
+            if (!open) return;
+            open = false;
+            dim.gameObject.SetActive(false);
+            Time.timeScale = 1f;
+            AudioListener.pause = false;
+            StoryUI.Unlock(this);
+        }
+
         private void Close()
         {
             if (!open) return;
