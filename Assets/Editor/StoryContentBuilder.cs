@@ -107,6 +107,7 @@ namespace LeftBehind.EditorTools
                 (Voice.Inner, "", "Not yet. I've missed something downstairs.")), "loop1Complete");
             EditorUtility.SetDirty(loopDoor);
 
+            StoryPropsBuilder.Place(1);
             Done();
         }
 
@@ -268,6 +269,7 @@ namespace LeftBehind.EditorTools
                 (Voice.Inner, "", "Not until I know what's in the study.")), "loop2Complete");
             EditorUtility.SetDirty(loopDoor);
 
+            StoryPropsBuilder.Place(2);
             Done();
         }
 
@@ -391,6 +393,7 @@ namespace LeftBehind.EditorTools
             ending.transform.SetParent(root, false);
             ending.Configure("choseToRemember", "choseToLookAway", "SampleScene");
 
+            StoryPropsBuilder.Place(3);
             Done();
         }
 
@@ -478,7 +481,7 @@ namespace LeftBehind.EditorTools
         }
 
         /// <summary>Loads the dialogue asset, or creates it with these lines if it does not exist yet.</summary>
-        private static DialogueData D(string name, params (Voice voice, string speaker, string text)[] lines)
+        internal static DialogueData D(string name, params (Voice voice, string speaker, string text)[] lines)
         {
             string path = $"{DialogueFolder}/{name}.asset";
             var existing = AssetDatabase.LoadAssetAtPath<DialogueData>(path);

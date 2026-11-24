@@ -15,6 +15,8 @@ namespace LeftBehind.Interaction
         [SerializeField] private InteractionHUD hud;
 
         private Interactable current;
+        private readonly RaycastHit[] hits = new RaycastHit[16];
+        private const int IgnoreRaycastLayer = 2;
 
         public Interactable Current => current;
 
@@ -61,11 +63,23 @@ namespace LeftBehind.Interaction
             if (Focus != null) return Focus;
             if (viewCamera == null) return null;
 
+            // The camera sits inside Walter's own capsule, so looking steeply down (at a sink or a low
+            // table) the ray can hit the capsule first. Skip it, and skip colliders on the Ignore Raycast
+            // layer (the invisible step blockers over furniture), and take the nearest other hit.
             var ray = new Ray(viewCamera.transform.position, viewCamera.transform.forward);
-            if (!Physics.Raycast(ray, out var hit, range, layers, QueryTriggerInteraction.Ignore))
-                return null;
+            int n = Physics.RaycastNonAlloc(ray, hits, range, layers, QueryTriggerInteraction.Ignore);
+            Collider nearest = null;
+            float nearestDistance = float.MaxValue;
+            for (int i = 0; i < n; i++)
+            {
+                var c = hits[i].collider;
+                if (c is CharacterController || c.gameObject.layer == IgnoreRaycastLayer || hits[i].distance >= nearestDistance) continue;
+                nearest = hits[i].collider;
+                nearestDistance = hits[i].distance;
+            }
+            if (nearest == null) return null;
 
-            var target = hit.collider.GetComponentInParent<Interactable>();
+            var target = nearest.GetComponentInParent<Interactable>();
             return target != null && target.CanInteract ? target : null;
         }
     }

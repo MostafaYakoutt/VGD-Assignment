@@ -548,6 +548,7 @@ namespace LeftBehind.EditorTools
                 if (b.min.y - floorY > 0.15f) continue;                         // only things standing on the floor
                 if (b.max.y - floorY >= 1.0f || b.size.x < 0.05f || b.size.z < 0.05f) continue;
                 var go = new GameObject("StepBlocker_" + col.gameObject.name);
+                go.layer = 2;      // Ignore Raycast: it stops feet, not the interaction ray (the fuse sits inside one)
                 go.transform.SetParent(blockers, false);
                 go.transform.position = new Vector3(b.center.x, floorY + 0.5f, b.center.z);
                 go.AddComponent<BoxCollider>().size = new Vector3(b.size.x, 1.0f, b.size.z);

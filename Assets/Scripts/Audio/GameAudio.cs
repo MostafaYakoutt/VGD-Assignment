@@ -10,8 +10,8 @@ namespace LeftBehind.Audio
     /// <summary>
     /// All of the game's sound, loaded from Resources/Audio (sources in CREDITS.txt there).
     /// Kept across scenes; when a scene loads it sets up that loop's ambience:
-    ///   Loop 1: wind outside and the dining room clock;
-    ///   Loop 2: the clock and a little wind;
+    ///   Loop 1: wind outside and the dining room clock (ticking from the WallClock);
+    ///   Loop 2: the clock and a little wind (the clock has stopped in Loop 3);
     ///   Loop 3: heavy rain, thunder after each lightning flash, and Emily's music box upstairs,
     ///           which stops when Walter steps into the study;
     ///   Main menu: the music box, quietly.
@@ -24,7 +24,7 @@ namespace LeftBehind.Audio
 
         private static GameAudio instance;
         private static AudioClip[] doorOpen, doorClose, footsteps, ticks;
-        private static AudioClip rain, thunder, musicBox, wind, rewind, click;
+        private static AudioClip rain, thunder, musicBox, wind, rewind, click, drip, waterRunning;
 
         private AudioSource musicBoxSource;
 
@@ -56,6 +56,8 @@ namespace LeftBehind.Audio
             wind = Resources.Load<AudioClip>("Audio/Wind");
             rewind = Resources.Load<AudioClip>("Audio/TapeRewind");
             click = Resources.Load<AudioClip>("Audio/Click");
+            drip = Resources.Load<AudioClip>("Audio/Drip");
+            waterRunning = Resources.Load<AudioClip>("Audio/WaterRunning");
         }
 
         // ------------------------------------------------------------------ per scene
@@ -73,6 +75,10 @@ namespace LeftBehind.Audio
             var env = FindAnyObjectByType<LoopEnvironment>();
             int loop = env != null ? env.Loop : 0;
             var root = new GameObject("Ambience").transform;     // belongs to the scene, so it goes with it
+            // The tick comes from the clock on the dining room wall, if it is there and still running.
+            var wallClock = FindAnyObjectByType<WallClock>();
+            var clockPos = wallClock != null ? wallClock.transform.position : new Vector3(-5f, 2.0f, 9.45f);
+            bool clockRuns = wallClock == null || wallClock.Running;
             switch (loop)
             {
                 case 0:
@@ -80,11 +86,11 @@ namespace LeftBehind.Audio
                     break;
                 case 1:
                     Loop2D(root, "Wind", wind, 0.16f);
-                    Clock(root, new Vector3(-5f, 2.0f, 9.45f));
+                    if (clockRuns) Clock(root, clockPos);
                     break;
                 case 2:
                     Loop2D(root, "Wind", wind, 0.07f);
-                    Clock(root, new Vector3(-5f, 2.0f, 9.45f));
+                    if (clockRuns) Clock(root, clockPos);
                     break;
                 case 3:
                     Loop2D(root, "Rain", rain, 0.3f);
@@ -201,6 +207,12 @@ namespace LeftBehind.Audio
         public static void Switch(Vector3 pos) => PlayAt(click, pos, 0.5f, Random.Range(0.95f, 1.05f));
 
         public static void Switch2D() => Play2D(click, 0.3f);
+
+        /// <summary>A drop from the kitchen tap landing in the sink.</summary>
+        public static void Drip(Vector3 pos) => PlayAt(drip, pos, 0.4f, Random.Range(0.9f, 1.12f));
+
+        /// <summary>The kitchen tap running; the tap plays it on its own looping source.</summary>
+        public static AudioClip WaterRunning => waterRunning;
 
         public static void TapeRewind() => Play2D(rewind, 0.75f, 1f, ignorePause: true);
 
