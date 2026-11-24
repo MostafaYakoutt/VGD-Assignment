@@ -1,0 +1,158 @@
+using StarterAssets;
+using UnityEngine;
+using UnityEngine.AI;
+
+namespace LeftBehind.Story
+{
+    /// <summary>
+    /// One of Ruth's mannequins in the Loop 1 attic. While Walter is in the attic it walks
+    /// towards him whenever he cannot see it, and freezes mid-step the moment it is in view.
+    /// "In view" means a point of its body is inside the camera's view (a little wider than the
+    /// screen, so it never moves at the very edge) with nothing solid in between. It never comes
+    /// closer than an arm's length: there is no way to be hurt in this game.
+    /// </summary>
+    [RequireComponent(typeof(NavMeshAgent))]
+    public class Mannequin : MonoBehaviour
+    {
+        private static readonly int WalkingId = Animator.StringToHash("Walking");
+        private const int IgnoreRaycastLayer = 2;
+
+        [SerializeField] private Animator animator;
+        [SerializeField] private Renderer body;
+        [Tooltip("The mannequins only move while the player is inside this box (the attic).")]
+        [SerializeField] private Bounds activeArea = new Bounds(new Vector3(-0.5f, 6.4f, 0f), new Vector3(18f, 3f, 19f));
+        [SerializeField] private float stopDistance = 1.5f;
+        [Tooltip("Fraction of the screen beyond each edge that still counts as being seen.")]
+        [SerializeField] private float viewMargin = 0.08f;
+        [Tooltip("Played the first time a mannequin is seen after it has moved.")]
+        [SerializeField] private NarrativeTrigger movedBeat;
+
+        private NavMeshAgent agent;
+        private Transform player;
+        private Camera viewCamera;
+        private Vector3 lastSeenAt;
+        private float nextRepath;
+        private readonly RaycastHit[] hits = new RaycastHit[8];
+
+        public bool IsSeen { get; private set; }
+
+        public void Configure(Animator anim, Renderer bodyRenderer, Bounds area, NarrativeTrigger beat)
+        {
+            animator = anim;
+            body = bodyRenderer;
+            activeArea = area;
+            movedBeat = beat;
+        }
+
+        private void Awake()
+        {
+            agent = GetComponent<NavMeshAgent>();
+            agent.stoppingDistance = stopDistance;
+            agent.autoBraking = false;
+            lastSeenAt = transform.position;
+        }
+
+        private void Start()
+        {
+            // Each one starts frozen somewhere different in its idle, so they do not stand in step.
+            if (animator != null) animator.Play("Idle", 0, Random.value);
+        }
+
+        private void Update()
+        {
+            if (player == null)
+            {
+                var fpc = FindAnyObjectByType<FirstPersonController>();
+                if (fpc != null) player = fpc.transform;
+            }
+            if (viewCamera == null) viewCamera = Camera.main;
+            if (player == null || viewCamera == null || !agent.isOnNavMesh) return;
+
+            bool wasSeen = IsSeen;
+            IsSeen = Seen();
+            bool playerInAttic = activeArea.Contains(player.position + Vector3.up);
+
+            if (IsSeen || !playerInAttic)
+            {
+                Freeze();
+                if (IsSeen && !wasSeen)
+                {
+                    if (movedBeat != null && Vector3.Distance(transform.position, lastSeenAt) > 1.5f) movedBeat.Fire();
+                    lastSeenAt = transform.position;
+                }
+                return;
+            }
+
+            // Unseen: walk towards him.
+            if (animator != null) animator.speed = 1f;
+            agent.isStopped = false;
+            if (Time.time >= nextRepath)
+            {
+                agent.SetDestination(player.position);
+                nextRepath = Time.time + 0.25f;
+            }
+            float toPlayer = Vector3.Distance(Flat(transform.position), Flat(player.position));
+            bool walking = toPlayer > stopDistance + 0.05f && agent.velocity.sqrMagnitude > 0.01f;
+            if (animator != null) animator.SetBool(WalkingId, walking);
+            if (!walking)
+            {
+                // Arrived: turn to face him, so that is how he finds it.
+                var dir = Flat(player.position - transform.position);
+                if (dir.sqrMagnitude > 0.001f)
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(dir), 240f * Time.deltaTime);
+            }
+        }
+
+        private void Freeze()
+        {
+            agent.isStopped = true;
+            agent.velocity = Vector3.zero;
+            if (animator != null) animator.speed = 0f;
+        }
+
+        /// <summary>True when any of a few points on the body is in view and not hidden behind anything.</summary>
+        private bool Seen()
+        {
+            var b = body != null ? body.bounds : new Bounds(transform.position + Vector3.up * 0.9f, new Vector3(0.5f, 1.8f, 0.5f));
+            var right = viewCamera.transform.right * Mathf.Min(b.extents.x, b.extents.z) * 0.6f;
+            var points = new[]
+            {
+                b.center, b.center + Vector3.up * b.extents.y * 0.8f, b.center - Vector3.up * b.extents.y * 0.8f,
+                b.center + right, b.center - right,
+            };
+            var eye = viewCamera.transform.position;
+            foreach (var p in points)
+            {
+                var vp = viewCamera.WorldToViewportPoint(p);
+                if (vp.z <= 0f || vp.x < -viewMargin || vp.x > 1f + viewMargin || vp.y < -viewMargin || vp.y > 1f + viewMargin) continue;
+                if (vp.z > viewCamera.farClipPlane) continue;
+                if (LineOfSight(eye, p)) return true;
+            }
+            return false;
+        }
+
+        private bool LineOfSight(Vector3 from, Vector3 to)
+        {
+            var dir = to - from;
+            float dist = dir.magnitude;
+            int n = Physics.RaycastNonAlloc(from, dir / dist, hits, dist, ~0, QueryTriggerInteraction.Ignore);
+            for (int i = 0; i < n; i++)
+            {
+                var c = hits[i].collider;
+                if (c is CharacterController || c.gameObject.layer == IgnoreRaycastLayer) continue;   // Walter himself, step blockers
+                if (c.transform.IsChildOf(transform)) continue;                                      // the mannequin itself
+                if (c.GetComponentInParent<Mannequin>() != null) continue;                           // another mannequin does not hide it
+                return false;
+            }
+            return true;
+        }
+
+        private static Vector3 Flat(Vector3 v) => new Vector3(v.x, 0f, v.z);
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = new Color(0.8f, 0.3f, 0.3f, 0.25f);
+            Gizmos.DrawWireCube(activeArea.center, activeArea.size);
+        }
+    }
+}

@@ -16,7 +16,8 @@ namespace LeftBehind.EditorTools
     ///   kitchen tap     drips (and starts again after being turned off), drips, running;
     ///   fridge calendar January 2025, October 2006, October 2004 in Ruth's hand;
     ///   pills           an organiser still full, one bottle from the clinic, none yet;
-    ///   wedding ring    Walter's on the dresser, Ruth's on the dresser, none (she is wearing it).
+    ///   wedding ring    Walter's on the dresser, Ruth's on the dresser, none (she is wearing it);
+    ///   mannequins      Loop 1 only: in the attic, moving while unseen (see MannequinBuilder).
     /// Rebuilding replaces the StoryProps object. Called at the end of each loop's story set-up;
     /// Menu: Left Behind > Story > Place Story Props (for the open loop scene).
     /// </summary>
@@ -49,6 +50,7 @@ namespace LeftBehind.EditorTools
             CalendarProp();
             PillsProp();
             RingProp();
+            if (loop == 1) MannequinBuilder.Place(root);     // Ruth's mannequins in the attic, Loop 1 only
         }
 
         // ------------------------------------------------------------------ wall clock
