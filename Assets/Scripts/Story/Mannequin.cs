@@ -45,6 +45,8 @@ namespace LeftBehind.Story
         private void Awake()
         {
             agent = GetComponent<NavMeshAgent>();
+            // Walter's flashlight stutters near them.
+            if (GetComponent<FlickerSource>() == null) gameObject.AddComponent<FlickerSource>().Configure(3.5f);
             agent.stoppingDistance = stopDistance;
             agent.autoBraking = false;
             lastSeenAt = transform.position;

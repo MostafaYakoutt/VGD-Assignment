@@ -40,6 +40,10 @@ namespace LeftBehind.Interaction
         private MaterialPropertyBlock block;
         private Vector2 sway;
         private float bobTime;
+        private float burstEnd;
+        private float nextStep;
+        private float flickerLevel = 1f;
+        private float beamIntensity = -1f;     // the beam's full brightness, read the first time it flickers
 
         public bool HasFlashlight => item != null;
         public bool IsOn { get; private set; }
@@ -60,6 +64,7 @@ namespace LeftBehind.Interaction
         {
             var holder = FindAnyObjectByType<PlayerFlashlight>();
             if (holder == null || holder.item == null) return;
+            holder.ResetFlicker();
             carried = holder.item;
             carriedOn = holder.IsOn;
             holder.model.SetParent(null, true);
@@ -152,6 +157,62 @@ namespace LeftBehind.Interaction
             if (keyboard != null && keyboard.fKey.wasPressedThisFrame) Toggle();
 
             UpdateSway();
+            UpdateFlicker();
+        }
+
+        /// <summary>
+        /// Near something wrong (a FlickerSource) the beam stutters: short bursts in which it dips,
+        /// sometimes nearly out, then comes back. The nearer Walter is, the more often they come.
+        /// </summary>
+        private void UpdateFlicker()
+        {
+            float strength = IsOn ? LeftBehind.Story.FlickerSource.Strength(transform.position) : 0f;
+            if (Time.time >= burstEnd)
+            {
+                // Between bursts: steady, and now and then a new burst (up to about two a second when right beside it).
+                if (strength > 0f && Random.value < strength * strength * 2f * Time.deltaTime)
+                {
+                    burstEnd = Time.time + Random.Range(0.15f, 0.5f);
+                    nextStep = 0f;
+                }
+                else
+                {
+                    SetLevel(1f);
+                    return;
+                }
+            }
+            if (Time.time < nextStep) return;
+            nextStep = Time.time + Random.Range(0.03f, 0.09f);
+            float r = Random.value;
+            SetLevel(r < 0.25f ? 0.04f : r < 0.55f ? 0.25f : r < 0.8f ? 0.6f : 1f);
+        }
+
+        /// <summary>Back to full brightness, ending any burst (switching it, or carrying it to the next loop).</summary>
+        private void ResetFlicker()
+        {
+            if (item != null && item.Beam != null && beamIntensity >= 0f) item.Beam.intensity = beamIntensity;
+            flickerLevel = 1f;
+            burstEnd = 0f;
+        }
+
+        /// <summary>The beam and bulb at a fraction of their full brightness.</summary>
+        private void SetLevel(float level)
+        {
+            if (item == null || !IsOn || Mathf.Approximately(level, flickerLevel)) return;
+            flickerLevel = level;
+            if (item.Beam != null)
+            {
+                if (beamIntensity < 0f) beamIntensity = item.Beam.intensity;
+                item.Beam.intensity = beamIntensity * level;
+            }
+            var bulb = item.BulbRenderer;
+            if (bulb != null)
+            {
+                block ??= new MaterialPropertyBlock();
+                bulb.GetPropertyBlock(block, item.BulbMaterialIndex);
+                block.SetColor(EmissionColorId, bulbEmission * level);
+                bulb.SetPropertyBlock(block, item.BulbMaterialIndex);
+            }
         }
 
         public void Toggle()
@@ -163,6 +224,7 @@ namespace LeftBehind.Interaction
 
         public void SetOn(bool on)
         {
+            ResetFlicker();
             IsOn = on;
             if (item == null) return;
 

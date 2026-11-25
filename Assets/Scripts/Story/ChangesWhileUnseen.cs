@@ -17,6 +17,12 @@ namespace LeftBehind.Story
     /// </summary>
     public class ChangesWhileUnseen : MonoBehaviour
     {
+        /// <summary>Metres within which a changed thing's outline shows again.</summary>
+        private const float QuietGlowRange = 1.2f;
+
+        /// <summary>Metres within which the flashlight stutters near a changed thing.</summary>
+        private const float FlickerRange = 3.5f;
+
         [Tooltip("What changes. Leave empty for a door: the door is the target.")]
         [SerializeField] private Transform target;
         [SerializeField] private Vector3 movedPosition;
@@ -129,6 +135,12 @@ namespace LeftBehind.Story
             done = true;
             if (door != null) door.SnapShut(silent ? 0f : latchVolume);
             else if (target != null) target.SetPositionAndRotation(movedPosition, movedRotation);
+            // Its outline would point straight at what changed: only show it once he is right by it.
+            var glow = target != null ? target.GetComponent<InteractableGlow>() : null;
+            if (glow != null) glow.Quiet(QuietGlowRange);
+            // Instead, the flashlight stutters near it.
+            if (target != null && target.GetComponent<FlickerSource>() == null)
+                target.gameObject.AddComponent<FlickerSource>().Configure(FlickerRange);
             StoryStateManager.Set(doneFlag);
         }
 

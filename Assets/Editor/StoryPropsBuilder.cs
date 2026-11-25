@@ -20,7 +20,9 @@ namespace LeftBehind.EditorTools
     ///   wedding ring    Walter's on the dresser, Ruth's on the dresser, none (she is wearing it);
     ///   mannequins      Loop 1 only: in the attic, moving while unseen (see MannequinBuilder);
     ///   behind his back a chair, the photo, a door and the bear, each changing once while unseen
-    ///                   (see BehindYourBackBuilder).
+    ///                   (see BehindYourBackBuilder);
+    ///   darkness        Loop 1's lighting and lamps, and the lamps that go out ahead of him (see DarknessBuilder);
+    ///   clutter         the everyday things left about the house in each loop (see HouseDressingBuilder).
     /// Rebuilding replaces the StoryProps object. Called at the end of each loop's story set-up;
     /// Menu: Left Behind > Story > Place Story Props (for the open loop scene).
     /// </summary>
@@ -55,6 +57,8 @@ namespace LeftBehind.EditorTools
             RingProp();
             if (loop == 1) MannequinBuilder.Place(root);     // Ruth's mannequins in the attic, Loop 1 only
             BehindYourBackBuilder.Place(root, loop);         // the things that change while Walter isn't looking
+            DarknessBuilder.Place(root, loop);               // Loop 1's darker house, and lamps that go out ahead of him
+            HouseDressingBuilder.Place(root, loop);          // the everyday clutter that tells each loop's story
         }
 
         // ------------------------------------------------------------------ wall clock
