@@ -15,7 +15,6 @@ namespace LeftBehind.Story
     public class Mannequin : MonoBehaviour
     {
         private static readonly int WalkingId = Animator.StringToHash("Walking");
-        private const int IgnoreRaycastLayer = 2;
 
         [SerializeField] private Animator animator;
         [SerializeField] private Renderer body;
@@ -32,7 +31,6 @@ namespace LeftBehind.Story
         private Camera viewCamera;
         private Vector3 lastSeenAt;
         private float nextRepath;
-        private readonly RaycastHit[] hits = new RaycastHit[8];
 
         public bool IsSeen { get; private set; }
 
@@ -114,38 +112,11 @@ namespace LeftBehind.Story
         private bool Seen()
         {
             var b = body != null ? body.bounds : new Bounds(transform.position + Vector3.up * 0.9f, new Vector3(0.5f, 1.8f, 0.5f));
-            var right = viewCamera.transform.right * Mathf.Min(b.extents.x, b.extents.z) * 0.6f;
-            var points = new[]
-            {
-                b.center, b.center + Vector3.up * b.extents.y * 0.8f, b.center - Vector3.up * b.extents.y * 0.8f,
-                b.center + right, b.center - right,
-            };
-            var eye = viewCamera.transform.position;
-            foreach (var p in points)
-            {
-                var vp = viewCamera.WorldToViewportPoint(p);
-                if (vp.z <= 0f || vp.x < -viewMargin || vp.x > 1f + viewMargin || vp.y < -viewMargin || vp.y > 1f + viewMargin) continue;
-                if (vp.z > viewCamera.farClipPlane) continue;
-                if (LineOfSight(eye, p)) return true;
-            }
-            return false;
+            return PlayerView.CanSee(viewCamera, b, transform, viewMargin, IsMannequin);
         }
 
-        private bool LineOfSight(Vector3 from, Vector3 to)
-        {
-            var dir = to - from;
-            float dist = dir.magnitude;
-            int n = Physics.RaycastNonAlloc(from, dir / dist, hits, dist, ~0, QueryTriggerInteraction.Ignore);
-            for (int i = 0; i < n; i++)
-            {
-                var c = hits[i].collider;
-                if (c is CharacterController || c.gameObject.layer == IgnoreRaycastLayer) continue;   // Walter himself, step blockers
-                if (c.transform.IsChildOf(transform)) continue;                                      // the mannequin itself
-                if (c.GetComponentInParent<Mannequin>() != null) continue;                           // another mannequin does not hide it
-                return false;
-            }
-            return true;
-        }
+        /// <summary>Another mannequin does not hide this one.</summary>
+        private static bool IsMannequin(Collider c) => c.GetComponentInParent<Mannequin>() != null;
 
         private static Vector3 Flat(Vector3 v) => new Vector3(v.x, 0f, v.z);
 

@@ -200,6 +200,9 @@ namespace LeftBehind.Audio
 
         public static void DoorClosed(Vector3 pos) => PlayAt(Pick(doorClose), pos, 0.5f, Random.Range(0.95f, 1.05f));
 
+        /// <summary>A door that has shut behind Walter's back: only the latch, quietly.</summary>
+        public static void DoorLatched(Vector3 pos, float volume) => PlayAt(Pick(doorClose), pos, volume, 1.15f);
+
         /// <summary>A locked door, or one that will never open: the handle and latch rattle.</summary>
         public static void DoorRattled(Vector3 pos) => PlayAt(Pick(doorClose), pos, 0.35f, 1.45f);
 

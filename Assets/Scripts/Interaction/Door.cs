@@ -138,6 +138,21 @@ namespace LeftBehind.Interaction
             if (swingSound != null) swingSound.Play();
         }
 
+        /// <summary>
+        /// Shuts the door at once, with its linked doors, without the swing: for a door that has
+        /// closed behind Walter's back. <paramref name="latchVolume"/> is how loud the latch clicks (0: silent).
+        /// </summary>
+        public void SnapShut(float latchVolume)
+        {
+            IsOpen = false;
+            currentAngle = targetAngle = 0f;
+            transform.localRotation = closedRotation;
+            if (linkedDoors != null)
+                foreach (var d in linkedDoors)
+                    if (d != null && d != this && d.IsOpen) d.SnapShut(0f);
+            if (latchVolume > 0f) LeftBehind.Audio.GameAudio.DoorLatched(transform.position, latchVolume);
+        }
+
         private void Update()
         {
             if (Mathf.Approximately(currentAngle, targetAngle)) return;

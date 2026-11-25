@@ -8781,7 +8781,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the calendar
-  noteId: calendarLoop3
   title: Ruth's calendar
   body: "Fri 1 \u2014 Sam, swimming 5pm\nFri 8 \u2014 Emily's school play, 6pm\nSat 16 \u2014 Mum's birthday. Take the kids.\nMon 18 \u2014 Sam, dentist 4.15\nTue 19 \u2014 Walter, memory clinic 10.30\n\nDON'T LET HIM CANCEL."
   flagToSet: readCalendarLoop3
@@ -9454,8 +9453,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: ff2a8495f5e7a514f8d926ef3bb0e0f6, type: 2}
   objective: 
 --- !u!1001 &229303027
@@ -21878,6 +21875,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 538638267}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &539058340
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 539058341}
+  m_Layer: 0
+  m_Name: BehindYourBack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &539058341
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 539058340}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1965374947}
+  m_Father: {fileID: 893492117}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &542001722
 GameObject:
   m_ObjectHideFlags: 0
@@ -23761,8 +23790,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: cd1a3ade96769304dbc99d381a585e7d, type: 2}
   objective: 
 --- !u!1 &603211075
@@ -27063,8 +27090,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 597e610e840e450498d2997805222867, type: 2}
   objective: 
 --- !u!1 &673943385
@@ -34381,6 +34406,7 @@ Transform:
   - {fileID: 534079012}
   - {fileID: 1446321257}
   - {fileID: 215223719}
+  - {fileID: 539058341}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &893596199
@@ -38598,8 +38624,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 905eb1222e4b1c54bba5d56cf3b56351, type: 2}
   objective: 
 --- !u!1001 &1025729488
@@ -45393,7 +45417,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the note
-  noteId: delusionNote
   title: Note on the study door
   body: "THAT WOMAN IS NOT RUTH.\n\nShe has Ruth's face and Ruth's voice, but she watches me. The children are not mine. They whisper when I leave the room.\n\nThey want me to forget.\nI will not forget.\n\n\u2014 W."
   flagToSet: readDelusionNote
@@ -46769,7 +46792,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the card
-  noteId: clinicCard
   title: Card on the fridge
   body: 'ST. MARY''S MEMORY CLINIC
 
@@ -53290,8 +53312,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: b5a0f17bafc3c6642b938b527e4efc1d, type: 2}
   objective: 
 --- !u!1 &1317826247
@@ -57664,8 +57684,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 092409dccc3dd1840adedc557c057526, type: 2}
   objective: 
 --- !u!1 &1449814089
@@ -58742,8 +58760,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 791182350a450b246aa34e3eee2a7e48, type: 2}
   objective: 
 --- !u!1 &1487374273
@@ -65054,8 +65070,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 655e5005e666bc24babf7198689ce11f, type: 2}
   objective: 
 --- !u!1001 &1692327370
@@ -65861,8 +65875,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: f485f2d4cac4e024e80e55f98ddb1375, type: 2}
   objective: 
 --- !u!1001 &1729542337
@@ -77780,6 +77792,64 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1963370780}
   m_Mesh: {fileID: 4300000, guid: 12476100a579ba94b9fdeca152bb09b5, type: 2}
+--- !u!1 &1965374946
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1965374947}
+  - component: {fileID: 1965374948}
+  m_Layer: 0
+  m_Name: Change_Bear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1965374947
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965374946}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 539058341}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1965374948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965374946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7cdf931004aa4f4c9684d4f6f2a4c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ChangesWhileUnseen
+  target: {fileID: 270630795}
+  movedPosition: {x: 7.55, y: 2.6, z: 5.22}
+  movedRotation: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
+  door: {fileID: 0}
+  latchVolume: 0.12
+  requiredFlag: sawTeddy
+  mustSeeFirst: 1
+  playerArea:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  minDistance: 2
+  maxDistance: 10
+  unseenSeconds: 0.6
+  doneFlag: changed_L3_Bear
 --- !u!1 &1965377387
 GameObject:
   m_ObjectHideFlags: 0

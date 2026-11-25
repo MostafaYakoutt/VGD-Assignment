@@ -3348,8 +3348,6 @@ MonoBehaviour:
   promptText: Take the ring
   item:
     id: weddingRing
-    name: Wedding ring
-    description: 'My wedding ring. It won''t go over the knuckle any more. Engraved inside: R & W.'
   flagToSet: hasWeddingRing
   dialogue: {fileID: 11400000, guid: b1741b9f95c84724baab3c54d5e34bbe, type: 2}
   hideWhenTaken: 1
@@ -10828,8 +10826,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 18db03731f2ba2e48aa31bb8a8c22342, type: 2}
   objective: 
 --- !u!1001 &291292685
@@ -11817,8 +11813,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 236d34189c44c7f4295d51b9e5809ca9, type: 2}
   objective: 
 --- !u!4 &310205846
@@ -18715,8 +18709,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: flashlight
-    name: Flashlight
-    description: Ruth bought it for the winter power cuts. She always kept spare batteries in the kitchen drawer.
   dialogue: {fileID: 11400000, guid: 292b8512bf266db4a836385a2a560b82, type: 2}
   objective: 
 --- !u!1001 &471925345
@@ -20382,6 +20374,64 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 525120112}
   m_Mesh: {fileID: 4300000, guid: cd7aac9d04993a94f80bc3859a2ca673, type: 2}
+--- !u!1 &525463830
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 525463831}
+  - component: {fileID: 525463832}
+  m_Layer: 0
+  m_Name: Change_Photo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &525463831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525463830}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1706509053}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &525463832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525463830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7cdf931004aa4f4c9684d4f6f2a4c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ChangesWhileUnseen
+  target: {fileID: 1562371017}
+  movedPosition: {x: -8.972002, y: 0.791, z: -8.518}
+  movedRotation: {x: 0, y: 0.70710677, z: 0, w: -0.7071069}
+  door: {fileID: 0}
+  latchVolume: 0.12
+  requiredFlag: sawFamilyPhoto
+  mustSeeFirst: 1
+  playerArea:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  minDistance: 2.5
+  maxDistance: 12
+  unseenSeconds: 0.6
+  doneFlag: changed_L1_Photo
 --- !u!1 &526026770
 GameObject:
   m_ObjectHideFlags: 0
@@ -25850,8 +25900,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 2997dcc1950ca2f4eac314b1229c8a83, type: 2}
   objective: 
 --- !u!1001 &654850252
@@ -35987,8 +36035,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: e653381821437b941aa38ca619d94fba, type: 2}
   objective: 
 --- !u!1 &921233797
@@ -39303,6 +39349,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 804795815}
   m_SourcePrefab: {fileID: 100100000, guid: 42b3a81a6cbe94c4890d35ae8e321635, type: 3}
+--- !u!4 &992972640 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 42b3a81a6cbe94c4890d35ae8e321635, type: 3}
+  m_PrefabInstance: {fileID: 992972639}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1001104837
 GameObject:
   m_ObjectHideFlags: 0
@@ -45252,6 +45303,64 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1319479184}
   m_SourcePrefab: {fileID: 100100000, guid: 22f743687c1ffe543be60a2b4db77a12, type: 3}
+--- !u!1 &1059302115
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1059302116}
+  - component: {fileID: 1059302117}
+  m_Layer: 0
+  m_Name: Change_Chair
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1059302116
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059302115}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1706509053}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1059302117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059302115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7cdf931004aa4f4c9684d4f6f2a4c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ChangesWhileUnseen
+  target: {fileID: 992972640}
+  movedPosition: {x: -3.2544987, y: 0.05186321, z: 5.05}
+  movedRotation: {x: 0.5861158, y: 0.3954781, z: 0.39534009, w: -0.5863204}
+  door: {fileID: 0}
+  latchVolume: 0.12
+  requiredFlag: sawEmptyTable
+  mustSeeFirst: 1
+  playerArea:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  minDistance: 2.5
+  maxDistance: 10
+  unseenSeconds: 0.6
+  doneFlag: changed_L1_Chair
 --- !u!1001 &1065993303
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47737,7 +47846,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the calendar
-  noteId: calendarLoop1
   title: Calendar on the fridge
   body: 'X X X X X
 
@@ -53554,8 +53662,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 84a3b31b3cdd90446905baeee232d7c7, type: 2}
   objective: 
 --- !u!1 &1285952306
@@ -58374,8 +58480,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 9844a87397604db478bb9d3b4901fb21, type: 2}
   objective: 
 --- !u!1 &1423960747
@@ -60230,8 +60334,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 2f7c82128993d0e408be760ae2c75b10, type: 2}
   objective: 
 --- !u!1 &1472490322
@@ -67411,6 +67513,39 @@ Transform:
   - {fileID: 507080982}
   - {fileID: 405332911}
   m_Father: {fileID: 956970773}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1706509052
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1706509053}
+  m_Layer: 0
+  m_Name: BehindYourBack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1706509053
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1706509052}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1059302116}
+  - {fileID: 525463831}
+  m_Father: {fileID: 1977064402}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1710980165
 GameObject:
@@ -75355,8 +75490,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 988023e5cc2f11e449bcb15f65ca8397, type: 2}
   objective: 
 --- !u!1 &1838400628
@@ -80771,6 +80904,7 @@ Transform:
   - {fileID: 940086474}
   - {fileID: 86441595}
   - {fileID: 1752561262}
+  - {fileID: 1706509053}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1977763306
@@ -85253,8 +85387,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 038c79b0f334dea4a96f258333fb2828, type: 2}
   objective: 
 --- !u!1 &2094695540
@@ -85747,8 +85879,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: f749592c156d240428b62e089f196f69, type: 2}
   objective: 
 --- !u!1 &2103507101

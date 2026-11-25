@@ -171,8 +171,6 @@ MonoBehaviour:
   promptText: Open Ruth's sewing box
   item:
     id: studyKey
-    name: Study key
-    description: A small brass key, wrapped in thread at the bottom of Ruth's sewing box. She kept it from me.
   flagToSet: hasStudyKey
   dialogue: {fileID: 11400000, guid: 795a8958d5970f24ebdca75d7c872983, type: 2}
   hideWhenTaken: 0
@@ -1560,8 +1558,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 80bc85191542fdf40aaec19b710a2484, type: 2}
   objective: 
 --- !u!1 &42754342
@@ -2610,7 +2606,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the note
-  noteId: noteTap
   title: Note on the sink
   body: 'TURN THE TAP
 
@@ -3185,8 +3180,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 3de25d1daeb151b4e9c9c378ba881b67, type: 2}
   objective: 
 --- !u!1 &78061187
@@ -12787,8 +12780,6 @@ MonoBehaviour:
   promptText: Take the spare fuse
   item:
     id: spareFuse
-    name: Spare fuse
-    description: A ceramic fuse from the sideboard. Ruth always kept one spare, just in case.
   flagToSet: hasFuse
   dialogue: {fileID: 11400000, guid: 5fc931e1dd163fb479da0cbb943fdf77, type: 2}
   hideWhenTaken: 1
@@ -17402,6 +17393,39 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 472653252}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &476023116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 476023117}
+  m_Layer: 0
+  m_Name: BehindYourBack
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &476023117
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476023116}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1205975984}
+  - {fileID: 1211183575}
+  m_Father: {fileID: 1111275794}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &477021616
 GameObject:
   m_ObjectHideFlags: 0
@@ -19340,8 +19364,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: ebc0af3ab95e727468a908e9791c46d6, type: 2}
   objective: 
 --- !u!1 &533957271
@@ -21234,7 +21256,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the note
-  noteId: noteTable
   title: Note on the kitchen table
   body: 'SET THE TABLE
 
@@ -22927,8 +22948,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 6c7cede4a7fd7d845a5db42e1cb862a4, type: 2}
   objective: 
 --- !u!1 &632347277
@@ -28371,8 +28390,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 750f0db4f5cf3e54b8126ee9c1743976, type: 2}
   objective: 
 --- !u!1 &806153873
@@ -28515,7 +28532,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the note
-  noteId: fridgeNote
   title: Note on the fridge
   body: "RUTH TOOK THE KIDS\nTO HER MOTHER'S.\n\nDON'T CALL.\n\n\u2014 W."
   flagToSet: readFridgeNote
@@ -29565,7 +29581,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the calendar
-  noteId: calendarLoop2
   title: Calendar on the fridge
   body: "Fri 6 \u2014 THEY COME BACK?\nFri 13 \u2014 STAY OUT OF THE STUDY\nFri 20 \u2014 THEY COME BACK?\nFri 27 \u2014 THEY COME BACK?\n\nEVERY SUNDAY: WIND THE CLOCK.\nRUTH ALWAYS DID."
   flagToSet: readCalendarLoop2
@@ -37425,8 +37440,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 9a2b33eb4cac35045b19a5b4b8e08c70, type: 2}
   objective: 
 --- !u!1001 &1086758802
@@ -38589,6 +38602,7 @@ Transform:
   - {fileID: 1279010350}
   - {fileID: 1879415271}
   - {fileID: 1273946525}
+  - {fileID: 476023117}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1113630742
@@ -41625,6 +41639,64 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.56605434, y: 1, z: 0.6274395}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1205975983
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1205975984}
+  - component: {fileID: 1205975985}
+  m_Layer: 0
+  m_Name: Change_ChildrensRoomDoor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1205975984
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205975983}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 476023117}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1205975985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205975983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7cdf931004aa4f4c9684d4f6f2a4c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ChangesWhileUnseen
+  target: {fileID: 1339549425}
+  movedPosition: {x: 0, y: 0, z: 0}
+  movedRotation: {x: 0, y: 0, z: 0, w: 1}
+  door: {fileID: 1339549426}
+  latchVolume: 0.12
+  requiredFlag: 
+  mustSeeFirst: 1
+  playerArea:
+    m_Center: {x: -5.35, y: 3.6, z: -3.3}
+    m_Extent: {x: 4.15, y: 1, z: 2.1}
+  minDistance: 1.5
+  maxDistance: 9
+  unseenSeconds: 0.6
+  doneFlag: changed_L2_ChildrensDoor
 --- !u!1 &1209114447
 GameObject:
   m_ObjectHideFlags: 0
@@ -41717,6 +41789,64 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1209114447}
   m_Mesh: {fileID: -7076884042317438871, guid: e779eb2d9fb2c314abfa050454bb226b, type: 3}
+--- !u!1 &1211183574
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1211183575}
+  - component: {fileID: 1211183576}
+  m_Layer: 0
+  m_Name: Change_Bear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1211183575
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211183574}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 476023117}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1211183576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211183574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7cdf931004aa4f4c9684d4f6f2a4c2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ChangesWhileUnseen
+  target: {fileID: 1105053202}
+  movedPosition: {x: -5.5, y: 2.6, z: -2.3}
+  movedRotation: {x: 0, y: 0.3969194, z: 0, w: 0.9178535}
+  door: {fileID: 0}
+  latchVolume: 0.12
+  requiredFlag: sawTeddyLoop2
+  mustSeeFirst: 1
+  playerArea:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  minDistance: 2
+  maxDistance: 9
+  unseenSeconds: 0.6
+  doneFlag: changed_L2_Bear
 --- !u!1 &1211246746
 GameObject:
   m_ObjectHideFlags: 0
@@ -43290,8 +43420,6 @@ MonoBehaviour:
   promptText: Take the ring
   item:
     id: ruthRing
-    name: Ruth's ring
-    description: Ruth's wedding ring, left on the dresser. She never takes it off, not even to sleep.
   flagToSet: hasRuthRing
   dialogue: {fileID: 11400000, guid: 76f9d35067b1ac24881eb9fa7a9655d3, type: 2}
   hideWhenTaken: 1
@@ -43443,8 +43571,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 2c72467c1f1339f4b9526528c9de58de, type: 2}
   objective: 
 --- !u!1 &1283212649
@@ -43502,8 +43628,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 1e7135a1cc7c33b4cb428d4aa6fc82d4, type: 2}
   objective: 
 --- !u!1 &1284049682
@@ -44023,7 +44147,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the note
-  noteId: noteFuse
   title: Note on the fuse box
   body: 'SPARE FUSE:
 
@@ -48215,7 +48338,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the note
-  noteId: noteKeys
   title: Note by the front door
   body: 'KEYS ARE IN YOUR COAT.
 
@@ -61392,8 +61514,6 @@ MonoBehaviour:
   titleHold: 2.5
   item:
     id: 
-    name: 
-    description: 
   dialogue: {fileID: 11400000, guid: 9a3476308c887ea438d61bc72dd920d0, type: 2}
   objective: 
 --- !u!1 &1837398591
@@ -68076,7 +68196,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the note
-  noteId: noteOven
   title: Note on a cupboard
   body: 'OVEN OFF.
 
@@ -70056,7 +70175,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.ReadableNote
   promptText: Read the note
-  noteId: noteEaten
   title: Note on a drawer
   body: 'YOU HAVE ALREADY
 

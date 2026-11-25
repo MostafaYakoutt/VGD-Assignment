@@ -18,7 +18,9 @@ namespace LeftBehind.EditorTools
     ///                   year are never written on it, so the player is not told when they are);
     ///   pills           an organiser still full, one bottle from the clinic, none yet;
     ///   wedding ring    Walter's on the dresser, Ruth's on the dresser, none (she is wearing it);
-    ///   mannequins      Loop 1 only: in the attic, moving while unseen (see MannequinBuilder).
+    ///   mannequins      Loop 1 only: in the attic, moving while unseen (see MannequinBuilder);
+    ///   behind his back a chair, the photo, a door and the bear, each changing once while unseen
+    ///                   (see BehindYourBackBuilder).
     /// Rebuilding replaces the StoryProps object. Called at the end of each loop's story set-up;
     /// Menu: Left Behind > Story > Place Story Props (for the open loop scene).
     /// </summary>
@@ -52,6 +54,7 @@ namespace LeftBehind.EditorTools
             PillsProp();
             RingProp();
             if (loop == 1) MannequinBuilder.Place(root);     // Ruth's mannequins in the attic, Loop 1 only
+            BehindYourBackBuilder.Place(root, loop);         // the things that change while Walter isn't looking
         }
 
         // ------------------------------------------------------------------ wall clock
