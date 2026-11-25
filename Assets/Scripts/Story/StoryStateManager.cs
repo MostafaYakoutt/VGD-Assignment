@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace LeftBehind.Story
@@ -133,17 +132,6 @@ namespace LeftBehind.Story
             if (string.IsNullOrEmpty(note.id) || notes.Exists(n => n.id == note.id)) return;
             notes.Add(note);
             PocketsChanged?.Invoke();
-        }
-
-        /// <summary>One-line summary for debugging and tests.</summary>
-        public static string Describe()
-        {
-            var sb = new StringBuilder();
-            sb.Append("flags: ").Append(string.Join(", ", flags));
-            sb.Append(" | objective: ").Append(Objective);
-            sb.Append(" | items: ").Append(string.Join(", ", items.ConvertAll(i => i.id)));
-            sb.Append(" | notes: ").Append(string.Join(", ", notes.ConvertAll(n => n.id)));
-            return sb.ToString();
         }
     }
 }

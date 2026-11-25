@@ -6,7 +6,7 @@ namespace LeftBehind.Loop
 {
     /// <summary>
     /// The Loop Door at the end of the Upper Landing. Using it starts the
-    /// rewind into the next, earlier loop, once the story flags it needs are set
+    /// transition into the next, earlier loop, once the story flags it needs are set
     /// (otherwise Walter says why not). A door without a next scene stays shut
     /// (the loop after it is not built yet).
     /// </summary>
@@ -21,7 +21,7 @@ namespace LeftBehind.Loop
         [SerializeField] private string[] requiredFlags = new string[0];
         [Tooltip("Played when a required flag is missing.")]
         [SerializeField] private DialogueData notYetDialogue;
-        [Tooltip("Set when the door starts the rewind, e.g. loop1Complete.")]
+        [Tooltip("Set when the door starts the transition, e.g. loop1Complete.")]
         [SerializeField] private string completeFlag = "";
 
         private InteractionHUD hud;

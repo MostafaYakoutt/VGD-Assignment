@@ -31,7 +31,7 @@ namespace LeftBehind.EditorTools
         [MenuItem("Left Behind/Story/Place Story Props")]
         public static void PlaceInOpenScene()
         {
-            var env = Object.FindFirstObjectByType<LoopEnvironment>();
+            var env = Object.FindAnyObjectByType<LoopEnvironment>();
             if (env == null) { Debug.LogError("Story props: this scene has no LoopEnvironment."); return; }
             Place(env.Loop);
             AssetDatabase.SaveAssets();

@@ -28,13 +28,6 @@ namespace LeftBehind.Story
         private Image choicePanel;
         private Text[] choiceLabels;
         private bool playing;
-        private int pickedFromCode = -1;
-
-        /// <summary>Picks a choice on the open choice panel (number keys do the same).</summary>
-        public static void PickChoice(int index)
-        {
-            if (StoryUI.Exists) StoryUI.Instance.GetComponent<DialogueManager>().pickedFromCode = index;
-        }
 
         public static bool Busy => StoryUI.Exists && StoryUI.Instance.GetComponent<DialogueManager>().playing;
 
@@ -149,10 +142,8 @@ namespace LeftBehind.Story
                 if (on) choiceLabels[i].text = $"{i + 1}.  {choices[i].text}";
             }
             int result = -1;
-            pickedFromCode = -1;
             while (result < 0)
             {
-                if (pickedFromCode >= 0 && pickedFromCode < choices.Length) result = pickedFromCode;
                 var kb = Keyboard.current;
                 if (kb != null)
                 {
@@ -168,8 +159,7 @@ namespace LeftBehind.Story
             picked(result);
         }
 
-        private static readonly System.Collections.Generic.Dictionary<string, Sprite> portraits =
-            new System.Collections.Generic.Dictionary<string, Sprite>();
+        private static readonly Dictionary<string, Sprite> portraits = new Dictionary<string, Sprite>();
 
         // Play mode may skip the domain reload, and the sprites made in the last session are destroyed with it.
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

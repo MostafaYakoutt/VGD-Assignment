@@ -14,7 +14,6 @@ namespace LeftBehind.Loop
     {
         [Tooltip("Which loop this scene is: 1 present day, 2 years earlier, 3 the aftermath.")]
         [SerializeField] private int loop = 1;
-        [SerializeField] private string period = "Present day, winter afternoon";
         [SerializeField] private Light sun;
         [SerializeField] private Vector3 sunEuler = new Vector3(50f, 330f, 0f);
         [SerializeField] private Color sunColor = new Color(0.82f, 0.88f, 1f);
@@ -25,8 +24,6 @@ namespace LeftBehind.Loop
 
         /// <summary>PlayerPrefs key: the furthest loop reached, for the Chapters menu.</summary>
         public const string ReachedKey = "LeftBehind.ReachedLoop";
-
-        public string Period => period;
 
         public int Loop => loop;
 

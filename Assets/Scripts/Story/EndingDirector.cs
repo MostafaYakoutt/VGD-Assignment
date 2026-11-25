@@ -9,7 +9,8 @@ namespace LeftBehind.Story
     /// <summary>
     /// Plays one of the two endings once the choice in the study is made.
     /// Remember: the screen fades to black over a few closing lines, then any key returns
-    /// to the main menu (where the photograph now shows their faces). Look away: the house rewinds back to Loop 1 and it starts again.
+    /// to the main menu (where the photograph now shows their faces). Look away: the loop transition
+    /// takes him back to Loop 1 and it starts again.
     /// The ending reached is saved for the main menu (PlayerPrefs "LeftBehind.Ending").
     /// </summary>
     public class EndingDirector : MonoBehaviour

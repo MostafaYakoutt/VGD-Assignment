@@ -15,7 +15,7 @@ namespace LeftBehind.Audio
     ///   Loop 3: heavy rain, thunder after each lightning flash, and Emily's music box upstairs,
     ///           which stops when Walter steps into the study;
     ///   Main menu: the music box, quietly.
-    /// It also gives the player footsteps, and plays one-shots for doors, switches and the rewind.
+    /// It also gives the player footsteps, and plays one-shots for doors, switches and the tap.
     /// </summary>
     public class GameAudio : MonoBehaviour
     {
@@ -24,7 +24,7 @@ namespace LeftBehind.Audio
 
         private static GameAudio instance;
         private static AudioClip[] doorOpen, doorClose, footsteps, ticks;
-        private static AudioClip rain, thunder, musicBox, wind, rewind, click, drip, waterRunning;
+        private static AudioClip rain, thunder, musicBox, wind, click, drip, waterRunning;
 
         private AudioSource musicBoxSource;
 
@@ -54,7 +54,6 @@ namespace LeftBehind.Audio
             thunder = Resources.Load<AudioClip>("Audio/Thunder");
             musicBox = Resources.Load<AudioClip>("Audio/MusicBox");
             wind = Resources.Load<AudioClip>("Audio/Wind");
-            rewind = Resources.Load<AudioClip>("Audio/TapeRewind");
             click = Resources.Load<AudioClip>("Audio/Click");
             drip = Resources.Load<AudioClip>("Audio/Drip");
             waterRunning = Resources.Load<AudioClip>("Audio/WaterRunning");
@@ -213,8 +212,6 @@ namespace LeftBehind.Audio
 
         /// <summary>The kitchen tap running; the tap plays it on its own looping source.</summary>
         public static AudioClip WaterRunning => waterRunning;
-
-        public static void TapeRewind() => Play2D(rewind, 0.75f, 1f, ignorePause: true);
 
         /// <summary>Thunder after a lightning flash; it rumbles out over a few seconds.</summary>
         public static void Thunder(float delay)

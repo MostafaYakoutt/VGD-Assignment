@@ -10,5 +10,5 @@ MusicBox.ogg        "4 Music Box Tracks" by Aureolus_Omicron
                     (musicbox3_sad_tune).                                https://opengameart.org/content/4-music-box-tracks
 Footsteps/*.wav     Unity Starter Assets (already in the project).
 
-Generated for this project (Python/NumPy): TapeRewind.wav, Wind.wav, Click.wav.
+Generated for this project (Python/NumPy): Wind.wav, Click.wav.
 Generated for this project (Python, Tools/story_assets.py): Drip.wav, WaterRunning.wav.

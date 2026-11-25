@@ -30,8 +30,6 @@ namespace LeftBehind.Interaction
         private FirstPersonController controller;
         private Camera viewCamera;
 
-        public bool IsInspecting => inspecting;
-
         public override string Prompt => inspecting ? putBackText : promptText;
 
         private void Reset()

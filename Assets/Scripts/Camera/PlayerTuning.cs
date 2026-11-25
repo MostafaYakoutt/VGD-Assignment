@@ -52,7 +52,7 @@ namespace LeftBehind.CameraSystem
             if (bob == null) bob = fpc.gameObject.AddComponent<HeadBob>();
             bob.Configure(root, BobAmount[i]);
 
-            foreach (var cam in Object.FindObjectsByType<CinemachineCamera>(FindObjectsSortMode.None))
+            foreach (var cam in Object.FindObjectsByType<CinemachineCamera>())
             {
                 if (cam.name == "CM_FirstPerson") cam.Lens.FieldOfView = FieldOfView;
                 else if (cam.name == "CM_LookCloser") cam.Lens.FieldOfView = LookCloserFieldOfView;
@@ -70,8 +70,6 @@ namespace LeftBehind.CameraSystem
     /// </summary>
     public class HeadBob : MonoBehaviour
     {
-        private const float Stride = 0.75f;      // the same stride as the footsteps
-
         private Transform head;
         private float amount;
         private Vector3 basePos;
@@ -100,7 +98,7 @@ namespace LeftBehind.CameraSystem
             float d = delta.magnitude;
             bool walking = d > 0.0005f && d < 0.5f && controller != null && controller.enabled && controller.isGrounded;
             weight = Mathf.MoveTowards(weight, walking ? 1f : 0f, Time.deltaTime * 3f);
-            if (walking) phase += d / Stride * Mathf.PI;     // half a cycle per step
+            if (walking) phase += d / LeftBehind.Audio.Footsteps.Stride * Mathf.PI;     // half a cycle per step
             float scale = 1f / Mathf.Max(0.01f, transform.lossyScale.y);
             float dip = -Mathf.Abs(Mathf.Sin(phase)) * amount;
             float sway = Mathf.Sin(phase * 0.5f) * amount * 0.6f;

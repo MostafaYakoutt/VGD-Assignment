@@ -1,4 +1,3 @@
-using System.Collections;
 using StarterAssets;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -33,7 +32,6 @@ namespace LeftBehind.CameraSystem
         private float baseVignette;
         private float vignetteBlend;
         private float baseRotationSpeed;
-        private Coroutine cinematic;
 
         public static CameraDirector Instance { get; private set; }
 
@@ -88,21 +86,6 @@ namespace LeftBehind.CameraSystem
             if (on) SetLookCloser(false);
             if (loopShotCam != null)
                 loopShotCam.Priority = on ? activePriority + 10 : inactivePriority;
-        }
-
-        /// <summary>Cuts to the fixed loop shot, holds it, then returns to first person.</summary>
-        public void PlayLoopShot(float holdSeconds)
-        {
-            if (cinematic != null) StopCoroutine(cinematic);
-            cinematic = StartCoroutine(LoopShotRoutine(holdSeconds));
-        }
-
-        private IEnumerator LoopShotRoutine(float holdSeconds)
-        {
-            SetLoopShot(true);
-            yield return new WaitForSeconds(holdSeconds);
-            SetLoopShot(false);
-            cinematic = null;
         }
     }
 }

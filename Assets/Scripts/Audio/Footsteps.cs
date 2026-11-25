@@ -10,7 +10,9 @@ namespace LeftBehind.Audio
     [RequireComponent(typeof(CharacterController))]
     public class Footsteps : MonoBehaviour
     {
-        [SerializeField] private float stride = 0.75f;
+        /// <summary>Metres walked per step; the head bob uses the same stride.</summary>
+        public const float Stride = 0.75f;
+
         [SerializeField] private float volume = 0.3f;
 
         private AudioClip[] clips;
@@ -41,7 +43,7 @@ namespace LeftBehind.Audio
             // Ignore teleports and frames where the player is frozen or in the air.
             if (d > 0.5f || !controller.enabled || !controller.isGrounded || clips == null || clips.Length == 0) return;
             travelled += d;
-            if (travelled < stride) return;
+            if (travelled < Stride) return;
             travelled = 0f;
             int c = Random.Range(0, clips.Length);
             if (c == lastClip) c = (c + 1) % clips.Length;

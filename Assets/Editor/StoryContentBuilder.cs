@@ -46,7 +46,7 @@ namespace LeftBehind.EditorTools
                         (Voice.Inner, "", "It isn't locked. It just... won't.")),
                     "", useTarget: frontDoor);
 
-            var photo = Object.FindFirstObjectByType<Inspectable>();
+            var photo = Object.FindAnyObjectByType<Inspectable>();
             Loop3Builder.PhotoOnFrame(photo.gameObject, "FramePhoto_Blurred", Loop3Builder.PhotoFront);
             Beat(root, "FamilyPhoto", NarrativeTrigger.Mode.Use, photo.transform.position)
                 .Configure(NarrativeTrigger.Mode.Use, "sawFamilyPhoto", D("L1_FamilyPhoto",
@@ -60,7 +60,7 @@ namespace LeftBehind.EditorTools
                         (Voice.Inner, "", "When did I start eating alone?")),
                     "", zone: new Vector3(9.2f, 3f, 8.4f));
 
-            var flashlight = Object.FindFirstObjectByType<FlashlightPickup>();
+            var flashlight = Object.FindAnyObjectByType<FlashlightPickup>();
             var fl = Beat(root, "Flashlight", NarrativeTrigger.Mode.Use, flashlight.transform.position);
             fl.Configure(NarrativeTrigger.Mode.Use, "hasFlashlight", D("L1_Flashlight",
                     (Voice.Inner, "", "Ruth's flashlight. She bought it for the power cuts."),
@@ -101,7 +101,7 @@ namespace LeftBehind.EditorTools
                         (Voice.Inner, "", "Whose was it? Why can't I remember?")),
                     "", useTarget: bear1);
 
-            var loopDoor = Object.FindFirstObjectByType<LoopDoor>();
+            var loopDoor = Object.FindAnyObjectByType<LoopDoor>();
             Undo.RecordObject(loopDoor, "Gate Loop Door");
             loopDoor.ConfigureGate(new[] { "sawFamilyPhoto", "hasFlashlight" }, D("L1_LoopDoorNotYet",
                 (Voice.Inner, "", "Not yet. I've missed something downstairs.")), "loop1Complete");
@@ -262,7 +262,7 @@ namespace LeftBehind.EditorTools
                     (Voice.Inner, "", "I did. Why would I do that?")),
                 "Unlock the study", "Locked");
 
-            var loopDoor = Object.FindFirstObjectByType<LoopDoor>();
+            var loopDoor = Object.FindAnyObjectByType<LoopDoor>();
             Undo.RecordObject(loopDoor, "Gate Loop Door");
             loopDoor.ConfigureGate(new[] { "studyBricked" }, D("L2_LoopDoorNotYet",
                 (Voice.Inner, "", "Not yet."),
@@ -426,7 +426,7 @@ namespace LeftBehind.EditorTools
         /// <summary>Finds a component by object name, including inactive objects.</summary>
         private static T FindIncl<T>(string name) where T : Component
         {
-            foreach (var c in Object.FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var c in Object.FindObjectsByType<T>(FindObjectsInactive.Include))
                 if (c.name == name) return c;
             return null;
         }

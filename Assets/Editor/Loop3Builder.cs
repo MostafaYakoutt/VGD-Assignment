@@ -45,11 +45,11 @@ namespace LeftBehind.EditorTools
             if (flashlight != null) Object.DestroyImmediate(flashlight);
 
             // The table is set for the whole family tonight.
-            foreach (var t in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var t in Object.FindObjectsByType<Transform>(FindObjectsInactive.Include))
                 if (t.name == "FamilyPlaces") t.gameObject.SetActive(true);
 
             // Every lamp in the house is on.
-            foreach (var lamp in Object.FindObjectsByType<LampSwitch>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var lamp in Object.FindObjectsByType<LampSwitch>(FindObjectsInactive.Include))
             {
                 var so = new SerializedObject(lamp);
                 so.FindProperty("isOn").boolValue = true;
@@ -57,7 +57,7 @@ namespace LeftBehind.EditorTools
             }
 
             Storm();
-            foreach (var door in Object.FindObjectsByType<Door>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var door in Object.FindObjectsByType<Door>(FindObjectsInactive.Include))
             {
                 if (door.name == "Door_Study") door.gameObject.SetActive(true);
                 var dso = new SerializedObject(door);
@@ -82,10 +82,9 @@ namespace LeftBehind.EditorTools
 
         private static void Storm()
         {
-            var env = Object.FindFirstObjectByType<LoopEnvironment>();
+            var env = Object.FindAnyObjectByType<LoopEnvironment>();
             var so = new SerializedObject(env);
             so.FindProperty("loop").intValue = 3;
-            so.FindProperty("period").stringValue = "The same night, a storm";
             so.FindProperty("sunEuler").vector3Value = new Vector3(40f, 200f, 0f);
             so.FindProperty("sunColor").colorValue = new Color(0.45f, 0.52f, 0.75f);
             so.FindProperty("sunIntensity").floatValue = 0.06f;
@@ -99,7 +98,7 @@ namespace LeftBehind.EditorTools
             lightning.Configure(sun);
 
             // By day Loop 1 is lit through its windows; tonight only the lamps light the house.
-            foreach (var l in Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            foreach (var l in Object.FindObjectsByType<Light>(FindObjectsInactive.Include))
             {
                 if (l.type != LightType.Point) continue;
                 l.intensity *= 1.8f;
