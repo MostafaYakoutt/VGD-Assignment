@@ -171,6 +171,10 @@ namespace LeftBehind.Story
         private static readonly System.Collections.Generic.Dictionary<string, Sprite> portraits =
             new System.Collections.Generic.Dictionary<string, Sprite>();
 
+        // Play mode may skip the domain reload, and the sprites made in the last session are destroyed with it.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetPortraits() => portraits.Clear();
+
         /// <summary>Resources/Portraits/{Name}.png, or {Name}_Soft.png before Loop 3, when his memory is still blurred.</summary>
         private static Sprite PortraitFor(DialogueData.Line line)
         {
