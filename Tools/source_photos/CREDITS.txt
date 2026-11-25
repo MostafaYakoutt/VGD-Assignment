@@ -1,11 +1,8 @@
-Family_playing_a_board.jpg
-  "Family Playing a Board", photograph by Bill Branson, 26 July 2007.
-  National Cancer Institute (NIH) Visuals Online, image ID 4420.
-  Wikimedia Commons: https://commons.wikimedia.org/wiki/File:Family_playing_a_board.jpg
-  License: public domain (a work of the US federal government).
-  SHA-1 of the file as downloaded: 6b5dc9204ab5d0c2f20a3b9424b4a91c6aaf768e
+Hale_family_photo.jpg
+  A colour family snapshot (a couple, their young daughter and son, outside a house), 1200 x 1200.
+  Supplied by the developer for this project on 25 November 2026.
 
-It stands in for the Hale family photograph (Ruth, Walter, Sam and Emily, left to right).
+It stands in for the Hale family photograph (Ruth, Walter, Emily and Sam).
 Assets/Editor/FamilyPhotoBuilder.cs makes every copy used in the game from it
 (Left Behind > Story > Rebuild Family Photos): the menu photo, the framed prints, the oval
 print and the dialogue portraits, clear and with the faces blurred.

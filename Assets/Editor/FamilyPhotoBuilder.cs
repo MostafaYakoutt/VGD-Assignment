@@ -6,21 +6,21 @@ namespace LeftBehind.EditorTools
 {
     /// <summary>
     /// Makes every copy of the family photograph from one source photo
-    /// (Tools/source_photos/Family_playing_a_board.jpg, public domain; see the CREDITS.txt there):
+    /// (Tools/source_photos/Hale_family_photo.jpg; see the CREDITS.txt there):
     ///   Resources/Menu/FamilyPhoto_Clear, _Blurred           the main menu (4:3)
     ///   Story/Textures/FramePhoto_Clear, _Blurred           the framed prints, behind a mat (0.72:1)
     ///   Story/Textures/FramePhoto_ClearOval                 the round frames in Loop 2 (oval, cut out)
     ///   Resources/Portraits/{Walter,Ruth,Emily,Sam}[_Soft]  the dialogue portraits
-    /// "Blurred" blurs only the faces. The photo is toned like a colour print from the early 2000s
-    /// that has hung in a sunny room for a while: a little faded, warm, softer blacks.
+    /// "Blurred" blurs only the faces. The photo is toned like an old colour print that has hung
+    /// in a sunny room for a while: a little faded, warm, softer blacks.
     /// Menu: Left Behind > Story > Rebuild Family Photos.
     /// </summary>
     public static class FamilyPhotoBuilder
     {
-        private const string SourcePath = "Tools/source_photos/Family_playing_a_board.jpg";
+        private const string SourcePath = "Tools/source_photos/Hale_family_photo.jpg";
 
-        /// <summary>The source is halved on load: every copy is far smaller, and blurring is quicker.</summary>
-        private const int Downsample = 2;
+        /// <summary>How much the source is shrunk on load (1: the 1200 px photo is used as it is).</summary>
+        private const int Downsample = 1;
 
         /// <summary>A face in the source photo: centre and radii in full-size source pixels (top-left origin).</summary>
         private struct Face
@@ -36,19 +36,18 @@ namespace LeftBehind.EditorTools
                 centre = new Vector2(x, y) / Downsample;
                 radius = new Vector2(rx, ry) / Downsample;
                 portrait = px < 0f ? centre : new Vector2(px, py) / Downsample;
-                portraitSide = side < 0f ? radius.y * 2.6f : side / Downsample;
+                portraitSide = side < 0f ? radius.y * 3.1f : side / Downsample;
             }
         }
 
-        // Ruth (in profile), Walter, Sam and Emily, left to right, around the board game.
-        // Ruth faces Walter, her profile almost touching his cheek, so her portrait is a tighter
-        // crop of its own that stops short of his face.
+        // Walter at the back, Ruth in front of him, Emily in front of her and Sam on the right,
+        // outside the house in the sun.
         private static readonly Face[] Faces =
         {
-            new Face("Ruth", 645f, 790f, 90f, 135f, 640f, 800f, 250f),
-            new Face("Walter", 840f, 735f, 100f, 140f),
-            new Face("Sam", 1630f, 955f, 115f, 145f),
-            new Face("Emily", 2250f, 705f, 100f, 140f),
+            new Face("Ruth", 530f, 420f, 68f, 88f),
+            new Face("Walter", 705f, 310f, 62f, 76f),
+            new Face("Emily", 655f, 735f, 62f, 84f),      // down to her chin: her smile is wide open
+            new Face("Sam", 880f, 605f, 66f, 86f),
         };
 
         private static Color[] photo;
@@ -60,8 +59,8 @@ namespace LeftBehind.EditorTools
             if (!File.Exists(SourcePath)) { Debug.LogError("Family photo: no source at " + SourcePath); return; }
             Load();
             var blurred = BlurFaces(photo, 14);
-            // 4:3 at the photo's full height, centred on the family.
-            var photoCrop = S(new Rect(160f, 0f, 2657f, 1993f));
+            // 4:3 across the photo's full width, from just above Walter's head to below their waists.
+            var photoCrop = S(new Rect(0f, 150f, 1200f, 900f));
 
             Save("Assets/Resources/Menu/FamilyPhoto_Clear.png", Print(photo, photoCrop, 640, 480, 0.3f));
             Save("Assets/Resources/Menu/FamilyPhoto_Blurred.png", Print(blurred, photoCrop, 640, 480, 0.3f));
@@ -246,9 +245,8 @@ namespace LeftBehind.EditorTools
         private static Color[,] Oval(Color[] img)
         {
             const int W = 300, H = 333;
-            // Wide enough for all four faces, Ruth's at the left included; the oval is taller than the photo,
-            // so its top and bottom run past it (sampling clamps to the edge rows, which the rim's fade covers).
-            var crop = S(new Rect(300f, 820f - 1194f, 2150f, 2389f));
+            // Centred on the four faces, from above Walter's hair to below Emily's chin, in the oval's 0.9 shape.
+            var crop = S(new Rect(290f, 65f, 820f, 911f));
             var o = new Color[W, H];
             for (int y = 0; y < H; y++)
                 for (int x = 0; x < W; x++)
