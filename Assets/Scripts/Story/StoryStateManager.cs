@@ -4,47 +4,35 @@ using UnityEngine;
 
 namespace LeftBehind.Story
 {
-    /// <summary>Something Walter carries, shown in the Pockets screen.</summary>
+    /// <summary>
+    /// Something Walter carries (the flashlight, the spare fuse, the study key). Only its id
+    /// matters: doors and the fuse box check for it. Kept as a struct so the ids already
+    /// saved in the scenes still load.
+    /// </summary>
     [Serializable]
-    public struct PocketItem
+    public struct CarriedItem
     {
         public string id;
-        public string name;
-        [TextArea] public string description;
-    }
-
-    /// <summary>A note Walter has read, kept in the Pockets screen's Notes list.</summary>
-    [Serializable]
-    public struct NoteEntry
-    {
-        public string id;
-        public string title;
-        [TextArea] public string body;
     }
 
     /// <summary>
-    /// The story state: flags, the current objective, carried items and read notes.
+    /// The story state: flags, the current objective and the items Walter carries.
     /// It is static, so it survives the scene loads between loops; triggers set flags,
     /// and doors, dialogue, objectives and level loads read them.
     /// </summary>
     public static class StoryStateManager
     {
         private static readonly HashSet<string> flags = new HashSet<string>();
-        private static readonly List<PocketItem> items = new List<PocketItem>();
-        private static readonly List<NoteEntry> notes = new List<NoteEntry>();
+        private static readonly HashSet<string> items = new HashSet<string>();
 
         private static readonly HashSet<string> savedFlags = new HashSet<string>();
-        private static readonly List<PocketItem> savedItems = new List<PocketItem>();
-        private static readonly List<NoteEntry> savedNotes = new List<NoteEntry>();
+        private static readonly HashSet<string> savedItems = new HashSet<string>();
         private static string savedObjective = "";
 
         public static string Objective { get; private set; } = "";
-        public static IReadOnlyList<PocketItem> Items => items;
-        public static IReadOnlyList<NoteEntry> Notes => notes;
 
         public static event Action<string> FlagSet;
         public static event Action<string> ObjectiveChanged;
-        public static event Action PocketsChanged;
 
         // Play mode may skip the domain reload, so clear the state from the last session.
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -52,19 +40,16 @@ namespace LeftBehind.Story
         {
             flags.Clear();
             items.Clear();
-            notes.Clear();
             Objective = "";
             FlagSet = null;
             ObjectiveChanged = null;
-            PocketsChanged = null;
         }
 
-        /// <summary>Remembers the state at the start of a loop, for Restart loop.</summary>
+        /// <summary>Remembers the state at the start of a loop, for Restart chapter.</summary>
         public static void TakeSnapshot()
         {
             savedFlags.Clear(); savedFlags.UnionWith(flags);
-            savedItems.Clear(); savedItems.AddRange(items);
-            savedNotes.Clear(); savedNotes.AddRange(notes);
+            savedItems.Clear(); savedItems.UnionWith(items);
             savedObjective = Objective;
         }
 
@@ -72,10 +57,8 @@ namespace LeftBehind.Story
         public static void RestoreSnapshot()
         {
             flags.Clear(); flags.UnionWith(savedFlags);
-            items.Clear(); items.AddRange(savedItems);
-            notes.Clear(); notes.AddRange(savedNotes);
+            items.Clear(); items.UnionWith(savedItems);
             SetObjective(savedObjective);
-            PocketsChanged?.Invoke();
         }
 
         /// <summary>Clears the story for a new playthrough (after an ending). Listeners stay subscribed.</summary>
@@ -83,9 +66,7 @@ namespace LeftBehind.Story
         {
             flags.Clear();
             items.Clear();
-            notes.Clear();
             SetObjective("");
-            PocketsChanged?.Invoke();
         }
 
         public static bool Has(string flag) => !string.IsNullOrEmpty(flag) && flags.Contains(flag);
@@ -113,25 +94,13 @@ namespace LeftBehind.Story
             ObjectiveChanged?.Invoke(text);
         }
 
-        public static void AddItem(PocketItem item)
+        public static void AddItem(string id)
         {
-            if (string.IsNullOrEmpty(item.id) || items.Exists(i => i.id == item.id)) return;
-            items.Add(item);
-            PocketsChanged?.Invoke();
+            if (!string.IsNullOrEmpty(id)) items.Add(id);
         }
 
-        public static bool HasItem(string id) => items.Exists(i => i.id == id);
+        public static bool HasItem(string id) => !string.IsNullOrEmpty(id) && items.Contains(id);
 
-        public static void RemoveItem(string id)
-        {
-            if (items.RemoveAll(i => i.id == id) > 0) PocketsChanged?.Invoke();
-        }
-
-        public static void AddNote(NoteEntry note)
-        {
-            if (string.IsNullOrEmpty(note.id) || notes.Exists(n => n.id == note.id)) return;
-            notes.Add(note);
-            PocketsChanged?.Invoke();
-        }
+        public static void RemoveItem(string id) => items.Remove(id);
     }
 }

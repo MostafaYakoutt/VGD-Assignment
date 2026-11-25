@@ -4,13 +4,13 @@ using UnityEngine;
 namespace LeftBehind.Story
 {
     /// <summary>
-    /// Something Walter takes with E: it goes into his Pockets with a description in his
-    /// own words, sets its flag and can start a conversation. The object either disappears
-    /// (a fuse picked up) or stays where it is (a box the key was taken out of).
+    /// Something Walter takes with E: he carries it from then on, it sets its flag and can
+    /// start a conversation. The object either disappears (a fuse picked up) or stays where
+    /// it is (a box the key was taken out of).
     /// </summary>
     public class PickupItem : Interactable
     {
-        [SerializeField] private PocketItem item;
+        [SerializeField] private CarriedItem item;
         [SerializeField] private string flagToSet = "";
         [SerializeField] private DialogueData dialogue;
         [Tooltip("Hide the object once taken; otherwise it stays but can no longer be used.")]
@@ -20,11 +20,10 @@ namespace LeftBehind.Story
 
         public override bool CanInteract => base.CanInteract && !taken;
 
-        public void Configure(string prompt, string id, string itemName, string description, string flag,
-            DialogueData d, bool hide)
+        public void Configure(string prompt, string id, string flag, DialogueData d, bool hide)
         {
             promptText = prompt;
-            item = new PocketItem { id = id, name = itemName, description = description };
+            item = new CarriedItem { id = id };
             flagToSet = flag;
             dialogue = d;
             hideWhenTaken = hide;
@@ -42,7 +41,7 @@ namespace LeftBehind.Story
         {
             if (taken) return;
             taken = true;
-            StoryStateManager.AddItem(item);
+            StoryStateManager.AddItem(item.id);
             StoryStateManager.Set(flagToSet);
             if (!silent) DialogueManager.Play(dialogue);
             if (hideWhenTaken) gameObject.SetActive(false);

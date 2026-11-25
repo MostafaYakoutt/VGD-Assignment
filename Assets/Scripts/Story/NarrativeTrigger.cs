@@ -34,7 +34,7 @@ namespace LeftBehind.Story
         [SerializeField] private string flagToSet = "";
         [SerializeField] private string titleCard = "";
         [SerializeField] private float titleHold = 2.5f;
-        [SerializeField] private PocketItem item;
+        [SerializeField] private CarriedItem item;
         [SerializeField] private DialogueData dialogue;
         [Tooltip("Shown after the conversation (empty keeps the current objective).")]
         [SerializeField] private string objective = "";
@@ -59,8 +59,7 @@ namespace LeftBehind.Story
 
         public void SetTitle(string text, float hold) { titleCard = text; titleHold = hold; }
 
-        public void SetItem(string id, string name, string description) =>
-            item = new PocketItem { id = id, name = name, description = description };
+        public void SetItem(string id) => item = new CarriedItem { id = id };
 
         private void OnEnable()
         {
@@ -115,7 +114,7 @@ namespace LeftBehind.Story
             if (!Ready()) return;
             fired = true;
             StoryStateManager.Set(flagToSet);
-            if (!string.IsNullOrEmpty(item.id)) StoryStateManager.AddItem(item);
+            StoryStateManager.AddItem(item.id);
             StartCoroutine(Play());
         }
 

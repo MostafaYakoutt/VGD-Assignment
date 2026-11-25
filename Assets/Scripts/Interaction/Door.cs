@@ -53,7 +53,7 @@ namespace LeftBehind.Interaction
             set => locked = value;
         }
 
-        /// <summary>Prompt shown while locked (a KeyedDoor changes it when the key is in Walter's pockets).</summary>
+        /// <summary>Prompt shown while locked (a KeyedDoor changes it when Walter carries the key).</summary>
         public string LockedText
         {
             get => lockedText;

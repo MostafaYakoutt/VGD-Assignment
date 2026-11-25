@@ -66,8 +66,7 @@ namespace LeftBehind.EditorTools
                     (Voice.Inner, "", "Ruth's flashlight. She bought it for the power cuts."),
                     (Voice.Inner, "", "Upstairs, then. There has to be another way out.")),
                 "", useTarget: flashlight);
-            fl.SetItem("flashlight", "Flashlight",
-                "Ruth bought it for the winter power cuts. She always kept spare batteries in the kitchen drawer.");
+            fl.SetItem("flashlight");
 
             // The study does not exist in Loop 1: where its door was there is only wall.
             var studyDoor = FindIncl<Door>("Door_Study");
@@ -145,17 +144,17 @@ namespace LeftBehind.EditorTools
                         (Voice.Inner, "", "There are only four of us.")),
                     "", zone: new Vector3(9.2f, 3f, 8.4f));
 
-            Readable("ReminderNote_Fridge", "fridgeNote", "Note on the fridge",
+            Readable("ReminderNote_Fridge", "Note on the fridge",
                 "RUTH TOOK THE KIDS\nTO HER MOTHER'S.\n\nDON'T CALL.\n\n— W.", "readFridgeNote",
                 D("L2_FridgeNote",
                     (Voice.Inner, "", "That's my handwriting."),
                     (Voice.Inner, "", "Why would I write that? Why can't I remember writing it?")));
-            Readable("ReminderNote_Counter0", "noteOven", "Note on a cupboard", "OVEN OFF.\nCHECK TWICE.");
-            Readable("ReminderNote_Counter1", "noteTap", "Note on the sink", "TURN THE TAP\nALL THE WAY.");
-            Readable("ReminderNote_Counter3", "noteEaten", "Note on a drawer", "YOU HAVE ALREADY\nEATEN TODAY.");
-            Readable("ReminderNote_Table", "noteTable", "Note on the kitchen table",
+            Readable("ReminderNote_Counter0", "Note on a cupboard", "OVEN OFF.\nCHECK TWICE.");
+            Readable("ReminderNote_Counter1", "Note on the sink", "TURN THE TAP\nALL THE WAY.");
+            Readable("ReminderNote_Counter3", "Note on a drawer", "YOU HAVE ALREADY\nEATEN TODAY.");
+            Readable("ReminderNote_Table", "Note on the kitchen table",
                 "SET THE TABLE\nFOR EVERYONE.\n\nTHEY MIGHT\nCOME BACK TONIGHT.");
-            Readable("ReminderNote_Hall", "noteKeys", "Note by the front door",
+            Readable("ReminderNote_Hall", "Note by the front door",
                 "KEYS ARE IN YOUR COAT.\nYOUR COAT IS ON.");
             foreach (var name in new[] { "Corridor", "Landing", "Dining" })
             {
@@ -196,7 +195,7 @@ namespace LeftBehind.EditorTools
                         (Voice.Inner, "", "She always drew us holding hands.")),
                     "", useTarget: happy);
 
-            Readable("ReminderNote_FuseBox", "noteFuse", "Note on the fuse box", "SPARE FUSE:\nDINING ROOM SIDEBOARD.");
+            Readable("ReminderNote_FuseBox", "Note on the fuse box", "SPARE FUSE:\nDINING ROOM SIDEBOARD.");
 
             // ---- The power: the upstairs lamps are dead until the spare fuse goes in.
             var upstairs = new System.Collections.Generic.List<LampSwitch>();
@@ -223,8 +222,7 @@ namespace LeftBehind.EditorTools
             fuse.transform.position = new Vector3(sb.center.x, sb.max.y + 0.025f, 5.05f);
             fuse.GetComponent<Renderer>().sharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/Materials/Ceiling_Plaster.mat");
             fuse.GetComponent<BoxCollider>().size = new Vector3(5f, 5f, 2.5f);   // easier to aim at than the fuse itself
-            fuse.AddComponent<PickupItem>().Configure("Take the spare fuse", "spareFuse", "Spare fuse",
-                "A ceramic fuse from the sideboard. Ruth always kept one spare, just in case.", "hasFuse",
+            fuse.AddComponent<PickupItem>().Configure("Take the spare fuse", "spareFuse", "hasFuse",
                 D("L2_TakeFuse", (Voice.Inner, "", "The spare fuse. Right where the note said.")), hide: true);
 
             var fuseBoxGo = GameObject.Find("Loop2House/Furniture/Utility/FuseBox");
@@ -245,9 +243,7 @@ namespace LeftBehind.EditorTools
             sewCol.size = new Vector3(1.6f, 2.5f, 1.6f);
             var key = sewingBox.GetComponent<PickupItem>();
             if (key == null) key = sewingBox.AddComponent<PickupItem>();
-            key.Configure("Open Ruth's sewing box", "studyKey", "Study key",
-                "A small brass key, wrapped in thread at the bottom of Ruth's sewing box. She kept it from me.",
-                "hasStudyKey", D("L2_StudyKey",
+            key.Configure("Open Ruth's sewing box", "studyKey", "hasStudyKey", D("L2_StudyKey",
                     (Voice.Remembered, "RUTH", "Not tonight, Walter. Leave the study alone."),
                     (Voice.Inner, "", "The study key. Why did she hide it?")), hide: false);
 
@@ -320,7 +316,7 @@ namespace LeftBehind.EditorTools
                         (Voice.Inner, "", "Ruth never leaves them out.")),
                     "", useTarget: knifeBlock);
 
-            Prop<ReadableNote>("ClinicCard").Configure("clinicCard", "Card on the fridge",
+            Prop<ReadableNote>("ClinicCard").Configure("Card on the fridge",
                 "ST. MARY'S MEMORY CLINIC\n\nAppointment for: Walter Hale\nTuesday, 10:30\n\nPlease bring a family member with you.",
                 "sawClinicCard", D("L3_ClinicCard",
                     (Voice.Inner, "", "Ruth booked this for me."),
@@ -343,7 +339,7 @@ namespace LeftBehind.EditorTools
                     "", useTarget: bear);
 
             var studyNote = GameObject.Find("UpperFloor/Doors/Door_Study/StudyDoorNote").AddComponent<ReadableNote>();
-            studyNote.Configure("delusionNote", "Note on the study door",
+            studyNote.Configure("Note on the study door",
                 "THAT WOMAN IS NOT RUTH.\n\nShe has Ruth's face and Ruth's voice, but she watches me. " +
                 "The children are not mine. They whisper when I leave the room.\n\n" +
                 "They want me to forget.\nI will not forget.\n\n\u2014 W.",
@@ -466,7 +462,7 @@ namespace LeftBehind.EditorTools
             return rattle;
         }
 
-        private static void Readable(string objectName, string id, string title, string body, string flag = "",
+        private static void Readable(string objectName, string title, string body, string flag = "",
             DialogueData after = null, string objective = "")
         {
             var go = GameObject.Find("Loop2House/Furniture/Notes/" + objectName);
@@ -476,7 +472,7 @@ namespace LeftBehind.EditorTools
             col.size = new Vector3(1.8f, 1.8f, 1.8f);     // the notes are only 8 cm across; make them easy to aim at
             var note = go.GetComponent<ReadableNote>();
             if (note == null) note = go.AddComponent<ReadableNote>();
-            note.Configure(id, title, body, flag, after, objective);
+            note.Configure(title, body, flag, after, objective);
             EditorUtility.SetDirty(note);
         }
 

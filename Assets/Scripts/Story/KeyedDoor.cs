@@ -4,7 +4,7 @@ using UnityEngine;
 namespace LeftBehind.Story
 {
     /// <summary>
-    /// A locked door that opens with an item from Walter's pockets (the study and its key).
+    /// A locked door that opens with an item Walter carries (the study and its key).
     /// Used without the key it plays a short line; with the key it unlocks, swings open,
     /// sets its flag and plays what he finds.
     /// </summary>

@@ -4,8 +4,8 @@ using UnityEngine;
 namespace LeftBehind.Story
 {
     /// <summary>
-    /// The fuse box. Without the spare fuse Walter only finds the blown one; with it in his
-    /// pockets, E fits the fuse (it is used up), sets the power flag and the dead lamps
+    /// The fuse box. Without the spare fuse Walter only finds the blown one; once he carries it,
+    /// E fits the fuse (it is used up), sets the power flag and the dead lamps
     /// come back on.
     /// </summary>
     public class FuseBox : Interactable

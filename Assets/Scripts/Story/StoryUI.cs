@@ -10,7 +10,7 @@ namespace LeftBehind.Story
     /// <summary>
     /// The story interface: one overlay canvas, built in code and kept across loop scenes,
     /// that holds the objective line, the dialogue box, the title card, the note reader
-    /// and the Pockets screen. Also owns the player lock used while reading or choosing.
+    /// and the pause menu. Also owns the player lock used while reading or choosing.
     /// </summary>
     public class StoryUI : MonoBehaviour
     {
@@ -18,7 +18,7 @@ namespace LeftBehind.Story
         private static readonly HashSet<object> locks = new HashSet<object>();
         private static int escapeUsedFrame = -1;
 
-        /// <summary>Called by whatever handled Esc this frame (closing a note or Pockets).</summary>
+        /// <summary>Called by whatever handled Esc this frame (closing a note).</summary>
         public static void ConsumeEscape() => escapeUsedFrame = Time.frameCount;
 
         public static bool EscapeConsumed => escapeUsedFrame == Time.frameCount;
@@ -51,7 +51,7 @@ namespace LeftBehind.Story
             locks.Clear();
         }
 
-        // The objective line and Pockets should exist from the first frame of play.
+        // The objective line should exist from the first frame of play.
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void CreateOnPlay() => _ = Instance;
 
@@ -75,7 +75,6 @@ namespace LeftBehind.Story
             gameObject.AddComponent<ObjectiveManager>();
             gameObject.AddComponent<DialogueManager>();
             gameObject.AddComponent<NoteReader>();
-            gameObject.AddComponent<Pockets>();
             gameObject.AddComponent<PauseMenu>();
 
             // Menus are clicked with the mouse or driven with the arrow keys.
@@ -138,7 +137,7 @@ namespace LeftBehind.Story
         public static bool Locked => locks.Count > 0;
 
         /// <summary>
-        /// Closes every overlay (pause, Pockets, a note, dialogue) and frees the player. Called whenever
+        /// Closes every overlay (pause, a note, dialogue) and frees the player. Called whenever
         /// a scene is about to change, so nothing from the old loop is left covering the next screen.
         /// </summary>
         public static void CloseAll()
@@ -146,7 +145,6 @@ namespace LeftBehind.Story
             if (instance != null)
             {
                 instance.GetComponent<PauseMenu>().Dismiss();
-                instance.GetComponent<Pockets>().Dismiss();
                 instance.GetComponent<NoteReader>().Dismiss();
                 instance.titleCard.color = new Color(1f, 1f, 1f, 0f);
             }

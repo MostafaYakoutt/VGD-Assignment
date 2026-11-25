@@ -55,7 +55,7 @@ namespace LeftBehind.Story
 
         private static bool CanOpen()
         {
-            if (LoopTransition.Busy || NoteReader.IsOpen || Pockets.IsOpen) return false;
+            if (LoopTransition.Busy || NoteReader.IsOpen) return false;
             var env = FindAnyObjectByType<LoopEnvironment>();
             if (env == null) return false;                          // the main menu, or no loop running
             var interactor = FindAnyObjectByType<PlayerInteractor>();

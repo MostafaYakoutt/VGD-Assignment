@@ -244,7 +244,7 @@ namespace LeftBehind.EditorTools
                     (Voice.Inner, "", "Ruth's writing."),
                     (Voice.Inner, "", "Her mother's birthday on Saturday. The clinic on Tuesday. She had it all planned."));
             }
-            cal.AddComponent<ReadableNote>().Configure($"calendarLoop{loop}", title, body, $"readCalendarLoop{loop}",
+            cal.AddComponent<ReadableNote>().Configure(title, body, $"readCalendarLoop{loop}",
                 after, prompt: "Read the calendar");
         }
 
@@ -343,15 +343,11 @@ namespace LeftBehind.EditorTools
 
             var pickup = ring.AddComponent<PickupItem>();
             if (loop == 1)
-                pickup.Configure("Take the ring", "weddingRing", "Wedding ring",
-                    "My wedding ring. It won't go over the knuckle any more. Engraved inside: R & W.",
-                    "hasWeddingRing", D("L1_Ring",
+                pickup.Configure("Take the ring", "weddingRing", "hasWeddingRing", D("L1_Ring",
                         (Voice.Inner, "", "My ring. When did I take it off?"),
                         (Voice.Inner, "", "R and W. Ruth and Walter.")), hide: true);
             else
-                pickup.Configure("Take the ring", "ruthRing", "Ruth's ring",
-                    "Ruth's wedding ring, left on the dresser. She never takes it off, not even to sleep.",
-                    "hasRuthRing", D("L2_Ring",
+                pickup.Configure("Take the ring", "ruthRing", "hasRuthRing", D("L2_Ring",
                         (Voice.Inner, "", "Ruth's ring."),
                         (Voice.Inner, "", "She went to her mother's and left her ring behind?")), hide: true);
             EditorUtility.SetDirty(pickup);

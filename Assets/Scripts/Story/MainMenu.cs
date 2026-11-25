@@ -60,7 +60,7 @@ namespace LeftBehind.Story
 
             var hint = ui.MakeText(page, "Hint", 20, TextAnchor.MiddleLeft, new Vector2(0f, 0f),
                 new Vector2(156f, 60f), new Vector2(1200f, 34f));
-            hint.text = "WASD move     Mouse look     E interact     F flashlight     Tab pockets     Esc pause";
+            hint.text = "WASD move     Mouse look     E interact     F flashlight     Esc pause";
             hint.color = new Color(1f, 1f, 1f, 0.35f);
 
             fade = ui.MakeFullScreen(page, "Fade", new Color(0f, 0f, 0f, 1f));

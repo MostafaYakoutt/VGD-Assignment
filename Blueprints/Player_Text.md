@@ -8,18 +8,13 @@ Pulled from the scenes, the dialogue assets in `Assets/Story/Dialogue` and the U
 - Title: LEFT BEHIND
 - Buttons: Begin · Chapters · Quit
 - Chapters list: Chapter I · Chapter II · Chapter III (locked ones show `—  —  —`) · Back
-- Controls hint: WASD move · Mouse look · E interact · F flashlight · Tab pockets · Esc pause
+- Controls hint: WASD move · Mouse look · E interact · F flashlight · Esc pause
 - Photo caption (only after the Remember ending): "Walter, Ruth, Emily and Sam."
 
 **Pause menu**
 - Paused
 - Buttons: Resume · Restart chapter · Main menu · Quit
 - Hint: Restart chapter goes back to the start of this chapter.
-
-**Pockets (Tab)**
-- POCKETS · Carrying · Notes
-- Empty states: "Nothing. Empty pockets." · "No notes yet."
-- Hint: [Tab] Close      [1-9] Read a note again
 
 **Note reader**: hint "[E] Put it down"
 
@@ -56,10 +51,6 @@ Pulled from the scenes, the dialogue assets in `Assets/Story/Dialogue` and the U
   
   WHAT AM I COUNTING DOWN TO?
   ```
-
-**Items picked up (shown in Pockets)**
-- **Wedding ring**: My wedding ring. It won't go over the knuckle any more. Engraved inside: R & W.
-- **Flashlight**: Ruth bought it for the winter power cuts. She always kept spare batteries in the kitchen drawer.
 
 **Interaction prompts**: Take the ring · Turn on lamp · Turn off lamp · Open door · Close door · Locked · Look at the pills · Open the door · It won't open · Inspect · Put back · Read the calendar · Use the tap · Turn on the tap · Turn off the tap · Turn the tap off tight · Look at the bear · Look at the clock · Pick up flashlight · Open the front door
 
@@ -205,11 +196,6 @@ Pulled from the scenes, the dialogue assets in `Assets/Story/Dialogue` and the U
   YOU HAVE ALREADY
   EATEN TODAY.
   ```
-
-**Items picked up (shown in Pockets)**
-- **Study key**: A small brass key, wrapped in thread at the bottom of Ruth's sewing box. She kept it from me.
-- **Spare fuse**: A ceramic fuse from the sideboard. Ruth always kept one spare, just in case.
-- **Ruth's ring**: Ruth's wedding ring, left on the dresser. She never takes it off, not even to sleep.
 
 **Interaction prompts**: Open Ruth's sewing box · Turn on lamp · Turn off lamp · Unlock the study · Locked · Open door · Close door · Read the note · Open the fuse box · Fit the spare fuse · Take the spare fuse · Read the calendar · Look at the bear · Take the ring · Look at the drawing · Look at the clock · Open the door · It won't open · Look at the pills · Use the tap · Turn on the tap · Turn off the tap · Turn the tap off tight · Open the front door
 
