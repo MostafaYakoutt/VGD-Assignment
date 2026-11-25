@@ -14,6 +14,9 @@ Shader "LeftBehind/Outline"
         // so with render scale 0.4 about 4 px is the thinnest unbroken line.
         _OutlineWidth ("Width (screen pixels)", Range(0, 12)) = 4
         [IntRange] _StencilRef ("Stencil ref", Range(1, 255)) = 64
+        // Pulls the line this far towards the camera, so a door in its frame or a note on the fridge
+        // still shows its outline over the surface behind it. Real occluders in front still hide it.
+        _DepthPull ("Depth pull (metres)", Range(0, 0.5)) = 0
     }
 
     SubShader
@@ -27,6 +30,8 @@ Shader "LeftBehind/Outline"
             Cull Off
             ZWrite Off
             ZTest LEqual
+            // Alpha below 1 gives a fainter line (the interactable glow); the flashlight's is opaque.
+            Blend SrcAlpha OneMinusSrcAlpha
 
             Stencil
             {
@@ -44,6 +49,7 @@ Shader "LeftBehind/Outline"
                 half4 _OutlineColor;
                 float _OutlineWidth;
                 float _StencilRef;
+                float _DepthPull;
             CBUFFER_END
 
             struct Attributes
@@ -60,7 +66,9 @@ Shader "LeftBehind/Outline"
             Varyings vert(Attributes input)
             {
                 Varyings output;
-                float4 positionCS = TransformObjectToHClip(input.positionOS.xyz);
+                float3 positionWS = TransformObjectToWorld(input.positionOS.xyz);
+                positionWS += normalize(_WorldSpaceCameraPos - positionWS) * _DepthPull;   // along the view ray: same place on screen
+                float4 positionCS = TransformWorldToHClip(positionWS);
                 float3 normalWS = TransformObjectToWorldNormal(input.normalOS);
                 float2 normalCS = mul((float3x3)UNITY_MATRIX_VP, normalWS).xy;
                 float len = length(normalCS);

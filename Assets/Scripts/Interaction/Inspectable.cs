@@ -32,6 +32,9 @@ namespace LeftBehind.Interaction
 
         public override string Prompt => inspecting ? putBackText : promptText;
 
+        // No outline round the object while it is held up close.
+        public override bool ShowsGlow => base.ShowsGlow && !inspecting && t >= 1f;
+
         private void Reset()
         {
             promptText = "Inspect";

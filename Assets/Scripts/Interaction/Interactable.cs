@@ -15,6 +15,9 @@ namespace LeftBehind.Interaction
 
         public virtual bool CanInteract => isActiveAndEnabled;
 
+        /// <summary>Whether the faint outline that marks usable objects should show (see InteractableGlow).</summary>
+        public virtual bool ShowsGlow => CanInteract;
+
         public abstract void Interact(PlayerInteractor interactor);
 
         /// <summary>Raised after the player uses this object with E (story triggers listen to it).</summary>
