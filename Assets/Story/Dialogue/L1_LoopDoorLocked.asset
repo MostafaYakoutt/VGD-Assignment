@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc1a53a52f5eb0b498d0cc3aeedab285, type: 3}
-  m_Name: L1_LoopDoorAttic
+  m_Name: L1_LoopDoorLocked
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.DialogueData
   lines:
   - voice: 0
     speaker: 
-    text: Not yet. I can't go without it...
+    text: Locked. Where's the key?
     portrait: {fileID: 0}
   - voice: 0
     speaker: 
-    text: Without what? Something in the attic. Something I packed away.
+    text: I put it away somewhere safe. Up in the attic, with everything else.
     portrait: {fileID: 0}
   choices: []
   flagToSetWhenFinished: 

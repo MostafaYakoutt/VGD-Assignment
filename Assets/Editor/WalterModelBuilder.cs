@@ -19,7 +19,9 @@ namespace LeftBehind.EditorTools
     ///      position of every texel: grey hair round a bald crown, an old face, a cardigan over a
     ///      shirt, slacks and slippers, in 15-bit colour like the PS1;
     ///   3. the Walter prefab is built: the model scaled to 1.75 m, turned to face +Z, with those
-    ///      meshes and point-filtered materials.
+    ///      meshes and point-filtered materials, and his arms lowered from the T-pose to his sides;
+    ///   4. (Put Walter In Every Loop) the prefab goes under the player in each loop scene, with a
+    ///      PlayerBody that shows him only when the camera pulls away for the loop shot.
     /// Menu: Left Behind > Walter > Build Walter. Needs Python on the PATH for step 2.
     /// </summary>
     public static class WalterModelBuilder
@@ -32,6 +34,15 @@ namespace LeftBehind.EditorTools
         private const string PrefabPath = Folder + "/Walter.prefab";
         private const string MeshDump = "Library/WalterMesh.json";
         private const float Height = 1.75f;
+        private const float ArmDrop = 72f;      // degrees from the T-pose down to his sides
+        private const string BodyName = "WalterBody";
+
+        private static readonly string[] LoopScenes =
+        {
+            "Assets/Scenes/SampleScene.unity",
+            "Assets/Scenes/Loop2_YearsEarlier.unity",
+            "Assets/Scenes/Loop3_TheAftermath.unity",
+        };
 
         /// <summary>Renderer name in the FBX, our part name, texture size.</summary>
         private static readonly (string renderer, string part, int size)[] Parts =
@@ -198,6 +209,8 @@ namespace LeftBehind.EditorTools
                 r.sharedMaterial = materials[part];
             }
 
+            LowerArms(body.transform);
+
             // Scale so the top of his head is at 1.75 m, feet on the ground.
             var bounds = Bounds(body);
             float scale = Height / bounds.size.y;
@@ -207,6 +220,62 @@ namespace LeftBehind.EditorTools
 
             PrefabUtility.SaveAsPrefabAsset(root, PrefabPath);
             Object.DestroyImmediate(root);
+        }
+
+        /// <summary>Turns each upper arm down about the model's front-to-back axis, so he stands with his arms at his sides.</summary>
+        private static void LowerArms(Transform model)
+        {
+            foreach (var name in new[] { "Bone.003_L.001", "Bone.003_R.001" })
+            {
+                var bone = Find(model, name);
+                // The bone names do not say which side is which, so look at where the arm points.
+                float side = Mathf.Sign(model.InverseTransformPoint(bone.GetChild(0).position).x
+                                        - model.InverseTransformPoint(bone.position).x);
+                bone.rotation = Quaternion.AngleAxis(-side * ArmDrop, model.forward) * bone.rotation;
+            }
+        }
+
+        // ------------------------------------------------------------------ 4. the player
+
+        [MenuItem("Left Behind/Walter/Put Walter In Every Loop")]
+        public static void PutInEveryLoop()
+        {
+            if (!UnityEditor.SceneManagement.EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) return;
+            string start = UnityEngine.SceneManagement.SceneManager.GetActiveScene().path;
+            foreach (var path in LoopScenes)
+            {
+                var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(path, UnityEditor.SceneManagement.OpenSceneMode.Single);
+                PutOnPlayer();
+                UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
+            }
+            if (!string.IsNullOrEmpty(start)) UnityEditor.SceneManagement.EditorSceneManager.OpenScene(start, UnityEditor.SceneManagement.OpenSceneMode.Single);
+        }
+
+        /// <summary>Puts Walter's body under the player in the open scene, replacing the Starter Assets capsule mesh.</summary>
+        public static void PutOnPlayer()
+        {
+            var fpc = Object.FindAnyObjectByType<StarterAssets.FirstPersonController>();
+            if (fpc == null) { Debug.LogWarning("Walter: no player in " + UnityEngine.SceneManagement.SceneManager.GetActiveScene().name); return; }
+            var player = fpc.transform;
+            var old = player.Find(BodyName);
+            if (old != null) Object.DestroyImmediate(old.gameObject);
+
+            // The placeholder capsule mesh the Starter Assets player is drawn with.
+            foreach (var mr in player.GetComponentsInChildren<MeshRenderer>(true))
+                if (mr.GetComponent<MeshFilter>() != null && mr.GetComponent<MeshFilter>().sharedMesh != null
+                    && mr.GetComponent<MeshFilter>().sharedMesh.name == "Capsule")
+                    mr.enabled = false;
+
+            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
+            var body = (GameObject)PrefabUtility.InstantiatePrefab(prefab, player);
+            body.name = BodyName;
+            var cc = player.GetComponent<CharacterController>();
+            float feet = cc != null ? cc.center.y - cc.height * 0.5f : 0f;
+            body.transform.localPosition = new Vector3(0f, feet, 0f);
+            body.transform.localRotation = Quaternion.identity;
+            LeftBehind.CameraSystem.PlayerBody.FitTo(body.transform, 1f);     // at runtime it is sized to the loop's eye height
+            body.AddComponent<LeftBehind.CameraSystem.PlayerBody>();
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(player.gameObject.scene);
         }
 
         private static Bounds Bounds(GameObject go)

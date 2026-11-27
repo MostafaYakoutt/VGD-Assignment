@@ -51,12 +51,25 @@ namespace LeftBehind.Story
             locks.Clear();
         }
 
-        // The objective line should exist from the first frame of play.
+        // The objective line should exist from the first frame of play. With domain and scene reload
+        // turned off in the Editor, a canvas from an earlier play session can still be around, no longer
+        // hearing the story (its listeners were cleared): remove it, or two objective lines overlap.
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void CreateOnPlay() => _ = Instance;
+        private static void CreateOnPlay()
+        {
+            foreach (var old in FindObjectsByType<StoryUI>(FindObjectsInactive.Include))
+                if (old != instance) DestroyImmediate(old.gameObject);
+            _ = Instance;
+        }
 
         private void Awake()
         {
+            // Only ever one story canvas.
+            if (instance != null && instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
             instance = this;      // set first: the managers added below look it up in their own Awake
             Font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             var canvas = gameObject.AddComponent<Canvas>();

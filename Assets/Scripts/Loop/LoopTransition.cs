@@ -12,7 +12,8 @@ namespace LeftBehind.Loop
     /// Plays the loop transition and moves the player one loop back in time:
     /// the camera pulls out to the fixed loop shot, the frame fades to black,
     /// the next loop's scene loads, and the new house fades in from black.
-    /// The previous scene is unloaded, so the trip is one-way.
+    /// The previous scene is unloaded, so the trip is one-way. Walter arrives empty-handed: the
+    /// flashlight stays behind in the loop he found it in.
     /// </summary>
     public class LoopTransition : MonoBehaviour
     {
@@ -50,29 +51,28 @@ namespace LeftBehind.Loop
         public static bool Play(string nextScene, int nextLoop)
         {
             if (Busy || nextLoop <= CurrentLoop) return false;      // never back to a loop already played
-            return Begin(nextScene, nextLoop, carryFlashlight: true);
+            return Begin(nextScene, nextLoop);
         }
 
         /// <summary>
         /// The "look away" ending: the same transition, but all the way back to Loop 1 to start again.
-        /// Nothing is carried over.
         /// </summary>
         public static bool Restart(string firstScene)
         {
             if (Busy) return false;
-            return Begin(firstScene, 1, carryFlashlight: false);
+            return Begin(firstScene, 1);
         }
 
-        private static bool Begin(string scene, int loop, bool carryFlashlight)
+        private static bool Begin(string scene, int loop)
         {
             var go = new GameObject("LoopTransition");
             DontDestroyOnLoad(go);
             running = go.AddComponent<LoopTransition>();
-            running.StartCoroutine(running.Run(scene, loop, carryFlashlight));
+            running.StartCoroutine(running.Run(scene, loop));
             return true;
         }
 
-        private IEnumerator Run(string nextScene, int nextLoop, bool carryFlashlight)
+        private IEnumerator Run(string nextScene, int nextLoop)
         {
             // 1. Freeze the player and pull the camera out to the fixed loop shot.
             SetPlayerControl(false);
@@ -86,11 +86,12 @@ namespace LeftBehind.Loop
             yield return Fade(0f, 1f, FadeOutTime);
 
             while (load.progress < 0.9f) yield return null;
-            if (carryFlashlight) PlayerFlashlight.StashForSceneChange();
+            // The flashlight is left behind with the old scene; without the item the new player is not
+            // handed a fresh one either.
+            LeftBehind.Story.StoryStateManager.RemoveItem("flashlight");
             load.allowSceneActivation = true;
             while (!load.isDone) yield return null;
             CurrentLoop = nextLoop;
-            if (carryFlashlight) PlayerFlashlight.RestoreAfterSceneChange();
 
             // 3. The new loop fades in from black, the player frozen until it has.
             SetPlayerControl(false);

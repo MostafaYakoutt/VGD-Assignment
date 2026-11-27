@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc1a53a52f5eb0b498d0cc3aeedab285, type: 3}
-  m_Name: L2_StudyKey
+  m_Name: L2_Flashlight
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.DialogueData
   lines:
-  - voice: 1
-    speaker: RUTH
-    text: Not tonight, Walter. Leave the study alone.
+  - voice: 0
+    speaker: 
+    text: Her flashlight. Right where she always leaves it.
     portrait: {fileID: 0}
   - voice: 0
     speaker: 
-    text: The study key. Why did she hide it?
+    text: The fuse box, then. Before she gets home.
     portrait: {fileID: 0}
   choices: []
   flagToSetWhenFinished: 

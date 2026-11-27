@@ -25,7 +25,7 @@ namespace LeftBehind.Story
             {
                 foreach (var f in new[] { "introSeen", "triedFrontDoor", "sawFamilyPhoto", "sawEmptyTable", "hasFlashlight", "loop1Complete" })
                     StoryStateManager.Set(f);
-                StoryStateManager.AddItem("flashlight");
+                // The flashlight stays in Loop 1: he starts each later loop empty-handed.
             }
             if (loop >= 3)
             {

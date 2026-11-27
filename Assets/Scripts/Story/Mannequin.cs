@@ -9,8 +9,8 @@ namespace LeftBehind.Story
     /// towards him whenever he cannot see it, and freezes mid-step the moment it is in view.
     /// "In view" means a point of its body is inside the camera's view (a little wider than the
     /// screen, so it never moves at the very edge) with nothing solid in between. It never comes
-    /// closer than an arm's length: there is no way to be hurt in this game. Once Sam's bear has
-    /// been taken (hurryFlag) they walk faster, as if they want it back.
+    /// closer than an arm's length: there is no way to be hurt in this game. Once the key has been
+    /// taken from the attic (hurryFlag) they walk faster, as if they want it back.
     /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
     public class Mannequin : MonoBehaviour
@@ -26,8 +26,8 @@ namespace LeftBehind.Story
         [SerializeField] private float viewMargin = 0.08f;
         [Tooltip("Played the first time a mannequin is seen after it has moved.")]
         [SerializeField] private NarrativeTrigger movedBeat;
-        [Tooltip("Once this story flag is set they walk faster (the bear has been taken).")]
-        [SerializeField] private string hurryFlag = "hasTeddy";
+        [Tooltip("Once this story flag is set they walk faster (the attic key has been taken).")]
+        [SerializeField] private string hurryFlag = "hasAtticKey";
         [SerializeField] private float hurryFactor = 1.6f;
 
         private NavMeshAgent agent;

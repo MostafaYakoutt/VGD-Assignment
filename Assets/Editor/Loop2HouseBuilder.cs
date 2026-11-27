@@ -710,10 +710,10 @@ namespace LeftBehind.EditorTools
             P("Bathroom", "Bathtub", "Furniture/Bathroom_Bathtub.fbx", 0.45f, 0f, N, -3.3f, Up, 'W', -0.09f);
             P("Bathroom", "Toilet", "Furniture/Bathroom_Toilet.fbx", 0.42f, 0f, 5.2f, N, Up, 'S', -4.60f);
             P("Bathroom", "Sink", "Furniture/Bathroom_Sink.fbx", 0.6f, 270f, N, -2.2f, Up, 'E', 6.37f);
-            P("Bathroom", "Mirror", "Furniture/Bathroom_Mirror1.fbx", 0.8f, 270f, N, -2.2f, Up + 1.15f, 'E', 6.37f, false);
+            P("Bathroom", "Mirror", "Furniture/Bathroom_Mirror1.fbx", 1.2f, 270f, N, -2.2f, Up + 1.16f, 'E', 6.37f, false);
             CeilingLamp("Bathroom", 3.1f, -2.3f, UpCeil, 1.0f, 5.5f, true);
 
-            // Ruth's sewing room (sealed in Loop 1): untouched. The study key is in her sewing box.
+            // Ruth's sewing room (sealed in Loop 1): untouched.
             var st = P("SewingRoom", "SewingTable", "NextGen Furniture Pack/Prefabs/table_1.prefab", 1f, 90f, N, -6.0f, Up, 'W', -0.09f);
             P("SewingRoom", "Chair", "NextGen Furniture Pack/Prefabs/chair_1.prefab", 1f, 270f, 1.4f, -6.0f, Up);
             var sb = MB(st);

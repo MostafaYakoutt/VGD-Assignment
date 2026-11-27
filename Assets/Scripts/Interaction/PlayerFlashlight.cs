@@ -48,44 +48,6 @@ namespace LeftBehind.Interaction
         public bool HasFlashlight => item != null;
         public bool IsOn { get; private set; }
 
-        // The held flashlight survives the scene change between loops.
-        private static FlashlightPickup carried;
-        private static bool carriedOn;
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics()
-        {
-            carried = null;
-            carriedOn = false;
-        }
-
-        /// <summary>Called before the next loop loads: keep the held flashlight out of the old scene.</summary>
-        public static void StashForSceneChange()
-        {
-            var holder = FindAnyObjectByType<PlayerFlashlight>();
-            if (holder == null || holder.item == null) return;
-            holder.ResetFlicker();
-            carried = holder.item;
-            carriedOn = holder.IsOn;
-            holder.model.SetParent(null, true);
-            DontDestroyOnLoad(holder.model.gameObject);
-            holder.item = null;
-            holder.model = null;
-        }
-
-        /// <summary>Called once the next loop has loaded: hand the flashlight to the new player.</summary>
-        public static void RestoreAfterSceneChange()
-        {
-            if (carried == null) return;
-            var holder = FindAnyObjectByType<PlayerFlashlight>();
-            if (holder == null) return;
-            // Move it back into the loaded scene so it belongs to the player again.
-            UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(carried.gameObject, holder.gameObject.scene);
-            holder.Equip(carried, showHint: false);
-            holder.SetOn(carriedOn);
-            carried = null;
-        }
-
         private void Awake()
         {
             input = GetComponent<StarterAssetsInputs>();
@@ -115,8 +77,8 @@ namespace LeftBehind.Interaction
 
         private System.Collections.IEnumerator Start()
         {
-            // A loop restarted, or begun from Chapters: hand over a fresh flashlight if the story says
-            // he has one. (A loop transition carries the real one across; wait until that has happened.)
+            // Restart chapter after he had picked it up in this loop: hand over a fresh flashlight.
+            // (It never comes with him into the next loop: LoopTransition takes the item away.)
             while (LeftBehind.Loop.LoopTransition.Busy) yield return null;
             yield return null;
             if (HasFlashlight || !LeftBehind.Story.StoryStateManager.HasItem("flashlight")) yield break;

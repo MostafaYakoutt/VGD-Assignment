@@ -89,6 +89,7 @@ namespace LeftBehind.EditorTools
                 aso.ApplyModifiedPropertiesWithoutUndo();
             }
             AtticBear(root);
+            AtticKey(root);
             GateLoop1Door();
 
             StoryPropsBuilder.Place(1);
@@ -96,7 +97,7 @@ namespace LeftBehind.EditorTools
         }
 
         /// <summary>
-        /// Loop 1's objectives. Once the Loop Door has turned Walter away with only the bear
+        /// Loop 1's objectives. Once the locked Loop Door has turned Walter away with only its key
         /// still missing, the objective sends him to the attic.
         /// </summary>
         public static ObjectiveRules.Rule[] Loop1Rules() => new[]
@@ -106,45 +107,84 @@ namespace LeftBehind.EditorTools
             {
                 objective = "Look in the attic.",
                 allOf = new[] { "triedLoopDoor", "sawFamilyPhoto", "hasFlashlight" },
-                noneOf = new[] { "hasTeddy" },
+                noneOf = new[] { "hasAtticKey" },
             },
             ObjectiveRules.R("Go upstairs.", "hasFlashlight"),
             ObjectiveRules.R("Find another way out.", "triedFrontDoor"),
             ObjectiveRules.R("Get out of the house.", "introSeen"),
         };
 
-        /// <summary>
-        /// Sam's teddy bear, boxed with the toys at the far end of the attic, past Ruth's
-        /// mannequins. Walter takes it (item teddyBear, flag hasTeddy) and the Loop Door will not
-        /// open without it; once it is gone the mannequins walk faster.
-        /// </summary>
-        public static PickupItem AtticBear(Transform root)
+        /// <summary>Sam's teddy bear, packed away on the toy chest at the far end of the attic. Look only.</summary>
+        public static Examinable AtticBear(Transform root)
         {
-            var bear = Loop3Builder.Teddy(root, "TeddyBear", new Vector3(-5.4f, 5.62f, -7.2f), 200f, 1.1f).AddComponent<PickupItem>();
-            bear.Configure("Take the bear", "teddyBear", "hasTeddy", D("L1_TeddyTaken",
-                    (Voice.Inner, "", "A child's bear, packed away with the toys."),
-                    (Voice.Inner, "", "Somebody could never sleep without this."),
-                    (Voice.Inner, "", "I'm not leaving it up here in the dark.")),
-                true);
+            var bear = Loop3Builder.Teddy(root, "TeddyBear", new Vector3(-5.4f, 5.62f, -7.2f), 200f, 1.1f).AddComponent<Examinable>();
+            bear.Configure("Look at the bear");
+            Beat(root, "Teddy", NarrativeTrigger.Mode.Use, bear.transform.position)
+                .Configure(NarrativeTrigger.Mode.Use, "sawTeddyLoop1", D("L1_Teddy",
+                        (Voice.Inner, "", "A child's bear, packed away with the toys."),
+                        (Voice.Inner, "", "Whose was it? Why can't I remember?")),
+                    "", useTarget: bear);
             return bear;
         }
 
-        /// <summary>The Loop Door opens once the photo is seen, the flashlight taken and the bear found.</summary>
+        /// <summary>
+        /// The key to the Loop Door, on the toy chest beside Sam's bear at the far end of the attic,
+        /// past Ruth's mannequins. Walter takes it (item loopDoorKey, flag hasAtticKey) and the door
+        /// will not open without it; once it is gone the mannequins walk faster.
+        /// </summary>
+        public static PickupItem AtticKey(Transform root)
+        {
+            Transform chest = null;
+            foreach (var t in Object.FindObjectsByType<Transform>())
+                if (t.name == "ToyChest" && t.parent != null && t.parent.name == "ChildrensThings") chest = t;
+            if (chest == null) { Debug.LogWarning("Attic key: no ToyChest under ChildrensThings."); return null; }
+            var top = Bounds(chest.gameObject);
+            // At the end of the chest away from the bear.
+            var pos = new Vector3(top.max.x - 0.17f, top.max.y + 0.002f, top.center.z);
+            var key = BrassKey(root, "AtticKey", pos, -35f);
+            var pickup = key.AddComponent<PickupItem>();
+            pickup.Configure("Take the key", "loopDoorKey", "hasAtticKey", D("L1_AtticKey",
+                    (Voice.Inner, "", "A key. In with the children's toys."),
+                    (Voice.Inner, "", "The door upstairs. Did I hide it up here... so I couldn't leave?")), hide: true);
+            return pickup;
+        }
+
+        /// <summary>A small brass key built from primitives, with a collider bigger than it so it is easy to aim at.</summary>
+        public static GameObject BrassKey(Transform parent, string name, Vector3 position, float yaw)
+        {
+            var brass = Loop3Builder.Tinted("Brass", new Color(0.72f, 0.56f, 0.26f));
+            brass.SetFloat("_Metallic", 0.8f);
+            brass.SetFloat("_Smoothness", 0.55f);
+            EditorUtility.SetDirty(brass);
+            var key = new GameObject(name);
+            key.transform.SetParent(parent, false);
+            key.transform.position = position;
+            key.transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+            Part(key.transform, PrimitiveType.Cylinder, "Bow", new Vector3(-0.035f, 0.002f, 0f), Quaternion.identity, new Vector3(0.032f, 0.002f, 0.032f), brass);
+            Part(key.transform, PrimitiveType.Cube, "Shaft", new Vector3(0.008f, 0.002f, 0f), Quaternion.identity, new Vector3(0.058f, 0.004f, 0.006f), brass);
+            Part(key.transform, PrimitiveType.Cube, "Bit", new Vector3(0.03f, 0.002f, -0.007f), Quaternion.identity, new Vector3(0.012f, 0.004f, 0.012f), brass);
+            var col = key.AddComponent<BoxCollider>();       // 9 cm long: make it easy to aim at
+            col.center = new Vector3(0f, 0.04f, 0f);
+            col.size = new Vector3(0.22f, 0.1f, 0.2f);
+            return key;
+        }
+
+        /// <summary>The Loop Door is locked: it opens once the photo is seen, the flashlight taken and its key found in the attic.</summary>
         public static void GateLoop1Door()
         {
             var loopDoor = Object.FindAnyObjectByType<LoopDoor>();
             Undo.RecordObject(loopDoor, "Gate Loop Door");
             var downstairs = D("L1_LoopDoorNotYet",
                 (Voice.Inner, "", "Not yet. I've missed something downstairs."));
-            var attic = D("L1_LoopDoorAttic",
-                (Voice.Inner, "", "Not yet. I can't go without it..."),
-                (Voice.Inner, "", "Without what? Something in the attic. Something I packed away."));
-            loopDoor.ConfigureGate(new[] { "sawFamilyPhoto", "hasFlashlight", "hasTeddy" }, downstairs, "loop1Complete");
+            var attic = D("L1_LoopDoorLocked",
+                (Voice.Inner, "", "Locked. Where's the key?"),
+                (Voice.Inner, "", "I put it away somewhere safe. Up in the attic, with everything else."));
+            loopDoor.ConfigureGate(new[] { "sawFamilyPhoto", "hasFlashlight", "hasAtticKey" }, downstairs, "loop1Complete");
             loopDoor.ConfigureHints(new[]
             {
                 new LoopDoor.Hint { flag = "sawFamilyPhoto", dialogue = downstairs },
                 new LoopDoor.Hint { flag = "hasFlashlight", dialogue = downstairs },
-                new LoopDoor.Hint { flag = "hasTeddy", dialogue = attic },
+                new LoopDoor.Hint { flag = "hasAtticKey", dialogue = attic },
             }, "triedLoopDoor");
             EditorUtility.SetDirty(loopDoor);
         }
@@ -155,20 +195,10 @@ namespace LeftBehind.EditorTools
         public static void SetUpLoop2()
         {
             var root = NewRoot();
-            Rules(root,
-                ObjectiveRules.R("", "loop2Complete"),
-                ObjectiveRules.R("Leave. Now.", "studyBricked"),
-                ObjectiveRules.R("Open the study.", "hasStudyKey"),
-                ObjectiveRules.R("Find the key to the study.", "powerRestored"),
-                ObjectiveRules.R("Restore the power.", "sawDarkLanding"),
-                ObjectiveRules.R("Go upstairs.", "readFridgeNote"),
-                ObjectiveRules.R("Find Ruth.", "loop2Arrived"));
+            Rules(root, Loop2Rules());
 
             Beat(root, "Arrival", NarrativeTrigger.Mode.SceneStart, Vector3.zero)
-                .Configure(NarrativeTrigger.Mode.SceneStart, "loop2Arrived", D("L2_Arrival",
-                        (Voice.Remembered, "RUTH", "Walter? Dinner's on the table."),
-                        (Voice.Inner, "", "Ruth? ...Ruth!")),
-                    "", startDelay: 0.8f);
+                .Configure(NarrativeTrigger.Mode.SceneStart, "loop2Arrived", Loop2Arrival(), "", startDelay: 0.8f);
 
             var frontDoor = FrontDoor("Open the front door");
             Beat(root, "FrontDoor", NarrativeTrigger.Mode.Use, frontDoor.transform.position)
@@ -236,13 +266,9 @@ namespace LeftBehind.EditorTools
 
             Readable("ReminderNote_FuseBox", "Note on the fuse box", "SPARE FUSE:\nDINING ROOM SIDEBOARD.");
 
-            // ---- The power: the upstairs lamps are dead until the spare fuse goes in.
-            var upstairs = new System.Collections.Generic.List<LampSwitch>();
-            foreach (var lamp in GameObject.Find("Loop2House").GetComponentsInChildren<LampSwitch>(true))
-                if (lamp.transform.position.y > 2.6f) upstairs.Add(lamp);
-            var circuit = new GameObject("PowerCircuit_Upstairs").AddComponent<PowerCircuit>();
-            circuit.transform.SetParent(root, false);
-            circuit.Configure("powerRestored", upstairs.ToArray());
+            // ---- The power: the fuse has blown and every lamp in the house is dead until the spare goes in.
+            Loop2Power(root);
+            Loop2Flashlight(root);
 
             var landing = Beat(root, "DarkLanding", NarrativeTrigger.Mode.EnterZone, new Vector3(7.85f, 3.6f, 3.3f));
             landing.Configure(NarrativeTrigger.Mode.EnterZone, "sawDarkLanding", D("L2_DarkLanding",
@@ -275,17 +301,7 @@ namespace LeftBehind.EditorTools
                     (Voice.Inner, "", "There."),
                     (Voice.Remembered, "SAM", "Dad, leave the landing light on?")));
 
-            // ---- The study: the key is in Ruth's sewing box; behind the door, bricks.
-            var sewingBox = GameObject.Find("Loop2House/Furniture/SewingRoom/SewingBox");
-            var sewCol = sewingBox.GetComponent<BoxCollider>();
-            if (sewCol == null) sewCol = sewingBox.AddComponent<BoxCollider>();
-            sewCol.size = new Vector3(1.6f, 2.5f, 1.6f);
-            var key = sewingBox.GetComponent<PickupItem>();
-            if (key == null) key = sewingBox.AddComponent<PickupItem>();
-            key.Configure("Open Ruth's sewing box", "studyKey", "hasStudyKey", D("L2_StudyKey",
-                    (Voice.Remembered, "RUTH", "Not tonight, Walter. Leave the study alone."),
-                    (Voice.Inner, "", "The study key. Why did she hide it?")), hide: false);
-
+            // ---- The study: the key lies by Ruth's ring on the dresser (see StudyKeyByRing); behind the door, bricks.
             var studyDoor = GameObject.Find("Loop2House/Doors/Door_Study_Locked");
             var keyed = studyDoor.GetComponent<KeyedDoor>();
             if (keyed == null) keyed = studyDoor.AddComponent<KeyedDoor>();
@@ -305,7 +321,127 @@ namespace LeftBehind.EditorTools
             EditorUtility.SetDirty(loopDoor);
 
             StoryPropsBuilder.Place(2);
+            StudyKeyByRing(root);       // after the props: it goes beside the ring dish
             Done();
+        }
+
+        /// <summary>
+        /// Loop 2's objectives. The house is dark when he arrives, so the first thing is a light.
+        /// </summary>
+        public static ObjectiveRules.Rule[] Loop2Rules() => new[]
+        {
+            ObjectiveRules.R("", "loop2Complete"),
+            ObjectiveRules.R("Leave. Now.", "studyBricked"),
+            ObjectiveRules.R("Open the study.", "hasStudyKey"),
+            ObjectiveRules.R("Find the key to the study.", "powerRestored"),
+            new ObjectiveRules.Rule
+            {
+                objective = "Find the flashlight.",
+                allOf = new[] { "loop2Arrived" },
+                noneOf = new[] { "hasFlashlightLoop2" },
+            },
+            ObjectiveRules.R("Restore the power.", "sawDarkLanding"),
+            ObjectiveRules.R("Go upstairs.", "readFridgeNote"),
+            ObjectiveRules.R("Find Ruth.", "loop2Arrived"),
+        };
+
+        /// <summary>Ruth's voice, then the dark house: the power is out again.</summary>
+        public static DialogueData Loop2Arrival() => D("L2_ArrivalDark",
+            (Voice.Remembered, "RUTH", "Walter? Dinner's on the table."),
+            (Voice.Inner, "", "Ruth? ...Ruth!"),
+            (Voice.Inner, "", "The lights are out again. She keeps the flashlight on the commode."));
+
+        /// <summary>
+        /// Every lamp in the Loop 2 house on one circuit, dead until powerRestored (the spare fuse).
+        /// The street lamps outside are not on it.
+        /// </summary>
+        public static PowerCircuit Loop2Power(Transform root)
+        {
+            var lamps = GameObject.Find("Loop2House").GetComponentsInChildren<LampSwitch>(true);
+            var circuit = new GameObject("PowerCircuit_House").AddComponent<PowerCircuit>();
+            circuit.transform.SetParent(root, false);
+            circuit.Configure("powerRestored", lamps);
+            return circuit;
+        }
+
+        /// <summary>
+        /// Ruth's flashlight on the dining room commode, where it lay in Loop 1: he does not bring it
+        /// with him from one loop to the next, so he has to find it again in the dark.
+        /// </summary>
+        public static FlashlightPickup Loop2Flashlight(Transform root)
+        {
+            var commode = GameObject.Find("Loop2House/Furniture/Dining/Commode");
+            var prefab = Resources.Load<GameObject>("HeldFlashlight");
+            if (commode == null || prefab == null) { Debug.LogWarning("Loop 2 flashlight: no commode or HeldFlashlight prefab."); return null; }
+            var top = Bounds(commode);
+            var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab, root);
+            go.name = "Flashlight";
+            go.transform.rotation = Quaternion.Euler(0f, 70f, 0f) * Quaternion.Euler(90f, 0f, 0f);   // lying down (the lens is its +Y)
+            go.transform.position = new Vector3(top.center.x, top.max.y + 0.2f, top.center.z);
+            var b = Bounds(go);
+            go.transform.position += new Vector3(top.center.x - b.center.x, top.max.y + 0.002f - b.min.y, top.center.z - b.center.z);
+            var pickup = go.GetComponent<FlashlightPickup>();
+            pickup.enabled = true;
+            var outline = go.transform.Find("Outline");
+            if (outline != null) outline.gameObject.SetActive(true);
+            foreach (var c in go.GetComponentsInChildren<Collider>(true)) c.enabled = true;
+
+            var beat = Beat(root, "Flashlight", NarrativeTrigger.Mode.Use, go.transform.position);
+            beat.Configure(NarrativeTrigger.Mode.Use, "hasFlashlightLoop2", D("L2_Flashlight",
+                    (Voice.Inner, "", "Her flashlight. Right where she always leaves it."),
+                    (Voice.Inner, "", "The fuse box, then. Before she gets home.")),
+                "", useTarget: pickup);
+            beat.SetItem("flashlight");
+            return pickup;
+        }
+
+        /// <summary>
+        /// Loop 2's study key: a small brass key on the master bedroom dresser, beside the dish with
+        /// the wedding ring Ruth left behind. Taking it gives the studyKey item and sets hasStudyKey.
+        /// </summary>
+        public static PickupItem StudyKeyByRing(Transform root)
+        {
+            var dish = GameObject.Find("StoryProps/RingDish");
+            var dresser = GameObject.Find("Loop2House/Furniture/MasterBedroom/Dresser");
+            if (dish == null || dresser == null) { Debug.LogWarning("Study key: no ring dish or dresser in this scene."); return null; }
+            var top = Bounds(dresser);
+            var d = dish.transform.position;
+            bool longX = top.size.x > top.size.z;
+
+            // The first clear spot beside the dish, still on the dresser.
+            var spot = d + (longX ? Vector3.right : Vector3.forward) * 0.16f;
+            foreach (float off in new[] { 0.16f, -0.16f, 0.24f, -0.24f })
+            {
+                var p = d + (longX ? Vector3.right : Vector3.forward) * off;
+                if (!top.Contains(new Vector3(p.x, top.center.y, p.z))) continue;
+                var box = new Bounds(new Vector3(p.x, top.max.y + 0.03f, p.z), new Vector3(0.1f, 0.04f, 0.1f));
+                bool clear = true;
+                foreach (var r in Object.FindObjectsByType<Renderer>())
+                    if (!r.transform.IsChildOf(dresser.transform) && r.bounds.Intersects(box)) { clear = false; break; }
+                if (clear) { spot = p; break; }
+            }
+
+            var key = BrassKey(root, "StudyKey", new Vector3(spot.x, top.max.y + 0.002f, spot.z), 28f);
+            var pickup = key.AddComponent<PickupItem>();
+            pickup.Configure("Take the key", "studyKey", "hasStudyKey", D("L2_StudyKeyByRing",
+                    (Voice.Remembered, "RUTH", "Not tonight, Walter. Leave the study alone."),
+                    (Voice.Inner, "", "The study key. Right next to her ring."),
+                    (Voice.Inner, "", "She never took her ring off. Why are they both here?")), hide: true);
+            return pickup;
+        }
+
+        private static void Part(Transform parent, PrimitiveType type, string name, Vector3 local, Quaternion rot, Vector3 scale, Material mat)
+        {
+            var go = GameObject.CreatePrimitive(type);
+            go.name = name;
+            Object.DestroyImmediate(go.GetComponent<Collider>());
+            go.transform.SetParent(parent, false);
+            go.transform.localPosition = local;
+            go.transform.localRotation = rot;
+            go.transform.localScale = scale;
+            var r = go.GetComponent<Renderer>();
+            r.sharedMaterial = mat;
+            r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         }
 
         // ------------------------------------------------------------------ Loop 3
