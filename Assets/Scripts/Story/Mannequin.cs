@@ -9,7 +9,8 @@ namespace LeftBehind.Story
     /// towards him whenever he cannot see it, and freezes mid-step the moment it is in view.
     /// "In view" means a point of its body is inside the camera's view (a little wider than the
     /// screen, so it never moves at the very edge) with nothing solid in between. It never comes
-    /// closer than an arm's length: there is no way to be hurt in this game.
+    /// closer than an arm's length: there is no way to be hurt in this game. Once Sam's bear has
+    /// been taken (hurryFlag) they walk faster, as if they want it back.
     /// </summary>
     [RequireComponent(typeof(NavMeshAgent))]
     public class Mannequin : MonoBehaviour
@@ -25,12 +26,16 @@ namespace LeftBehind.Story
         [SerializeField] private float viewMargin = 0.08f;
         [Tooltip("Played the first time a mannequin is seen after it has moved.")]
         [SerializeField] private NarrativeTrigger movedBeat;
+        [Tooltip("Once this story flag is set they walk faster (the bear has been taken).")]
+        [SerializeField] private string hurryFlag = "hasTeddy";
+        [SerializeField] private float hurryFactor = 1.6f;
 
         private NavMeshAgent agent;
         private Transform player;
         private Camera viewCamera;
         private Vector3 lastSeenAt;
         private float nextRepath;
+        private float baseSpeed;
 
         public bool IsSeen { get; private set; }
 
@@ -49,6 +54,7 @@ namespace LeftBehind.Story
             if (GetComponent<FlickerSource>() == null) gameObject.AddComponent<FlickerSource>().Configure(3.5f);
             agent.stoppingDistance = stopDistance;
             agent.autoBraking = false;
+            baseSpeed = agent.speed;
             lastSeenAt = transform.position;
         }
 
@@ -83,8 +89,10 @@ namespace LeftBehind.Story
                 return;
             }
 
-            // Unseen: walk towards him.
-            if (animator != null) animator.speed = 1f;
+            // Unseen: walk towards him (faster once the bear is gone, the walk sped up to match).
+            float pace = StoryStateManager.Has(hurryFlag) ? hurryFactor : 1f;
+            agent.speed = baseSpeed * pace;
+            if (animator != null) animator.speed = pace;
             agent.isStopped = false;
             if (Time.time >= nextRepath)
             {

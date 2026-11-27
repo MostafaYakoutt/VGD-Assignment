@@ -26,11 +26,7 @@ namespace LeftBehind.EditorTools
         public static void SetUpLoop1()
         {
             var root = NewRoot();
-            Rules(root,
-                ObjectiveRules.R("", "loop1Complete"),
-                ObjectiveRules.R("Go upstairs.", "hasFlashlight"),
-                ObjectiveRules.R("Find another way out.", "triedFrontDoor"),
-                ObjectiveRules.R("Get out of the house.", "introSeen"));
+            Rules(root, Loop1Rules());
 
             var intro = Beat(root, "Intro", NarrativeTrigger.Mode.SceneStart, Vector3.zero);
             intro.Configure(NarrativeTrigger.Mode.SceneStart, "introSeen", D("L1_Intro",
@@ -92,22 +88,65 @@ namespace LeftBehind.EditorTools
                 aso.FindProperty("locked").boolValue = false;
                 aso.ApplyModifiedPropertiesWithoutUndo();
             }
-            var bear1 = Loop3Builder.Teddy(root, "TeddyBear", new Vector3(-5.4f, 5.62f, -7.2f), 200f, 1.1f).AddComponent<Examinable>();
-            bear1.Configure("Look at the bear");
-            Beat(root, "Teddy", NarrativeTrigger.Mode.Use, bear1.transform.position)
-                .Configure(NarrativeTrigger.Mode.Use, "sawTeddyLoop1", D("L1_Teddy",
-                        (Voice.Inner, "", "A child's bear, packed away with the toys."),
-                        (Voice.Inner, "", "Whose was it? Why can't I remember?")),
-                    "", useTarget: bear1);
-
-            var loopDoor = Object.FindAnyObjectByType<LoopDoor>();
-            Undo.RecordObject(loopDoor, "Gate Loop Door");
-            loopDoor.ConfigureGate(new[] { "sawFamilyPhoto", "hasFlashlight" }, D("L1_LoopDoorNotYet",
-                (Voice.Inner, "", "Not yet. I've missed something downstairs.")), "loop1Complete");
-            EditorUtility.SetDirty(loopDoor);
+            AtticBear(root);
+            GateLoop1Door();
 
             StoryPropsBuilder.Place(1);
             Done();
+        }
+
+        /// <summary>
+        /// Loop 1's objectives. Once the Loop Door has turned Walter away with only the bear
+        /// still missing, the objective sends him to the attic.
+        /// </summary>
+        public static ObjectiveRules.Rule[] Loop1Rules() => new[]
+        {
+            ObjectiveRules.R("", "loop1Complete"),
+            new ObjectiveRules.Rule
+            {
+                objective = "Look in the attic.",
+                allOf = new[] { "triedLoopDoor", "sawFamilyPhoto", "hasFlashlight" },
+                noneOf = new[] { "hasTeddy" },
+            },
+            ObjectiveRules.R("Go upstairs.", "hasFlashlight"),
+            ObjectiveRules.R("Find another way out.", "triedFrontDoor"),
+            ObjectiveRules.R("Get out of the house.", "introSeen"),
+        };
+
+        /// <summary>
+        /// Sam's teddy bear, boxed with the toys at the far end of the attic, past Ruth's
+        /// mannequins. Walter takes it (item teddyBear, flag hasTeddy) and the Loop Door will not
+        /// open without it; once it is gone the mannequins walk faster.
+        /// </summary>
+        public static PickupItem AtticBear(Transform root)
+        {
+            var bear = Loop3Builder.Teddy(root, "TeddyBear", new Vector3(-5.4f, 5.62f, -7.2f), 200f, 1.1f).AddComponent<PickupItem>();
+            bear.Configure("Take the bear", "teddyBear", "hasTeddy", D("L1_TeddyTaken",
+                    (Voice.Inner, "", "A child's bear, packed away with the toys."),
+                    (Voice.Inner, "", "Somebody could never sleep without this."),
+                    (Voice.Inner, "", "I'm not leaving it up here in the dark.")),
+                true);
+            return bear;
+        }
+
+        /// <summary>The Loop Door opens once the photo is seen, the flashlight taken and the bear found.</summary>
+        public static void GateLoop1Door()
+        {
+            var loopDoor = Object.FindAnyObjectByType<LoopDoor>();
+            Undo.RecordObject(loopDoor, "Gate Loop Door");
+            var downstairs = D("L1_LoopDoorNotYet",
+                (Voice.Inner, "", "Not yet. I've missed something downstairs."));
+            var attic = D("L1_LoopDoorAttic",
+                (Voice.Inner, "", "Not yet. I can't go without it..."),
+                (Voice.Inner, "", "Without what? Something in the attic. Something I packed away."));
+            loopDoor.ConfigureGate(new[] { "sawFamilyPhoto", "hasFlashlight", "hasTeddy" }, downstairs, "loop1Complete");
+            loopDoor.ConfigureHints(new[]
+            {
+                new LoopDoor.Hint { flag = "sawFamilyPhoto", dialogue = downstairs },
+                new LoopDoor.Hint { flag = "hasFlashlight", dialogue = downstairs },
+                new LoopDoor.Hint { flag = "hasTeddy", dialogue = attic },
+            }, "triedLoopDoor");
+            EditorUtility.SetDirty(loopDoor);
         }
 
         // ------------------------------------------------------------------ Loop 2

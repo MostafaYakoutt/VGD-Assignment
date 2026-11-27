@@ -12,7 +12,9 @@ namespace LeftBehind.Interaction
     ///
     /// The outlines tell the player "this is a game, you are safe", so they fade from the house as
     /// the chapters go on: in Chapter I they show at any distance, in Chapter II only within a few
-    /// metres, in Chapter III only within arm's reach, and never on doors or lamps. Something that
+    /// metres, in Chapter III only within arm's reach. Doors and lamps never glow: they are plain
+    /// parts of the house, and their prompt still shows when Walter looks at them. The Loop Door is
+    /// the exception, since it is the way on. Something that
     /// has just changed behind Walter's back is quieter still (see Quiet), so its outline does not
     /// give it away.
     /// </summary>
@@ -21,9 +23,6 @@ namespace LeftBehind.Interaction
     {
         /// <summary>Metres from the camera within which outlines show, by loop (index 1..3); 0 means any distance.</summary>
         private static readonly float[] RangeByLoop = { 0f, 0f, 3f, 1.5f };
-
-        /// <summary>From this loop on, doors and lamps have no outline at all.</summary>
-        private const int NoDoorsOrLampsFrom = 3;
 
         /// <summary>An outline at the edge of its range does not flicker: it hides only this much further out.</summary>
         private const float Hysteresis = 0.25f;
@@ -58,7 +57,7 @@ namespace LeftBehind.Interaction
             int loop = env != null ? Mathf.Clamp(env.Loop, 0, RangeByLoop.Length - 1) : 1;
             if (range <= 0f) range = RangeByLoop[loop];
             else if (RangeByLoop[loop] > 0f) range = Mathf.Min(range, RangeByLoop[loop]);
-            never = loop >= NoDoorsOrLampsFrom && (target is Door || target is LeftBehind.Story.DoorRattle || target is LampSwitch);
+            never = target is Door || target is LeftBehind.Story.DoorRattle || target is LampSwitch;
             if (target != null) colliders = target.GetComponentsInChildren<Collider>();
         }
 

@@ -30514,7 +30514,7 @@ Transform:
   m_GameObject: {fileID: 811375602}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.6, y: 1.3, z: 0.75}
+  m_LocalPosition: {x: 4.495, y: 1.3, z: 0.75}
   m_LocalScale: {x: 0.08000004, y: 0.07999992, z: 0.011999965}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -31563,7 +31563,7 @@ Transform:
   m_GameObject: {fileID: 841529892}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
-  m_LocalPosition: {x: 0.49965003, y: 1.62, z: 0.76100475}
+  m_LocalPosition: {x: 4.39465, y: 1.62, z: 0.76100475}
   m_LocalScale: {x: 0.22, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -57801,7 +57801,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d45733a138b012e4a83a1c374b83902f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.7
+      value: 4.595
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d45733a138b012e4a83a1c374b83902f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -61518,6 +61518,8 @@ MonoBehaviour:
   requiredFlags:
   - studyBricked
   notYetDialogue: {fileID: 11400000, guid: c7a27c282f1ead54fae3e5cf48724c3f, type: 2}
+  hints: []
+  triedFlag: 
   completeFlag: loop2Complete
 --- !u!65 &1709203320
 BoxCollider:

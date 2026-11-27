@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fc1a53a52f5eb0b498d0cc3aeedab285, type: 3}
-  m_Name: L1_Teddy
+  m_Name: L1_LoopDoorAttic
   m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.DialogueData
   lines:
   - voice: 0
     speaker: 
-    text: A child's bear, packed away with the toys.
+    text: Not yet. I can't go without it...
     portrait: {fileID: 0}
   - voice: 0
     speaker: 
-    text: Whose was it? Why can't I remember?
+    text: Without what? Something in the attic. Something I packed away.
     portrait: {fileID: 0}
   choices: []
   flagToSetWhenFinished: 

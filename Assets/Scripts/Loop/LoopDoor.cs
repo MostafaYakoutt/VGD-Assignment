@@ -1,3 +1,4 @@
+using System;
 using LeftBehind.Interaction;
 using LeftBehind.Story;
 using UnityEngine;
@@ -12,6 +13,14 @@ namespace LeftBehind.Loop
     /// </summary>
     public class LoopDoor : Interactable
     {
+        /// <summary>What Walter says when this particular flag is the one still missing.</summary>
+        [Serializable]
+        public class Hint
+        {
+            public string flag = "";
+            public DialogueData dialogue;
+        }
+
         [Tooltip("Scene of the next loop, as listed in Build Settings.")]
         [SerializeField] private string nextScene = "";
         [Tooltip("Loop number the next scene represents.")]
@@ -21,6 +30,10 @@ namespace LeftBehind.Loop
         [SerializeField] private string[] requiredFlags = new string[0];
         [Tooltip("Played when a required flag is missing.")]
         [SerializeField] private DialogueData notYetDialogue;
+        [Tooltip("Checked top to bottom: the first hint whose flag is missing plays instead of the line above.")]
+        [SerializeField] private Hint[] hints = new Hint[0];
+        [Tooltip("Set the first time the door is tried while it is still shut, e.g. triedLoopDoor.")]
+        [SerializeField] private string triedFlag = "";
         [Tooltip("Set when the door starts the transition, e.g. loop1Complete.")]
         [SerializeField] private string completeFlag = "";
 
@@ -42,13 +55,21 @@ namespace LeftBehind.Loop
             completeFlag = complete;
         }
 
+        public void ConfigureHints(Hint[] h, string tried)
+        {
+            hints = h ?? new Hint[0];
+            triedFlag = tried;
+        }
+
         public override void Interact(PlayerInteractor interactor)
         {
             if (!StoryStateManager.HasAll(requiredFlags))
             {
-                if (notYetDialogue != null)
+                StoryStateManager.Set(triedFlag);
+                var line = MissingHint() ?? notYetDialogue;
+                if (line != null)
                 {
-                    if (!DialogueManager.Busy) DialogueManager.Play(notYetDialogue);
+                    if (!DialogueManager.Busy) DialogueManager.Play(line);
                 }
                 else ShowHint("Not yet.");
                 return;
@@ -59,6 +80,13 @@ namespace LeftBehind.Loop
                 return;
             }
             if (LoopTransition.Play(nextScene, nextLoop)) StoryStateManager.Set(completeFlag);
+        }
+
+        private DialogueData MissingHint()
+        {
+            foreach (var h in hints)
+                if (h != null && h.dialogue != null && !StoryStateManager.Has(h.flag)) return h.dialogue;
+            return null;
         }
 
         private void ShowHint(string text)

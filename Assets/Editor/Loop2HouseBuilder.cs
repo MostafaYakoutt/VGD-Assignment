@@ -618,8 +618,9 @@ namespace LeftBehind.EditorTools
                 Note(cb.center.x, 0.62f, cb.min.z - 0.008f, 'S', $"ReminderNote_Counter{unit++}");
             }
             // The fridge with Walter's note: "RUTH TOOK THE KIDS TO HER MOTHER'S. DON'T CALL. - W."
-            P("Kitchen", "Fridge", "Furniture/Kitchen_Fridge.fbx", 0.54f, 0f, 0.7f, N, 0f, 'S', 0.05f);
-            Note(0.6f, 1.3f, 0.75f, 'N', "ReminderNote_Fridge");
+            // In the middle of the south wall, as in every loop (clear of the pantry door at x 2.55..3.45).
+            P("Kitchen", "Fridge", "Furniture/Kitchen_Fridge.fbx", 0.54f, 0f, 4.6f, N, 0f, 'S', 0.05f);
+            Note(4.5f, 1.3f, 0.75f, 'N', "ReminderNote_Fridge");
             P("Kitchen", "Oven", "Furniture/Kitchen_Oven_Large.fbx", 0.566f, 270f, N, 1.6f, 0f, 'E', 9.28f);
             P("Kitchen", "Counter_Alcove", "Furniture/Kitchen_3Drawers.fbx", 0.56f, 270f, N, 2.55f, 0f, 'E', 9.28f);
             var kt = P("Kitchen", "Table", "Furniture/Table_RoundSmall2.fbx", 0.62f, 0f, 3.0f, 5.4f, 0f);
