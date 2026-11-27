@@ -75,7 +75,8 @@ namespace LeftBehind.Story
             // Only the game's name, then back to the menu.
             var title = ui.MakeText(black.transform, "Title", 84, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.5f),
                 new Vector2(0f, 0f), new Vector2(1600f, 140f), shadow: false);
-            title.text = "LEFT BEHIND";
+            title.text = "LEFT  BEHIND";
+            UIStyle.Spaced(title, 14f);
             yield return FadeText(title, 0f, 0.9f, 2f);
             for (float t = 0f; t < TitleHold; t += Time.unscaledDeltaTime)
             {
@@ -103,10 +104,10 @@ namespace LeftBehind.Story
         {
             for (float t = 0f; t < time; t += Time.unscaledDeltaTime)
             {
-                text.color = new Color(1f, 1f, 1f, Mathf.Lerp(from, to, t / time));
+                text.color = new Color(UIStyle.Ink.r, UIStyle.Ink.g, UIStyle.Ink.b, Mathf.Lerp(from, to, t / time));
                 yield return null;
             }
-            text.color = new Color(1f, 1f, 1f, to);
+            text.color = new Color(UIStyle.Ink.r, UIStyle.Ink.g, UIStyle.Ink.b, to);
         }
     }
 }

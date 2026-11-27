@@ -18,9 +18,9 @@ namespace LeftBehind.Story
         private void Awake()
         {
             var ui = StoryUI.Instance;
-            label = ui.MakeText(ui.Root, "Objective", 28, TextAnchor.UpperLeft, new Vector2(0f, 1f),
-                new Vector2(60f, -46f), new Vector2(1000f, 50f));
-            label.fontStyle = FontStyle.Italic;
+            label = ui.MakeText(ui.Root, "Objective", 32, TextAnchor.UpperLeft, new Vector2(0f, 1f),
+                new Vector2(60f, -42f), new Vector2(1000f, 50f));
+            UIStyle.Italic(label);
             Show(StoryStateManager.Objective, instant: true);
             StoryStateManager.ObjectiveChanged += OnChanged;
         }
@@ -43,6 +43,7 @@ namespace LeftBehind.Story
             Apply();
         }
 
-        private void Apply() => label.color = new Color(1f, 1f, 1f, string.IsNullOrEmpty(label.text) ? 0f : fade * Alpha);
+        private void Apply() => label.color = new Color(UIStyle.Ink.r, UIStyle.Ink.g, UIStyle.Ink.b,
+            string.IsNullOrEmpty(label.text) ? 0f : fade * Alpha);
     }
 }

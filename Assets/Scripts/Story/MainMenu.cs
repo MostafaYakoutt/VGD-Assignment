@@ -34,9 +34,11 @@ namespace LeftBehind.Story
             page = ui.MakeFullScreen(ui.Root, "MainMenu", new Color(0.03f, 0.028f, 0.03f, 1f)).rectTransform;
             page.SetAsFirstSibling();
 
-            var title = ui.MakeText(page, "Title", 96, TextAnchor.MiddleLeft, new Vector2(0f, 0.5f),
-                new Vector2(150f, 300f), new Vector2(900f, 130f));
-            title.text = "LEFT BEHIND";
+            var title = ui.MakeText(page, "Title", 92, TextAnchor.MiddleLeft, new Vector2(0f, 0.5f),
+                new Vector2(150f, 300f), new Vector2(1000f, 130f));
+            title.text = "LEFT  BEHIND";
+            UIStyle.Spaced(title, 14f);
+            UIStyle.Line(ui, page, "Hairline", new Vector2(0f, 0.5f), new Vector2(140f, 226f), 620f);
 
             Photo(ui);
 
@@ -64,8 +66,9 @@ namespace LeftBehind.Story
 
             var hint = ui.MakeText(page, "Hint", 20, TextAnchor.MiddleLeft, new Vector2(0f, 0f),
                 new Vector2(156f, 60f), new Vector2(1200f, 34f));
-            hint.text = "WASD move     Mouse look     E interact     F flashlight     Esc pause";
-            hint.color = new Color(1f, 1f, 1f, 0.35f);
+            string Key(string k) => $"<color={UIStyle.BrassHex}>{k}</color>";
+            hint.text = $"{Key("WASD")}  move      {Key("Mouse")}  look      {Key("E")}  interact      {Key("F")}  flashlight      {Key("Esc")}  pause";
+            hint.color = new Color(UIStyle.Ink.r, UIStyle.Ink.g, UIStyle.Ink.b, 0.5f);
 
             fade = ui.MakeFullScreen(page, "Fade", new Color(0f, 0f, 0f, 1f));
             StartCoroutine(FadeIn());
@@ -116,7 +119,7 @@ namespace LeftBehind.Story
             img.raycastTarget = false;
             var caption = ui.MakeText(frame.transform, "Caption", 22, TextAnchor.MiddleCenter, new Vector2(0.5f, 0f),
                 new Vector2(0f, 2f), new Vector2(600f, 30f), shadow: false);
-            caption.fontStyle = FontStyle.Italic;
+            UIStyle.Italic(caption);
             caption.color = new Color(0.25f, 0.2f, 0.18f, 1f);
             caption.text = remembered ? "Walter, Ruth, Emily and Sam." : "";
         }

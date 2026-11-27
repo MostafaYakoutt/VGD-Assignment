@@ -26,9 +26,11 @@ namespace LeftBehind.Story
             var ui = StoryUI.Instance;
             dim = ui.MakeFullScreen(ui.Root, "PauseMenu", new Color(0f, 0f, 0f, 0.9f));
             dim.raycastTarget = true;     // swallow clicks meant for the world
-            var title = ui.MakeText(dim.transform, "Title", 64, TextAnchor.MiddleLeft, new Vector2(0f, 0.5f),
+            var title = ui.MakeText(dim.transform, "Title", 72, TextAnchor.MiddleLeft, new Vector2(0f, 0.5f),
                 new Vector2(160f, 250f), new Vector2(900f, 90f));
+            UIStyle.Italic(title);
             title.text = "Paused";
+            UIStyle.Line(ui, dim.transform, "Hairline", new Vector2(0f, 0.5f), new Vector2(150f, 186f), 520f);
 
             string[] labels = { "Resume", "Restart chapter", "Main menu", "Quit" };
             buttons = new Button[labels.Length];
@@ -43,8 +45,9 @@ namespace LeftBehind.Story
             Wire();
             var hint = ui.MakeText(dim.transform, "Hint", 22, TextAnchor.MiddleLeft, new Vector2(0f, 0f),
                 new Vector2(160f, 70f), new Vector2(1200f, 40f));
+            UIStyle.Italic(hint);
             hint.text = "Restart chapter goes back to the start of this chapter.";
-            hint.color = new Color(1f, 1f, 1f, 0.45f);
+            hint.color = new Color(UIStyle.Ink.r, UIStyle.Ink.g, UIStyle.Ink.b, 0.45f);
             dim.gameObject.SetActive(false);
         }
 

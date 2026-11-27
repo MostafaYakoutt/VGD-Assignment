@@ -75,7 +75,7 @@ namespace LeftBehind.Story
                 return;
             }
             instance = this;      // set first: the managers added below look it up in their own Awake
-            Font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            Font = UIStyle.Serif;
             var canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 500;      // above the HUD, below the loop transition (1000)
@@ -87,7 +87,8 @@ namespace LeftBehind.Story
 
             titleCard = MakeText(Root, "TitleCard", 72, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.5f),
                 new Vector2(0f, 60f), new Vector2(1600f, 140f));
-            titleCard.color = new Color(1f, 1f, 1f, 0f);
+            UIStyle.Spaced(titleCard, 10f);
+            titleCard.color = Faded(0f);
 
             gameObject.AddComponent<ObjectiveManager>();
             gameObject.AddComponent<DialogueManager>();
@@ -116,20 +117,23 @@ namespace LeftBehind.Story
             rt.anchorMin = rt.anchorMax = rt.pivot = anchor;
             rt.anchoredPosition = pos;
             rt.sizeDelta = sizeDelta;
+            // The background is a glow from a brass edge on the left, shown only when the item is highlighted.
             var bg = go.GetComponent<Image>();
-            bg.color = Color.white;
+            bg.sprite = UIStyle.Glow;
+            bg.color = UIStyle.Brass;
             var text = MakeText(go.transform, "Label", size, align, new Vector2(0.5f, 0.5f), Vector2.zero, sizeDelta);
             text.text = label;
             text.raycastTarget = false;
+            text.color = UIStyle.Ink;
             var button = go.GetComponent<Button>();
             button.targetGraphic = bg;
             var colors = button.colors;
             colors.normalColor = new Color(1f, 1f, 1f, 0f);
-            colors.highlightedColor = new Color(1f, 0.85f, 0.62f, 0.08f);
-            colors.selectedColor = new Color(1f, 0.85f, 0.62f, 0.08f);
-            colors.pressedColor = new Color(1f, 0.85f, 0.62f, 0.2f);
+            colors.highlightedColor = new Color(1f, 1f, 1f, 0.32f);
+            colors.selectedColor = new Color(1f, 1f, 1f, 0.32f);
+            colors.pressedColor = new Color(1f, 1f, 1f, 0.6f);
             colors.disabledColor = new Color(1f, 1f, 1f, 0f);
-            colors.fadeDuration = 0.08f;
+            colors.fadeDuration = 0.12f;
             button.colors = colors;
             var nav = button.navigation;
             nav.mode = Navigation.Mode.Vertical;
@@ -163,7 +167,7 @@ namespace LeftBehind.Story
             {
                 instance.GetComponent<PauseMenu>().Dismiss();
                 instance.GetComponent<NoteReader>().Dismiss();
-                instance.titleCard.color = new Color(1f, 1f, 1f, 0f);
+                instance.titleCard.color = Faded(0f);
             }
             DialogueManager.StopAll();
             locks.Clear();
@@ -195,17 +199,19 @@ namespace LeftBehind.Story
             titleCard.text = text;
             for (float t = 0f; t < 1.2f; t += Time.unscaledDeltaTime)
             {
-                titleCard.color = new Color(1f, 1f, 1f, t / 1.2f * 0.9f);
+                titleCard.color = Faded(t / 1.2f * 0.9f);
                 yield return null;
             }
             yield return new WaitForSecondsRealtime(hold);
             for (float t = 0f; t < 1.2f; t += Time.unscaledDeltaTime)
             {
-                titleCard.color = new Color(1f, 1f, 1f, (1f - t / 1.2f) * 0.9f);
+                titleCard.color = Faded((1f - t / 1.2f) * 0.9f);
                 yield return null;
             }
-            titleCard.color = new Color(1f, 1f, 1f, 0f);
+            titleCard.color = Faded(0f);
         }
+
+        private static Color Faded(float alpha) => new Color(UIStyle.Ink.r, UIStyle.Ink.g, UIStyle.Ink.b, alpha);
 
         // ------------------------------------------------------------------ building helpers
 
@@ -226,12 +232,14 @@ namespace LeftBehind.Story
             t.supportRichText = true;
             t.horizontalOverflow = HorizontalWrapMode.Wrap;
             t.verticalOverflow = VerticalWrapMode.Overflow;
-            t.color = Color.white;
+            t.color = UIStyle.Ink;
+            t.lineSpacing = 1.05f;
             if (shadow)
             {
+                // A soft drop shadow, so the text reads against bright rooms without a box behind it.
                 var s = go.AddComponent<Shadow>();
-                s.effectColor = new Color(0f, 0f, 0f, 0.85f);
-                s.effectDistance = new Vector2(2f, -2f);
+                s.effectColor = new Color(0f, 0f, 0f, 0.75f);
+                s.effectDistance = new Vector2(1.5f, -1.5f);
             }
             return t;
         }

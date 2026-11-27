@@ -17,7 +17,7 @@ namespace LeftBehind.Story
     {
         private const float CharsPerSecond = 45f;
 
-        private static readonly Color InnerColour = new Color(0.86f, 0.86f, 0.82f, 1f);
+        private static readonly Color InnerColour = UIStyle.Inner;
         private static readonly Color RememberedColour = new Color(1f, 0.85f, 0.62f, 0.8f);
 
         private readonly Queue<(DialogueData data, Action done)> queue = new Queue<(DialogueData, Action)>();
@@ -43,21 +43,31 @@ namespace LeftBehind.Story
         private void Awake()
         {
             var ui = StoryUI.Instance;
-            box = ui.MakePanel(ui.Root, "DialogueBox", new Color(0f, 0f, 0f, 0.6f), new Vector2(0.5f, 0f),
+            // No box: the bottom of the screen darkens softly behind the words, under a brass hairline.
+            box = ui.MakePanel(ui.Root, "DialogueBox", new Color(0f, 0f, 0f, 0f), new Vector2(0.5f, 0f),
                 new Vector2(0f, 60f), new Vector2(1180f, 160f));
-            portrait = ui.MakePanel(box.transform, "Portrait", Color.white, new Vector2(0f, 0.5f), new Vector2(18f, 0f),
+            var shade = ui.MakePanel(box.transform, "Shade", new Color(0f, 0f, 0f, 0.82f), new Vector2(0.5f, 0f),
+                new Vector2(0f, -60f), new Vector2(2600f, 330f));
+            shade.sprite = UIStyle.FadeUp;
+            UIStyle.Line(ui, box.transform, "Hairline", new Vector2(0f, 1f), new Vector2(10f, 10f), 1150f);
+            var frame = ui.MakePanel(box.transform, "PortraitFrame", new Color(UIStyle.Brass.r, UIStyle.Brass.g, UIStyle.Brass.b, 0.5f),
+                new Vector2(0f, 0.5f), new Vector2(18f, 0f), new Vector2(130f, 130f));
+            portrait = ui.MakePanel(frame.transform, "Portrait", Color.white, new Vector2(0.5f, 0.5f), Vector2.zero,
                 new Vector2(124f, 124f));
-            speaker = ui.MakeText(box.transform, "Speaker", 26, TextAnchor.UpperLeft, new Vector2(0f, 1f),
+            speaker = ui.MakeText(box.transform, "Speaker", 22, TextAnchor.UpperLeft, new Vector2(0f, 1f),
                 new Vector2(28f, -14f), new Vector2(700f, 34f));
-            body = ui.MakeText(box.transform, "Text", 30, TextAnchor.UpperLeft, new Vector2(0f, 1f),
+            speaker.font = UIStyle.SerifBold;
+            UIStyle.Spaced(speaker, 3f);
+            body = ui.MakeText(box.transform, "Text", 34, TextAnchor.UpperLeft, new Vector2(0f, 1f),
                 new Vector2(28f, -50f), new Vector2(1124f, 100f));
 
-            choicePanel = ui.MakePanel(ui.Root, "Choices", new Color(0f, 0f, 0f, 0.6f), new Vector2(0.5f, 0f),
-                new Vector2(0f, 240f), new Vector2(560f, 150f));
+            choicePanel = ui.MakePanel(ui.Root, "Choices", new Color(0f, 0f, 0f, 0f), new Vector2(0.5f, 0f),
+                new Vector2(0f, 320f), new Vector2(560f, 150f));
+            UIStyle.Line(ui, choicePanel.transform, "Hairline", new Vector2(0.5f, 1f), new Vector2(0f, 6f), 420f);
             choiceLabels = new Text[4];
             for (int i = 0; i < choiceLabels.Length; i++)
-                choiceLabels[i] = ui.MakeText(choicePanel.transform, "Choice" + i, 32, TextAnchor.MiddleLeft,
-                    new Vector2(0f, 1f), new Vector2(36f, -18f - i * 44f), new Vector2(500f, 42f));
+                choiceLabels[i] = ui.MakeText(choicePanel.transform, "Choice" + i, 36, TextAnchor.MiddleCenter,
+                    new Vector2(0.5f, 1f), new Vector2(0f, -26f - i * 52f), new Vector2(560f, 48f));
             Hide();
         }
 
@@ -134,12 +144,12 @@ namespace LeftBehind.Story
         {
             StoryUI.Lock(this);
             choicePanel.gameObject.SetActive(true);
-            choicePanel.rectTransform.sizeDelta = new Vector2(560f, 30f + choices.Length * 44f);
+            choicePanel.rectTransform.sizeDelta = new Vector2(560f, 30f + choices.Length * 52f);
             for (int i = 0; i < choiceLabels.Length; i++)
             {
                 bool on = i < choices.Length;
                 choiceLabels[i].gameObject.SetActive(on);
-                if (on) choiceLabels[i].text = $"{i + 1}.  {choices[i].text}";
+                if (on) choiceLabels[i].text = $"<color={UIStyle.BrassHex}>{i + 1}</color>    {choices[i].text}";
             }
             int result = -1;
             while (result < 0)
@@ -184,7 +194,7 @@ namespace LeftBehind.Story
             box.gameObject.SetActive(true);
             var portraitSprite = PortraitFor(line);
             bool hasPortrait = portraitSprite != null;
-            portrait.gameObject.SetActive(hasPortrait);
+            portrait.transform.parent.gameObject.SetActive(hasPortrait);
             if (hasPortrait)
             {
                 portrait.sprite = portraitSprite;
@@ -199,20 +209,20 @@ namespace LeftBehind.Story
             {
                 case DialogueData.Voice.Inner:
                     speaker.text = "";
-                    body.fontStyle = FontStyle.Italic;
+                    UIStyle.Italic(body);
                     body.color = InnerColour;
                     break;
                 case DialogueData.Voice.Remembered:
-                    speaker.text = line.speaker;
+                    speaker.text = line.speaker.ToUpperInvariant();
                     speaker.color = RememberedColour;
-                    body.fontStyle = FontStyle.Normal;
+                    body.font = UIStyle.Serif;
                     body.color = RememberedColour;
                     break;
                 default:
-                    speaker.text = line.speaker;
-                    speaker.color = Color.white;
-                    body.fontStyle = FontStyle.Normal;
-                    body.color = Color.white;
+                    speaker.text = line.speaker.ToUpperInvariant();
+                    speaker.color = UIStyle.Brass;
+                    body.font = UIStyle.Serif;
+                    body.color = UIStyle.Ink;
                     break;
             }
         }
