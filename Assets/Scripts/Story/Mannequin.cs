@@ -58,6 +58,10 @@ namespace LeftBehind.Story
             lastSeenAt = transform.position;
         }
 
+        // Walter breathes harder the nearer he is to one.
+        private void OnEnable() => LeftBehind.Audio.Breathing.AddPresence(transform);
+        private void OnDisable() => LeftBehind.Audio.Breathing.RemovePresence(transform);
+
         private void Start()
         {
             // Each one starts frozen somewhere different in its idle, so they do not stand in step.
@@ -83,7 +87,9 @@ namespace LeftBehind.Story
                 Freeze();
                 if (IsSeen && !wasSeen)
                 {
-                    if (movedBeat != null && Vector3.Distance(transform.position, lastSeenAt) > 1.5f) movedBeat.Fire();
+                    bool moved = Vector3.Distance(transform.position, lastSeenAt) > 1.5f;
+                    if (moved) ScarePacing.Mark();     // the quiet starts again after each one he catches
+                    if (movedBeat != null && moved) movedBeat.Fire();
                     lastSeenAt = transform.position;
                 }
                 return;

@@ -22,6 +22,7 @@ Shader "LeftBehind/PS1Post"
             float _ColorLevels;
             float _DitherStrength;
             float _GrainStrength;
+            float _LB_ExtraGrain;       // global, set per loop by LoopEnvironment (more in Loop 3)
 
             static const float bayer4[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
 
@@ -39,7 +40,7 @@ Shader "LeftBehind/PS1Post"
                 col.rgb = floor(saturate(col.rgb + d) * (_ColorLevels - 1.0) + 0.5) / (_ColorLevels - 1.0);
 
                 float n = frac(sin(dot(px + floor(_Time.y * 24.0) * 17.0, float2(12.9898, 78.233))) * 43758.5453);
-                col.rgb += (n - 0.5) * _GrainStrength;
+                col.rgb += (n - 0.5) * (_GrainStrength + _LB_ExtraGrain);
                 return col;
             }
             ENDHLSL

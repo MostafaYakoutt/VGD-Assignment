@@ -15,6 +15,8 @@ namespace LeftBehind.Story
         [SerializeField] private string flagToSet = "";
         [SerializeField] private DialogueData afterReading;
         [SerializeField] private string objective = "";
+        [Tooltip("The view slowly pushes in while it is read (the note on the study door).")]
+        [SerializeField] private bool pushIn;
 
         private bool readOnce;
 
@@ -31,6 +33,8 @@ namespace LeftBehind.Story
             promptText = prompt;
         }
 
+        public void SetPushIn(bool on) => pushIn = on;
+
         public override void Interact(PlayerInteractor interactor)
         {
             bool first = !readOnce && !StoryStateManager.Has(flagToSet);
@@ -43,7 +47,7 @@ namespace LeftBehind.Story
                 {
                     if (!string.IsNullOrEmpty(objective)) StoryStateManager.SetObjective(objective);
                 });
-            });
+            }, pushIn);
         }
     }
 }

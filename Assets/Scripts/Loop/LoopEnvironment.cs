@@ -21,11 +21,18 @@ namespace LeftBehind.Loop
         [SerializeField] private Color ambient = new Color(0.12f, 0.13f, 0.16f);
         [SerializeField] private Color fogColor = new Color(0.10f, 0.12f, 0.15f);
         [SerializeField] private float fogDensity = 0.06f;
+        [Tooltip("Film grain added on top of the PS1 look's own (Loop 3 is grainier).")]
+        [SerializeField] private float extraGrain = 0f;
 
         /// <summary>PlayerPrefs key: the furthest loop reached, for the Chapters menu.</summary>
         public const string ReachedKey = "LeftBehind.ReachedLoop";
 
         public int Loop => loop;
+
+        /// <summary>The loop's own fog density (a FogZone thickens it in places).</summary>
+        public float FogDensity => fogDensity;
+
+        private static readonly int ExtraGrainId = Shader.PropertyToID("_LB_ExtraGrain");
 
         private void OnEnable()
         {
@@ -40,6 +47,9 @@ namespace LeftBehind.Loop
             }
         }
         private void OnValidate() => Apply();
+
+        // The main menu has no LoopEnvironment: no extra grain there.
+        private void OnDisable() => Shader.SetGlobalFloat(ExtraGrainId, 0f);
 
         [ContextMenu("Apply")]
         public void Apply()
@@ -56,6 +66,7 @@ namespace LeftBehind.Loop
             RenderSettings.fogMode = FogMode.ExponentialSquared;
             RenderSettings.fogColor = fogColor;
             RenderSettings.fogDensity = fogDensity;
+            Shader.SetGlobalFloat(ExtraGrainId, extraGrain);
             foreach (var cam in Camera.allCameras)
                 cam.backgroundColor = fogColor;
             var main = Camera.main;

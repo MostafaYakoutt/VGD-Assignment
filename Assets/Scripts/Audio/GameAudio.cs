@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using LeftBehind.Loop;
 using LeftBehind.Story;
 using StarterAssets;
@@ -15,7 +16,10 @@ namespace LeftBehind.Audio
     ///   Loop 3: heavy rain, thunder after each lightning flash, and Emily's music box upstairs,
     ///           which stops when Walter steps into the study;
     ///   Main menu: the music box, quietly.
-    /// It also gives the player footsteps, and plays one-shots for doors, switches and the tap.
+    /// Under each loop runs a quiet room tone (the empty house), different in each.
+    /// The ambience can be hushed before a scare, so the house seems to hold its breath (see PacedScare).
+    /// It also gives the player footsteps and breathing (louder near the mannequins), and plays
+    /// one-shots for doors, switches and the tap, and the muffled sounds of the rest of the house.
     /// </summary>
     public class GameAudio : MonoBehaviour
     {
@@ -25,8 +29,15 @@ namespace LeftBehind.Audio
         private static GameAudio instance;
         private static AudioClip[] doorOpen, doorClose, footsteps, ticks;
         private static AudioClip rain, thunder, musicBox, wind, click, drip, waterRunning;
+        private static AudioClip roomTone, breathing, tap, lampBuzz;
+
+        /// <summary>Loudness of the ambience while it is hushed before a scare.</summary>
+        private const float HushLevel = 0.25f;
 
         private AudioSource musicBoxSource;
+        private readonly List<(AudioSource source, float volume)> ambience = new List<(AudioSource, float)>();
+        private float hushLevel = 1f;
+        private bool hushed;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStatics() => instance = null;
@@ -39,7 +50,7 @@ namespace LeftBehind.Audio
             DontDestroyOnLoad(go);
             instance = go.AddComponent<GameAudio>();
             Load();
-            SceneManager.sceneLoaded += (s, m) => instance.SetUpScene();
+            SceneManager.sceneLoaded += (s, m) => { if (instance != null) instance.SetUpScene(); };
             StoryStateManager.FlagSet += instance.OnFlag;
             instance.SetUpScene();
         }
@@ -57,6 +68,10 @@ namespace LeftBehind.Audio
             click = Resources.Load<AudioClip>("Audio/Click");
             drip = Resources.Load<AudioClip>("Audio/Drip");
             waterRunning = Resources.Load<AudioClip>("Audio/WaterRunning");
+            roomTone = Resources.Load<AudioClip>("Audio/RoomTone");
+            breathing = Resources.Load<AudioClip>("Audio/Breathing");
+            tap = Resources.Load<AudioClip>("Audio/Tap");
+            lampBuzz = Resources.Load<AudioClip>("Audio/LampBuzz");
         }
 
         // ------------------------------------------------------------------ per scene
@@ -66,10 +81,15 @@ namespace LeftBehind.Audio
             AudioListener.volume = 1f;
             AudioListener.pause = false;
             musicBoxSource = null;
+            ambience.Clear();
+            hushed = false;
+            hushLevel = 1f;
 
             var fpc = FindAnyObjectByType<FirstPersonController>();
             if (fpc != null && fpc.GetComponent<Footsteps>() == null)
                 fpc.gameObject.AddComponent<Footsteps>().Configure(footsteps);
+            if (fpc != null && fpc.GetComponent<Breathing>() == null)
+                fpc.gameObject.AddComponent<Breathing>().Configure(breathing);
 
             var env = FindAnyObjectByType<LoopEnvironment>();
             int loop = env != null ? env.Loop : 0;
@@ -84,19 +104,24 @@ namespace LeftBehind.Audio
                     Loop2D(root, "MusicBox", musicBox, 0.22f, fromStart: true);
                     break;
                 case 1:
-                    Loop2D(root, "Wind", wind, 0.16f);
+                    Ambient(Loop2D(root, "Wind", wind, 0.16f));
+                    Ambient(Loop2D(root, "RoomTone", roomTone, 0.2f));                   // the empty house, a low hum
                     if (clockRuns) Clock(root, clockPos);
                     break;
                 case 2:
-                    Loop2D(root, "Wind", wind, 0.07f);
+                    Ambient(Loop2D(root, "Wind", wind, 0.07f));
+                    Ambient(Loop2D(root, "RoomTone", roomTone, 0.13f, pitch: 1.08f));    // a little warmer: a lived-in house
                     if (clockRuns) Clock(root, clockPos);
                     break;
                 case 3:
-                    Loop2D(root, "Rain", rain, 0.3f);
+                    Ambient(Loop2D(root, "Rain", rain, 0.3f));
+                    Ambient(Loop2D(root, "RoomTone", roomTone, 0.12f, pitch: 0.9f));     // lower, under the storm
                     if (!StoryStateManager.Has("enteredStudyLoop3"))
                     {
-                        // On a shelf in the children's room, upstairs; the player follows it.
+                        // On a shelf in the children's room, upstairs; the player follows it. It winds
+                        // down when he comes close (see MusicBox).
                         musicBoxSource = Loop3D(root, "MusicBox", musicBox, new Vector3(-1.0f, 3.4f, -1.6f), 0.6f, 2f, 22f);
+                        if (musicBoxSource != null) musicBoxSource.gameObject.AddComponent<MusicBox>();
                     }
                     break;
             }
@@ -107,7 +132,12 @@ namespace LeftBehind.Audio
             if (flag == "enteredStudyLoop3" && musicBoxSource != null) StartCoroutine(FadeOut(musicBoxSource, 2.5f));
         }
 
-        private static AudioSource Loop2D(Transform root, string name, AudioClip clip, float volume, bool fromStart = false)
+        private void Ambient(AudioSource src)
+        {
+            if (src != null) ambience.Add((src, src.volume));
+        }
+
+        private static AudioSource Loop2D(Transform root, string name, AudioClip clip, float volume, bool fromStart = false, float pitch = 1f)
         {
             if (clip == null) return null;
             var src = new GameObject(name).AddComponent<AudioSource>();
@@ -115,6 +145,7 @@ namespace LeftBehind.Audio
             src.clip = clip;
             src.loop = true;
             src.volume = volume;
+            src.pitch = pitch;
             src.spatialBlend = 0f;
             if (!fromStart) src.time = Random.Range(0f, clip.length * 0.8f);     // ambience never starts the same way twice
             src.Play();
@@ -148,6 +179,25 @@ namespace LeftBehind.Audio
             src.volume = 0.45f;
             src.dopplerLevel = 0f;
             go.AddComponent<ClockTicker>().Configure(src, ticks);
+            instance.Ambient(src);
+        }
+
+        // ------------------------------------------------------------------ hush
+
+        /// <summary>The house holds its breath (true): the ambience drops away until released (false).</summary>
+        public static void Hush(bool on)
+        {
+            if (instance != null) instance.hushed = on;
+        }
+
+        private void Update()
+        {
+            float target = hushed ? HushLevel : 1f;
+            if (Mathf.Approximately(hushLevel, target)) return;
+            // It drops away over two seconds, and comes back more slowly.
+            hushLevel = Mathf.MoveTowards(hushLevel, target, Time.deltaTime / (hushed ? 2f : 4f));
+            foreach (var (source, volume) in ambience)
+                if (source != null) source.volume = volume * hushLevel;
         }
 
         private static IEnumerator FadeOut(AudioSource src, float time)
@@ -163,9 +213,9 @@ namespace LeftBehind.Audio
 
         // ------------------------------------------------------------------ one-shots
 
-        public static void PlayAt(AudioClip clip, Vector3 pos, float volume, float pitch = 1f)
+        public static AudioSource PlayAt(AudioClip clip, Vector3 pos, float volume, float pitch = 1f)
         {
-            if (clip == null) return;
+            if (clip == null) return null;
             var go = new GameObject("OneShot_" + clip.name);
             go.transform.position = pos;
             var src = go.AddComponent<AudioSource>();
@@ -179,6 +229,16 @@ namespace LeftBehind.Audio
             src.dopplerLevel = 0f;
             src.Play();
             Destroy(go, clip.length / Mathf.Max(0.1f, pitch) + 0.1f);
+            return src;
+        }
+
+        /// <summary>A sound from elsewhere in the house, through walls or a floor: only its low end gets through.</summary>
+        public static void Muffled(AudioClip clip, Vector3 pos, float volume, float pitch, float cutoff)
+        {
+            var src = PlayAt(clip, pos, volume, pitch);
+            if (src == null) return;
+            src.maxDistance = 30f;
+            src.gameObject.AddComponent<AudioLowPassFilter>().cutoffFrequency = cutoff;
         }
 
         public static void Play2D(AudioClip clip, float volume, float pitch = 1f, bool ignorePause = false)
@@ -192,6 +252,39 @@ namespace LeftBehind.Audio
             src.ignoreListenerPause = ignorePause;
             src.Play();
             Destroy(src, clip.length / Mathf.Max(0.1f, pitch) + 0.1f);
+        }
+
+        public static AudioClip AFootstep => Pick(footsteps);
+
+        public static AudioClip ADoorClose => Pick(doorClose);
+
+        /// <summary>A twig knocking on a window pane.</summary>
+        public static void Tap(Vector3 pos) => PlayAt(tap, pos, 0.7f, Random.Range(0.95f, 1.05f));
+
+        /// <summary>A bulb buzzing as it fails.</summary>
+        public static void LampBuzz(Vector3 pos) => PlayAt(lampBuzz, pos, 0.35f, Random.Range(0.9f, 1.1f));
+
+        /// <summary>Walter catching his breath: one sharp breath in.</summary>
+        public static void Gasp()
+        {
+            if (instance != null && breathing != null) instance.StartCoroutine(instance.PlayGasp());
+        }
+
+        private IEnumerator PlayGasp()
+        {
+            var src = gameObject.AddComponent<AudioSource>();
+            src.clip = breathing;
+            src.spatialBlend = 0f;
+            src.volume = 0.75f;
+            src.pitch = 1.45f;
+            src.Play();
+            yield return new WaitForSeconds(0.95f);       // just the breath in
+            for (float t = 0f; t < 0.25f && src != null; t += Time.deltaTime)
+            {
+                src.volume = 0.75f * (1f - t / 0.25f);
+                yield return null;
+            }
+            if (src != null) Destroy(src);
         }
 
         private static AudioClip Pick(AudioClip[] set) => set != null && set.Length > 0 ? set[Random.Range(0, set.Length)] : null;
@@ -256,6 +349,82 @@ namespace LeftBehind.Audio
                 yield return null;
             }
             AudioListener.volume = 0f;
+        }
+    }
+
+    /// <summary>
+    /// Emily's music box in Loop 3. When Walter comes within a couple of metres of it, it winds down
+    /// and stops, as if it knew he was there. Once he has gone back out onto the landing it starts
+    /// again, quietly, from the beginning. (GameAudio fades it out for good when he enters the study.)
+    /// </summary>
+    public class MusicBox : MonoBehaviour
+    {
+        private const float StopWithin = 2.6f;
+        private const float StartBeyond = 6.5f;
+
+        private AudioSource source;
+        private Transform player;
+        private float baseVolume;
+        private bool stopped;
+        private Coroutine running;
+
+        private void Awake()
+        {
+            source = GetComponent<AudioSource>();
+            baseVolume = source.volume;
+        }
+
+        private void Update()
+        {
+            if (source == null || StoryStateManager.Has("enteredStudyLoop3")) return;
+            if (player == null)
+            {
+                var fpc = FindAnyObjectByType<FirstPersonController>();
+                if (fpc == null) return;
+                player = fpc.transform;
+            }
+            float d = Vector3.Distance(player.position + Vector3.up * 1.5f, transform.position);
+            if (!stopped && d < StopWithin)
+            {
+                stopped = true;
+                if (running != null) StopCoroutine(running);
+                running = StartCoroutine(WindDown());
+                ScarePacing.Mark();
+            }
+            else if (stopped && d > StartBeyond)
+            {
+                stopped = false;
+                if (running != null) StopCoroutine(running);
+                running = StartCoroutine(StartAgain());
+            }
+        }
+
+        private IEnumerator WindDown()
+        {
+            float v = source.volume, p = source.pitch;
+            for (float t = 0f; t < 1.6f; t += Time.deltaTime)
+            {
+                float k = t / 1.6f;
+                source.pitch = Mathf.Lerp(p, 0.55f, k * k);          // the spring running out
+                source.volume = Mathf.Lerp(v, 0f, k * k * k);
+                yield return null;
+            }
+            source.Stop();
+            source.pitch = 1f;
+        }
+
+        private IEnumerator StartAgain()
+        {
+            yield return new WaitForSeconds(Random.Range(2f, 4f));
+            source.pitch = 1f;
+            source.time = 0f;
+            source.volume = 0f;
+            source.Play();
+            for (float t = 0f; t < 3f; t += Time.deltaTime)
+            {
+                source.volume = baseVolume * 0.7f * t / 3f;
+                yield return null;
+            }
         }
     }
 

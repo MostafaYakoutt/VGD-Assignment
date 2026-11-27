@@ -48,6 +48,9 @@ namespace LeftBehind.Interaction
         public bool HasFlashlight => item != null;
         public bool IsOn { get; private set; }
 
+        /// <summary>True while the flashlight has died for a moment (see Die): F only clicks.</summary>
+        public bool Dying { get; private set; }
+
         private void Awake()
         {
             input = GetComponent<StarterAssetsInputs>();
@@ -116,10 +119,41 @@ namespace LeftBehind.Interaction
             if (item == null) return;
 
             var keyboard = Keyboard.current;
-            if (keyboard != null && keyboard.fKey.wasPressedThisFrame) Toggle();
+            if (keyboard != null && keyboard.fKey.wasPressedThisFrame)
+            {
+                if (Dying) LeftBehind.Audio.GameAudio.Switch2D();     // the switch clicks; nothing happens
+                else Toggle();
+            }
 
             UpdateSway();
-            UpdateFlicker();
+            if (!Dying) UpdateFlicker();
+        }
+
+        /// <summary>
+        /// The batteries failing for a moment: the beam sputters, dies for <paramref name="darkSeconds"/>
+        /// whatever Walter does, then sputters back. Only if it is on to begin with.
+        /// </summary>
+        public System.Collections.IEnumerator Die(float darkSeconds)
+        {
+            if (item == null || !IsOn || Dying) yield break;
+            Dying = true;
+            ResetFlicker();
+            yield return Sputter(0.8f);
+            SetLevel(0f);
+            yield return new WaitForSeconds(darkSeconds);
+            yield return Sputter(0.6f);
+            if (IsOn) SetLevel(1f);
+            Dying = false;
+        }
+
+        private System.Collections.IEnumerator Sputter(float seconds)
+        {
+            float end = Time.time + seconds;
+            while (Time.time < end)
+            {
+                SetLevel(Random.value < 0.5f ? 0.02f : Random.Range(0.25f, 0.9f));
+                yield return new WaitForSeconds(Random.Range(0.04f, 0.13f));
+            }
         }
 
         /// <summary>

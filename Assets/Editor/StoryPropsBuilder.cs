@@ -59,6 +59,7 @@ namespace LeftBehind.EditorTools
             BehindYourBackBuilder.Place(root, loop);         // the things that change while Walter isn't looking
             DarknessBuilder.Place(root, loop);               // Loop 1's darker house, and lamps that go out ahead of him
             HouseDressingBuilder.Place(root, loop);          // the everyday clutter that tells each loop's story
+            DreadBuilder.Place(root, loop);                  // sounds, apparitions and paced scares (after the rest is in place)
         }
 
         // ------------------------------------------------------------------ wall clock

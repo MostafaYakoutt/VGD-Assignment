@@ -60,14 +60,16 @@ namespace LeftBehind.Story
 
         private IEnumerator GoOut()
         {
+            ScarePacing.Mark();
             yield return new WaitForSeconds(0.3f);
             foreach (var l in lamps)
             {
                 if (l == null || !l.IsOn) continue;
-                l.SetOn(false);
-                LeftBehind.Audio.GameAudio.Switch(l.transform.position);
+                // Each one flickers before it dies.
+                yield return l.FlickerOut(Random.Range(0.7f, 1.3f));
                 yield return new WaitForSeconds(Random.Range(gap.x, gap.y));
             }
+            ScarePacing.Mark();
         }
 
         private void OnDrawGizmosSelected()

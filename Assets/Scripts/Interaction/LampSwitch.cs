@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace LeftBehind.Interaction
@@ -46,10 +47,34 @@ namespace LeftBehind.Interaction
             Apply();
         }
 
-        private void Apply()
+        /// <summary>
+        /// The bulb failing: it buzzes, stutters on and off for <paramref name="seconds"/>, then goes
+        /// out with a click. Used when the lamps go out ahead of Walter (LampsGoOut).
+        /// </summary>
+        public IEnumerator FlickerOut(float seconds)
+        {
+            if (!isOn) yield break;
+            LeftBehind.Audio.GameAudio.LampBuzz(transform.position);
+            float end = Time.time + seconds;
+            bool lit = true;
+            while (Time.time < end)
+            {
+                lit = !lit || Random.value < 0.3f;
+                ShowLit(lit);
+                // Dark gaps grow longer as it dies.
+                float k = 1f - (end - Time.time) / seconds;
+                yield return new WaitForSeconds(lit ? Random.Range(0.03f, 0.12f) : Random.Range(0.04f, 0.1f + 0.25f * k));
+            }
+            SetOn(false);
+            LeftBehind.Audio.GameAudio.Switch(transform.position);
+        }
+
+        private void Apply() => ShowLit(isOn);
+
+        private void ShowLit(bool lit)
         {
             foreach (var l in lights)
-                if (l != null) l.enabled = isOn;
+                if (l != null) l.enabled = lit;
 
             if (emissiveRenderers == null) return;
             block ??= new MaterialPropertyBlock();
@@ -57,7 +82,7 @@ namespace LeftBehind.Interaction
             {
                 if (r == null) continue;
                 r.GetPropertyBlock(block);
-                if (isOn) block.Clear();
+                if (lit) block.Clear();
                 else block.SetColor(EmissionColorId, Color.black);
                 r.SetPropertyBlock(block);
             }

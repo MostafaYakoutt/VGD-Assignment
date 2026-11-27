@@ -12,3 +12,4 @@ Footsteps/*.wav     Unity Starter Assets (already in the project).
 
 Generated for this project (Python/NumPy): Wind.wav, Click.wav.
 Generated for this project (Python, Tools/story_assets.py): Drip.wav, WaterRunning.wav.
+Generated for this project (Python/NumPy, Tools/dread_audio.py): RoomTone.wav, Breathing.wav, Tap.wav, LampBuzz.wav.
