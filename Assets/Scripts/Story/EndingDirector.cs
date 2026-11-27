@@ -8,8 +8,8 @@ namespace LeftBehind.Story
 {
     /// <summary>
     /// Plays one of the two endings once the choice in the study is made.
-    /// Remember: the screen fades to black over a few closing lines, then any key returns
-    /// to the main menu (where the photograph now shows their faces). Look away: the loop transition
+    /// Remember: the screen fades to black and the game's name comes up, then it returns to the
+    /// main menu by itself (any key returns sooner), where the photograph now shows their faces. Look away: the loop transition
     /// takes him back to Loop 1 and it starts again.
     /// The ending reached is saved for the main menu (PlayerPrefs "LeftBehind.Ending").
     /// </summary>
@@ -17,10 +17,12 @@ namespace LeftBehind.Story
     {
         public const string EndingKey = "LeftBehind.Ending";
 
+        /// <summary>Seconds the title stays up before the game returns to the menu.</summary>
+        private const float TitleHold = 5f;
+
         [SerializeField] private string rememberFlag = "choseToRemember";
         [SerializeField] private string lookAwayFlag = "choseToLookAway";
         [SerializeField] private string firstScene = "SampleScene";
-        [SerializeField] private string[] rememberLines = { "He remembered their names.", "Ruth.   Emily.   Sam." };
 
         private bool started;
 
@@ -70,28 +72,17 @@ namespace LeftBehind.Story
             black.transform.SetAsLastSibling();
             yield return Fade(black, 0f, 1f, 3f);
 
-            foreach (var line in rememberLines)
-            {
-                var t = ui.MakeText(black.transform, "Line", 46, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.5f),
-                    new Vector2(0f, 20f), new Vector2(1600f, 120f), shadow: false);
-                t.text = line;
-                yield return FadeText(t, 0f, 0.9f, 1.5f);
-                yield return new WaitForSecondsRealtime(3f);
-                yield return FadeText(t, 0.9f, 0f, 1.5f);
-                Destroy(t.gameObject);
-            }
-
+            // Only the game's name, then back to the menu.
             var title = ui.MakeText(black.transform, "Title", 84, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.5f),
-                new Vector2(0f, 40f), new Vector2(1600f, 140f), shadow: false);
+                new Vector2(0f, 0f), new Vector2(1600f, 140f), shadow: false);
             title.text = "LEFT BEHIND";
             yield return FadeText(title, 0f, 0.9f, 2f);
-            yield return new WaitForSecondsRealtime(2f);
-            var prompt = ui.MakeText(black.transform, "Prompt", 26, TextAnchor.MiddleCenter, new Vector2(0.5f, 0f),
-                new Vector2(0f, 90f), new Vector2(1000f, 50f), shadow: false);
-            prompt.text = "Press any key";
-            yield return FadeText(prompt, 0f, 0.5f, 1f);
-
-            while (Keyboard.current == null || !Keyboard.current.anyKey.wasPressedThisFrame) yield return null;
+            for (float t = 0f; t < TitleHold; t += Time.unscaledDeltaTime)
+            {
+                if (Keyboard.current != null && Keyboard.current.anyKey.wasPressedThisFrame) break;
+                yield return null;
+            }
+            yield return FadeText(title, 0.9f, 0f, 1.5f);
 
             StoryUI.Unlock(this);
             Destroy(black.gameObject);

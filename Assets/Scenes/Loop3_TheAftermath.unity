@@ -60168,9 +60168,6 @@ MonoBehaviour:
   rememberFlag: choseToRemember
   lookAwayFlag: choseToLookAway
   firstScene: SampleScene
-  rememberLines:
-  - He remembered their names.
-  - Ruth.   Emily.   Sam.
 --- !u!1001 &1440778058
 PrefabInstance:
   m_ObjectHideFlags: 0
