@@ -27,6 +27,10 @@ namespace LeftBehind.Story
         {
             get
             {
+                // Scripts recompiled while playing in the Editor clear this reference but leave the canvas
+                // where it was; adopt it, or a second canvas (and a second pause menu, which nothing then
+                // closes) would be built on top of it and swallow every click.
+                if (instance == null) instance = FindAnyObjectByType<StoryUI>(FindObjectsInactive.Include);
                 if (instance == null)
                 {
                     var go = new GameObject("StoryUI");

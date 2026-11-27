@@ -16,6 +16,7 @@ namespace LeftBehind.Story
     {
         private Image dim;
         private Button first;
+        private Button[] buttons;
         private bool open;
 
         public static bool IsOpen => StoryUI.Exists && StoryUI.Instance.GetComponent<PauseMenu>().open;
@@ -30,19 +31,37 @@ namespace LeftBehind.Story
             title.text = "Paused";
 
             string[] labels = { "Resume", "Restart chapter", "Main menu", "Quit" };
-            UnityEngine.Events.UnityAction[] actions = { Close, RestartLoop, () => StoryChapters.ToMenu(), StoryChapters.Quit };
+            buttons = new Button[labels.Length];
             for (int i = 0; i < labels.Length; i++)
             {
                 var b = ui.MakeButton(dim.transform, labels[i], 40, new Vector2(0f, 0.5f), new Vector2(150f, 60f - i * 72f),
-                    new Vector2(520f, 62f), actions[i]);
+                    new Vector2(520f, 62f), null);
                 b.GetComponentInChildren<Text>().rectTransform.anchoredPosition = new Vector2(10f, 0f);
-                if (i == 0) first = b;
+                buttons[i] = b;
             }
+            first = buttons[0];
+            Wire();
             var hint = ui.MakeText(dim.transform, "Hint", 22, TextAnchor.MiddleLeft, new Vector2(0f, 0f),
                 new Vector2(160f, 70f), new Vector2(1200f, 40f));
             hint.text = "Restart chapter goes back to the start of this chapter.";
             hint.color = new Color(1f, 1f, 1f, 0.45f);
             dim.gameObject.SetActive(false);
+        }
+
+        // Listeners added in code are not kept when the Editor reloads scripts during play; the
+        // buttons survive, so hook them up again whenever this wakes (OnEnable follows a reload).
+        private void OnEnable() => Wire();
+
+        private void Wire()
+        {
+            if (buttons == null) return;
+            UnityEngine.Events.UnityAction[] actions = { Close, RestartLoop, () => StoryChapters.ToMenu(), StoryChapters.Quit };
+            for (int i = 0; i < buttons.Length && i < actions.Length; i++)
+            {
+                if (buttons[i] == null) continue;
+                buttons[i].onClick.RemoveAllListeners();
+                buttons[i].onClick.AddListener(actions[i]);
+            }
         }
 
         private void Update()

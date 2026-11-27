@@ -19,6 +19,8 @@ namespace LeftBehind.Story
         private GameObject chapterList;
         private Button beginButton;
         private Button firstChapter;
+        private Button chaptersButton, quitButton, backButton;
+        private Button[] chapterButtons;
         private Image fade;
 
         private void Start()
@@ -39,24 +41,26 @@ namespace LeftBehind.Story
             Photo(ui);
 
             mainList = List(ui, "Main");
-            beginButton = Item(ui, mainList.transform, "Begin", 0, () => StartCoroutine(Go(1)));
-            Item(ui, mainList.transform, "Chapters", 1, ShowChapters);
-            Item(ui, mainList.transform, "Quit", 2, StoryChapters.Quit);
+            beginButton = Item(ui, mainList.transform, "Begin", 0);
+            chaptersButton = Item(ui, mainList.transform, "Chapters", 1);
+            quitButton = Item(ui, mainList.transform, "Quit", 2);
 
             chapterList = List(ui, "Chapters");
             int reached = Mathf.Clamp(PlayerPrefs.GetInt(LoopEnvironment.ReachedKey, 1), 1, StoryChapters.Scenes.Length);
+            chapterButtons = new Button[StoryChapters.Scenes.Length];
             for (int i = 0; i < StoryChapters.Scenes.Length; i++)
             {
                 int loop = i + 1;
                 bool open = loop <= reached;
-                var b = Item(ui, chapterList.transform, open ? StoryChapters.Names[i] : "—  —  —", i,
-                    () => StartCoroutine(Go(loop)));
+                var b = Item(ui, chapterList.transform, open ? StoryChapters.Names[i] : "—  —  —", i);
+                chapterButtons[i] = b;
                 b.interactable = open;
                 if (!open) b.GetComponentInChildren<Text>().color = new Color(1f, 1f, 1f, 0.3f);
                 if (i == 0) firstChapter = b;
             }
-            Item(ui, chapterList.transform, "Back", StoryChapters.Scenes.Length + 0.4f, ShowMain);
+            backButton = Item(ui, chapterList.transform, "Back", StoryChapters.Scenes.Length + 0.4f);
             chapterList.SetActive(false);
+            Wire();
 
             var hint = ui.MakeText(page, "Hint", 20, TextAnchor.MiddleLeft, new Vector2(0f, 0f),
                 new Vector2(156f, 60f), new Vector2(1200f, 34f));
@@ -66,6 +70,31 @@ namespace LeftBehind.Story
             fade = ui.MakeFullScreen(page, "Fade", new Color(0f, 0f, 0f, 1f));
             StartCoroutine(FadeIn());
             Select(beginButton);
+        }
+
+        // Listeners added in code are not kept when the Editor reloads scripts during play; the
+        // buttons survive, so hook them up again whenever this wakes (OnEnable follows a reload).
+        private void OnEnable() => Wire();
+
+        private void Wire()
+        {
+            if (beginButton == null || chapterButtons == null) return;
+            On(beginButton, () => StartCoroutine(Go(1)));
+            On(chaptersButton, ShowChapters);
+            On(quitButton, StoryChapters.Quit);
+            for (int i = 0; i < chapterButtons.Length; i++)
+            {
+                int loop = i + 1;
+                On(chapterButtons[i], () => StartCoroutine(Go(loop)));
+            }
+            On(backButton, ShowMain);
+        }
+
+        private static void On(Button b, UnityEngine.Events.UnityAction act)
+        {
+            if (b == null) return;
+            b.onClick.RemoveAllListeners();
+            b.onClick.AddListener(act);
         }
 
         private void Photo(StoryUI ui)
@@ -103,9 +132,9 @@ namespace LeftBehind.Story
             return go;
         }
 
-        private static Button Item(StoryUI ui, Transform list, string label, float row, UnityEngine.Events.UnityAction act)
+        private static Button Item(StoryUI ui, Transform list, string label, float row)
         {
-            var b = ui.MakeButton(list, label, 42, new Vector2(0f, 1f), new Vector2(0f, -row * 76f), new Vector2(560f, 64f), act);
+            var b = ui.MakeButton(list, label, 42, new Vector2(0f, 1f), new Vector2(0f, -row * 76f), new Vector2(560f, 64f), null);
             b.GetComponentInChildren<Text>().rectTransform.anchoredPosition = new Vector2(16f, 0f);
             return b;
         }
