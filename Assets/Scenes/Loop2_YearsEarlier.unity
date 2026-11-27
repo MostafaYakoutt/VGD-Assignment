@@ -66114,7 +66114,6 @@ GameObject:
   - component: {fileID: 1802496652}
   - component: {fileID: 1802496651}
   - component: {fileID: 1802496654}
-  - component: {fileID: 1802496655}
   m_Layer: 0
   m_Name: Pills
   m_TagString: Untagged
@@ -66191,18 +66190,6 @@ MonoBehaviour:
   - {fileID: 900597597}
   - {fileID: 54491497}
   - {fileID: 1546715357}
---- !u!114 &1802496655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1802496650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d7532ef87b37b34bbbb6f01f229efd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.FeelsWrong
 --- !u!1001 &1807278608
 PrefabInstance:
   m_ObjectHideFlags: 0

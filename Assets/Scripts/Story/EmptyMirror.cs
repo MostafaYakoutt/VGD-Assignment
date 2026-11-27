@@ -87,17 +87,7 @@ namespace LeftBehind.Story
             if (lookedFor < 1.2f) return;
             StoryStateManager.Set(flag);
             ScarePacing.Mark();
-            if (CameraSystem.CameraDirector.Instance != null) StartCoroutine(TiltWhileTalking());
             DialogueManager.Play(lines);
-        }
-
-        private System.Collections.IEnumerator TiltWhileTalking()
-        {
-            var director = CameraSystem.CameraDirector.Instance;
-            director.Tilt(true);
-            yield return null;
-            while (DialogueManager.Busy) yield return null;
-            director.Tilt(false);
         }
 
         // ------------------------------------------------------------------ the reflection

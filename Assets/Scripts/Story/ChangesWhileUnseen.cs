@@ -141,9 +141,6 @@ namespace LeftBehind.Story
             // Instead, the flashlight stutters near it.
             if (target != null && target.GetComponent<FlickerSource>() == null)
                 target.gameObject.AddComponent<FlickerSource>().Configure(FlickerRange);
-            // And if he examines it now, the view tilts: something is wrong with it.
-            if (door == null && target != null && target.GetComponent<Interactable>() != null && target.GetComponent<FeelsWrong>() == null)
-                target.gameObject.AddComponent<FeelsWrong>();
             StoryStateManager.Set(doneFlag);
         }
 

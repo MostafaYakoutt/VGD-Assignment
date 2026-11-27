@@ -27,8 +27,7 @@ namespace LeftBehind.EditorTools
     ///           the bedroom door shut behind him; the figure at the end of the landing in a lightning
     ///           flash; a false alarm: a branch tapping on a window; thicker attic fog; a darker
     ///           vignette and more film grain; the note on the study door pushes in as it is read.
-    /// Things that are wrong tilt the view when examined (FeelsWrong). The room tone, Walter's
-    /// breathing, the flickering lamps and the music box are set up at runtime.
+    /// The room tone, Walter's breathing, the flickering lamps and the music box are set up at runtime.
     /// Builds a "Dread" object under the StoryProps root, replacing the last one.
     /// Menu: Left Behind > Story > Place Dread (open loop) / Place Dread In Every Loop.
     /// </summary>
@@ -159,7 +158,6 @@ namespace LeftBehind.EditorTools
             Mirror(root, new Vector3(-9.585f, 1.33f, -8.48f), Quaternion.Euler(0f, 90f, 0f));
 
             Fog(root, Attic, 2.3f);
-            Wrong("SM_frame_01", "StoryProps/Pills", "Story/TeddyBear");
         }
 
         // ------------------------------------------------------------------ Loop 2
@@ -208,7 +206,6 @@ namespace LeftBehind.EditorTools
             if (chair != null) PullOut(root, "Chair", chair.transform, new Vector3(-4.9f, 0.5f, 5.0f), "sawTableForSix", "changed_L2_Chair");
             DoorShuts(root, "Door_MasterBedroom", MasterBedroom, "changed_L2_BedroomDoor");
 
-            Wrong("StoryProps/Pills");
         }
 
         // ------------------------------------------------------------------ Loop 3
@@ -272,7 +269,6 @@ namespace LeftBehind.EditorTools
             }
 
             Fog(root, Attic, 2.3f);
-            Wrong("StoryProps/WallClock", "Loop3Props/KnifeBlock", "Loop3Props/EmilyDrawing");
             DarkerLoop3();
         }
 
@@ -336,16 +332,6 @@ namespace LeftBehind.EditorTools
             var c = Scare<ChangesWhileUnseen>(root, "Change_" + doorName);
             c.ConfigureDoor(door, 0.15f);
             c.ConfigureWhen("", done, 1.5f, 9f, room);
-        }
-
-        private static void Wrong(params string[] paths)
-        {
-            foreach (var path in paths)
-            {
-                var go = GameObject.Find(path);
-                if (go == null || go.GetComponent<Interactable>() == null) { Debug.LogWarning("Dread: nothing to examine at " + path); continue; }
-                if (go.GetComponent<FeelsWrong>() == null) go.AddComponent<FeelsWrong>();
-            }
         }
 
         private static void Fog(Transform root, Bounds area, float times)

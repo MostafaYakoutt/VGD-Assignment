@@ -3056,7 +3056,6 @@ GameObject:
   - component: {fileID: 53254467}
   - component: {fileID: 53254466}
   - component: {fileID: 53254470}
-  - component: {fileID: 53254471}
   m_Layer: 0
   m_Name: WallClock
   m_TagString: Untagged
@@ -3155,18 +3154,6 @@ MonoBehaviour:
   - {fileID: 187440990}
   - {fileID: 1737418391}
   - {fileID: 2030779116}
---- !u!114 &53254471
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 53254465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d7532ef87b37b34bbbb6f01f229efd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.FeelsWrong
 --- !u!1 &53912081
 GameObject:
   m_ObjectHideFlags: 0
@@ -9220,7 +9207,6 @@ GameObject:
   - component: {fileID: 201099166}
   - component: {fileID: 201099165}
   - component: {fileID: 201099169}
-  - component: {fileID: 201099170}
   m_Layer: 0
   m_Name: EmilyDrawing
   m_TagString: Untagged
@@ -9350,18 +9336,6 @@ MonoBehaviour:
   target: {fileID: 201099165}
   outlines:
   - {fileID: 1926863323}
---- !u!114 &201099170
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 201099163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d7532ef87b37b34bbbb6f01f229efd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.FeelsWrong
 --- !u!1 &203167191
 GameObject:
   m_ObjectHideFlags: 0
@@ -9845,7 +9819,6 @@ GameObject:
   - component: {fileID: 223562269}
   - component: {fileID: 223562268}
   - component: {fileID: 223562272}
-  - component: {fileID: 223562273}
   m_Layer: 0
   m_Name: KnifeBlock
   m_TagString: Untagged
@@ -9983,18 +9956,6 @@ MonoBehaviour:
   - {fileID: 1018058370}
   - {fileID: 2095468509}
   - {fileID: 372948876}
---- !u!114 &223562273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 223562266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d7532ef87b37b34bbbb6f01f229efd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.FeelsWrong
 --- !u!1 &224854782
 GameObject:
   m_ObjectHideFlags: 0

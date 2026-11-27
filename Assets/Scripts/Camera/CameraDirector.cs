@@ -27,16 +27,13 @@ namespace LeftBehind.CameraSystem
         [Tooltip("Extra vignette while looking closer, so the edges darken.")]
         [SerializeField] private float lookCloserVignette = 0.25f;
 
-        [Header("Push-in and tilt")]
+        [Header("Push-in")]
         [Tooltip("Degrees the view narrows by during a slow push-in (reading the note on the study door).")]
         [SerializeField] private float pushInDegrees = 12f;
         [Tooltip("Seconds the push-in takes to reach its closest.")]
         [SerializeField] private float pushInSeconds = 10f;
-        [Tooltip("Degrees the view rolls when Walter examines something that is wrong.")]
-        [SerializeField] private float tiltDegrees = 3.5f;
 
         private float push, pushTarget;
-        private float tilt, tiltTarget;
         private bool lensDirty;
 
         private bool rightMouseWasPressed;
@@ -81,41 +78,23 @@ namespace LeftBehind.CameraSystem
                 vignetteBlend = Mathf.MoveTowards(vignetteBlend, IsLookingCloser ? 1f : 0f, Time.deltaTime / 0.35f);
                 vignette.intensity.Override(baseVignette + lookCloserVignette * Mathf.SmoothStep(0f, 1f, vignetteBlend));
             }
-            UpdatePushAndTilt();
+            UpdatePushIn();
         }
 
         /// <summary>A slow push-in (true) while Walter reads something terrible; false eases back out.</summary>
         public void PushIn(bool on) => pushTarget = on ? 1f : 0f;
 
-        /// <summary>The view rolls slightly (true) while Walter looks at something wrong; false rights it.</summary>
-        public void Tilt(bool on)
-        {
-            // Lean the way he is not already leaning, so it never feels like a fixed effect.
-            if (on && tiltTarget == 0f) tiltTarget = Random.value < 0.5f ? -1f : 1f;
-            else if (!on) tiltTarget = 0f;
-        }
-
-        private void UpdatePushAndTilt()
+        private void UpdatePushIn()
         {
             // Unscaled: the game may be paused behind the note reader.
             float dt = Time.unscaledDeltaTime;
             push = Mathf.MoveTowards(push, pushTarget, dt / (pushTarget > push ? pushInSeconds : 0.8f));
-            tilt = Mathf.MoveTowards(tilt, tiltTarget, dt / (tiltTarget != 0f ? 1.4f : 0.6f));
-            if (push == 0f && tilt == 0f && !lensDirty) return;
-            lensDirty = push != 0f || tilt != 0f;
+            if (push == 0f && !lensDirty) return;
+            lensDirty = push != 0f;
 
             float fovLess = pushInDegrees * Mathf.SmoothStep(0f, 1f, push);
-            float roll = tiltDegrees * Mathf.Sign(tilt) * Mathf.SmoothStep(0f, 1f, Mathf.Abs(tilt));
-            if (firstPersonCam != null)
-            {
-                firstPersonCam.Lens.FieldOfView = PlayerTuning.FieldOfView - fovLess;
-                firstPersonCam.Lens.Dutch = roll;
-            }
-            if (lookCloserCam != null)
-            {
-                lookCloserCam.Lens.FieldOfView = PlayerTuning.LookCloserFieldOfView - fovLess * 0.5f;
-                lookCloserCam.Lens.Dutch = roll;
-            }
+            if (firstPersonCam != null) firstPersonCam.Lens.FieldOfView = PlayerTuning.FieldOfView - fovLess;
+            if (lookCloserCam != null) lookCloserCam.Lens.FieldOfView = PlayerTuning.LookCloserFieldOfView - fovLess * 0.5f;
         }
 
         public void SetLookCloser(bool on)

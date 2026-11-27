@@ -7627,7 +7627,6 @@ GameObject:
   - component: {fileID: 158554943}
   - component: {fileID: 158554941}
   - component: {fileID: 158554942}
-  - component: {fileID: 158554945}
   m_Layer: 0
   m_Name: TeddyBear
   m_TagString: Untagged
@@ -7716,18 +7715,6 @@ Transform:
   - {fileID: 1195064892}
   m_Father: {fileID: 1726539970}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &158554945
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 158554940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d7532ef87b37b34bbbb6f01f229efd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.FeelsWrong
 --- !u!1 &159390491 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: bf141ba20767bb34b9f9ab9ca54ca6ca, type: 3}
@@ -9038,7 +9025,6 @@ GameObject:
   - component: {fileID: 195145370}
   - component: {fileID: 195145369}
   - component: {fileID: 195145372}
-  - component: {fileID: 195145373}
   m_Layer: 0
   m_Name: Pills
   m_TagString: Untagged
@@ -9137,18 +9123,6 @@ MonoBehaviour:
   - {fileID: 258026365}
   - {fileID: 1392293590}
   - {fileID: 959712528}
---- !u!114 &195145373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 195145368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d7532ef87b37b34bbbb6f01f229efd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.FeelsWrong
 --- !u!1001 &197163966
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -67100,9 +67074,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8994928122896932435, guid: d2fdb08bf4ada3a468116aa81d86bba8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1562371018}
-    - targetCorrespondingSourceObject: {fileID: 8994928122896932435, guid: d2fdb08bf4ada3a468116aa81d86bba8, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1562371019}
   m_SourcePrefab: {fileID: 100100000, guid: d2fdb08bf4ada3a468116aa81d86bba8, type: 3}
 --- !u!4 &1562371017 stripped
 Transform:
@@ -67125,18 +67096,6 @@ MonoBehaviour:
   outlines:
   - {fileID: 1146824822}
   - {fileID: 1269304019}
---- !u!114 &1562371019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 847637730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d7532ef87b37b34bbbb6f01f229efd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LeftBehind.Story.FeelsWrong
 --- !u!1001 &1565855977
 PrefabInstance:
   m_ObjectHideFlags: 0
